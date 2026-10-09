@@ -11,7 +11,7 @@ if not DISCORD_WEBHOOK_URL:
     print("Error: DISCORD_WEBHOOK_URL environment variable is missing.")
     sys.exit(1)
 
-BINANCE_FUTURES_URL = "https://fapi.binance.com"
+BYBIT_API_URL = "https://api.bybit.com"
 FEAR_GREED_URL = "https://api.alternative.me/fng/?limit=1"
 
 def get_fear_and_greed():
@@ -23,42 +23,52 @@ def get_fear_and_greed():
     except Exception:
         return 50, "Neutral"
 
-def fetch_liquid_tickers(min_volume_usdt=20_000_000):
-    url = f"{BINANCE_FUTURES_URL}/fapi/v1/ticker/24hr"
+def fetch_liquid_tickers(min_volume_usdt=25_000_000):
+    url = f"{BYBIT_API_URL}/v5/market/tickers?category=linear"
     res = requests.get(url, timeout=10).json()
+    
+    if res.get("retCode") != 0:
+        print(f"Bybit API Error: {res.get('retMsg')}")
+        return []
+        
+    raw_list = res.get("result", {}).get("list", [])
     liquid_pairs = []
     
-    for item in res:
-        symbol = item["symbol"]
-        quote_vol = float(item["quoteVolume"])
-        if symbol.endswith("USDT") and quote_vol >= min_volume_usdt:
+    for item in raw_list:
+        symbol = item.get("symbol", "")
+        if not symbol.endswith("USDT"):
+            continue
+            
+        turnover = float(item.get("turnover24h", 0))
+        if turnover >= min_volume_usdt:
             liquid_pairs.append({
                 "symbol": symbol,
-                "volume": quote_vol,
-                "price": float(item["lastPrice"]),
-                "priceChangePercent": float(item["priceChangePercent"])
+                "volume": turnover,
+                "price": float(item.get("lastPrice", 0)),
+                "fundingRate": float(item.get("fundingRate", 0))
             })
             
-    return sorted(liquid_pairs, key=lambda x: x["volume"], reverse=True)[:25]
+    return sorted(liquid_pairs, key=lambda x: x["volume"], reverse=True)[:30]
 
-def fetch_klines_and_funding(symbol):
-    kline_url = f"{BINANCE_FUTURES_URL}/fapi/v1/klines?symbol={symbol}&interval=1h&limit=60"
-    k_res = requests.get(kline_url, timeout=10).json()
+def fetch_klines(symbol):
+    url = f"{BYBIT_API_URL}/v5/market/kline?category=linear&symbol={symbol}&interval=60&limit=60"
+    res = requests.get(url, timeout=10).json()
     
-    df = pd.DataFrame(k_res, columns=[
-        "open_time", "open", "high", "low", "close", "volume",
-        "close_time", "q_vol", "trades", "taker_base", "taker_quote", "ignore"
+    raw_candles = res.get("result", {}).get("list", [])
+    if not raw_candles:
+        return None
+        
+    df = pd.DataFrame(raw_candles, columns=[
+        "startTime", "open", "high", "low", "close", "volume", "turnover"
     ])
+    
+    # Bybit returns newest first; reverse so oldest is first
+    df = df.iloc[::-1].reset_index(drop=True)
     df["close"] = df["close"].astype(float)
     df["high"] = df["high"].astype(float)
     df["low"] = df["low"].astype(float)
     df["volume"] = df["volume"].astype(float)
-    
-    funding_url = f"{BINANCE_FUTURES_URL}/fapi/v1/premiumIndex?symbol={symbol}"
-    f_res = requests.get(funding_url, timeout=10).json()
-    funding_rate = float(f_res.get("lastFundingRate", 0.0))
-    
-    return df, funding_rate
+    return df
 
 def compute_indicators(df):
     close = df["close"]
@@ -101,29 +111,27 @@ def evaluate_setup(symbol, ind, funding_rate, fg_value):
     price = ind["price"]
     
     if price > ind["ema50"] and ind["ema20"] > ind["ema50"]:
-        score += 15
+        score += 20
     elif price > ind["ema50"]:
-        score += 8
+        score += 10
         
     if ind["rvol"] >= 2.0:
+        score += 20
+    elif ind["rvol"] >= 1.3:
         score += 15
-    elif ind["rvol"] >= 1.5:
-        score += 10
         
     if 45 <= ind["rsi"] <= 65:
-        score += 10
+        score += 15
         
     if funding_rate < -0.0001:
         score += 20
-    elif 0.0 <= funding_rate <= 0.00005:
+    elif 0.0 <= funding_rate <= 0.0001:
         score += 15
         
     if ind["price"] >= ind["support"]:
         score += 15
         
-    if 45 <= fg_value <= 65:
-        score += 15
-    elif fg_value < 30:
+    if 40 <= fg_value <= 70:
         score += 10
         
     atr = ind["atr"]
@@ -162,12 +170,12 @@ def send_discord_shortlist(shortlist, fg_val, fg_class):
     header_text = f"CoinSift Intelligence | Market Bias: {fg_class} ({fg_val}/100)"
     
     for item in shortlist:
-        tv_link = f"https://www.tradingview.com/chart/?symbol=BINANCE:{item['raw_symbol']}.P"
+        tv_link = f"https://www.tradingview.com/chart/?symbol=BYBIT:{item['raw_symbol']}.P"
         embed = {
             "title": f"#{item['symbol']} / USDT (Perpetual)",
             "url": tv_link,
             "description": f"**Confluence Score: `{item['score']}/100`**\nSetup: **Bullish Range Retest**",
-            "color": 3066993 if item["score"] >= 80 else 15844367,
+            "color": 3066993 if item["score"] >= 70 else 15844367,
             "fields": [
                 {"name": "📍 Entry Zone", "value": f"`{item['entry_range']}`", "inline": True},
                 {"name": "🛑 Invalidation (Stop)", "value": f"`{item['stop']}`", "inline": True},
@@ -175,7 +183,7 @@ def send_discord_shortlist(shortlist, fg_val, fg_class):
                 {"name": "🎯 Take-Profit 2", "value": f"`{item['tp2']}`", "inline": True},
                 {"name": "⚖️ Risk / Reward", "value": f"`{item['rr_ratio']}`", "inline": True},
                 {"name": "⚡ 8h Funding Rate", "value": f"`{item['funding']}`", "inline": True},
-                {"name": "📊 24h RVOL", "value": f"{item['rvol']}", "inline": True},
+                {"name": "📊 24h RVOL", "value": f"`{item['rvol']}`", "inline": True},
                 {"name": "📈 1H RSI", "value": f"`{item['rsi']}`", "inline": True},
                 {"name": "🔗 Mobile Chart", "value": f"[Open TradingView]({tv_link})", "inline": True}
             ],
@@ -184,7 +192,7 @@ def send_discord_shortlist(shortlist, fg_val, fg_class):
         embeds.append(embed)
         
     payload = {
-        "content": f"🚨 **{header_text}**\nTop actionable high-confluence candidates:",
+        "content": f"🚨 **{header_text}**\nTop actionable high-confluence setups:",
         "embeds": embeds[:3]
     }
     
@@ -198,19 +206,20 @@ def main():
     print("Initiating CoinSift Market Scan...")
     fg_val, fg_class = get_fear_and_greed()
     liquid_pairs = fetch_liquid_tickers()
+    print(f"Found {len(liquid_pairs)} high-volume perpetual contracts.")
     
     evaluated = []
     for pair in liquid_pairs:
         symbol = pair["symbol"]
         try:
-            df, funding = fetch_klines_and_funding(symbol)
-            if len(df) < 50:
+            df = fetch_klines(symbol)
+            if df is None or len(df) < 50:
                 continue
             ind = compute_indicators(df)
-            setup = evaluate_setup(symbol, ind, funding, fg_val)
-            if setup and setup["score"] >= 50:
+            setup = evaluate_setup(symbol, ind, pair["fundingRate"], fg_val)
+            if setup and setup["score"] >= 45:
                 evaluated.append(setup)
-            time.sleep(0.08)
+            time.sleep(0.05)
         except Exception as e:
             print(f"Skipping {symbol}: {e}")
             continue
