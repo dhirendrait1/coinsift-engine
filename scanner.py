@@ -139,3 +139,88 @@ def evaluate_setup(symbol, ind, funding_rate, fg_value):
         return None
         
     tp1 = entry_mid + (1.8 * risk)
+    tp2 = entry_mid + (3.0 * risk)
+    rr_ratio = round((tp1 - entry_mid) / risk, 1)
+    
+    return {
+        "symbol": symbol.replace("USDT", ""),
+        "raw_symbol": symbol,
+        "score": score,
+        "price": price,
+        "entry_range": f"${entry_low:.4f} –${entry_high:.4f}",
+        "stop": f"${stop_loss:.4f}",
+        "tp1": f"${tp1:.4f}",
+        "tp2": f"${tp2:.4f}",
+        "rr_ratio": f"1 : {rr_ratio}",
+        "funding": f"{funding_rate * 100:.4f}%",
+        "rvol": f"{ind['rvol']:.2f}x",
+        "rsi": f"{ind['rsi']:.1f}"
+    }
+
+def send_discord_shortlist(shortlist, fg_val, fg_class):
+    embeds = []
+    header_text = f"CoinSift Intelligence | Market Bias: {fg_class} ({fg_val}/100)"
+    
+    for item in shortlist:
+        tv_link = f"https://www.tradingview.com/chart/?symbol=BINANCE:{item['raw_symbol']}.P"
+        embed = {
+            "title": f"#{item['symbol']} / USDT (Perpetual)",
+            "url": tv_link,
+            "description": f"**Confluence Score: `{item['score']}/100`**\nSetup: **Bullish Range Retest**",
+            "color": 3066993 if item["score"] >= 80 else 15844367,
+            "fields": [
+                {"name": "📍 Entry Zone", "value": f"`{item['entry_range']}`", "inline": True},
+                {"name": "🛑 Invalidation (Stop)", "value": f"`{item['stop']}`", "inline": True},
+                {"name": "🎯 Take-Profit 1", "value": f"`{item['tp1']}`", "inline": True},
+                {"name": "🎯 Take-Profit 2", "value": f"`{item['tp2']}`", "inline": True},
+                {"name": "⚖️ Risk / Reward", "value": f"`{item['rr_ratio']}`", "inline": True},
+                {"name": "⚡ 8h Funding Rate", "value": f"`{item['funding']}`", "inline": True},
+                {"name": "📊 24h RVOL", "value": f"{item['rvol']}", "inline": True},
+                {"name": "📈 1H RSI", "value": f"`{item['rsi']}`", "inline": True},
+                {"name": "🔗 Mobile Chart", "value": f"[Open TradingView]({tv_link})", "inline": True}
+            ],
+            "footer": {"text": "CoinSift • Probabilistic Forecast • No Trade Execution"}
+        }
+        embeds.append(embed)
+        
+    payload = {
+        "content": f"🚨 **{header_text}**\nTop actionable high-confluence candidates:",
+        "embeds": embeds[:3]
+    }
+    
+    response = requests.post(DISCORD_WEBHOOK_URL, json=payload, timeout=10)
+    if response.status_code == 204:
+        print("Shortlist successfully dispatched to Discord.")
+    else:
+        print(f"Discord dispatch error: {response.status_code} - {response.text}")
+
+def main():
+    print("Initiating CoinSift Market Scan...")
+    fg_val, fg_class = get_fear_and_greed()
+    liquid_pairs = fetch_liquid_tickers()
+    
+    evaluated = []
+    for pair in liquid_pairs:
+        symbol = pair["symbol"]
+        try:
+            df, funding = fetch_klines_and_funding(symbol)
+            if len(df) < 50:
+                continue
+            ind = compute_indicators(df)
+            setup = evaluate_setup(symbol, ind, funding, fg_val)
+            if setup and setup["score"] >= 50:
+                evaluated.append(setup)
+            time.sleep(0.08)
+        except Exception as e:
+            print(f"Skipping {symbol}: {e}")
+            continue
+
+    if not evaluated:
+        print("No pairs exceeded the confluence threshold for this scan.")
+        return
+
+    shortlist = sorted(evaluated, key=lambda x: x["score"], reverse=True)[:3]
+    send_discord_shortlist(shortlist, fg_val, fg_class)
+
+if __name__ == "__main__":
+    main()
