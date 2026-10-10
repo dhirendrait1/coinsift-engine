@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>CoinSift Engine</title>
+  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#000000">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,105 +20,266 @@
       --font-cyber: 'Rajdhani', sans-serif;
       --font-mono: 'Space Grotesk', monospace;
     }
+
     * {
-      margin: 0; padding: 0; box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent; user-select: none;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
+
     body {
-      background-color: var(--bg-oled); color: #FFFFFF;
-      font-family: var(--font-cyber); height: 100vh; overflow-x: hidden;
+      background-color: var(--bg-oled);
+      color: #FFFFFF;
+      font-family: var(--font-cyber);
+      overflow-x: hidden;
+      min-height: 100vh;
     }
+
     .app-viewport {
-      display: flex; flex-direction: column; height: 100vh;
-      padding: 16px 16px 0 16px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: env(safe-area-inset-top, 16px) 16px env(safe-area-inset-bottom, 16px) 16px;
       background: radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.08) 0%, transparent 60%);
     }
+
+    /* Top-Left Header with Fixed Logo */
     .top-header {
-      display: flex; justify-content: space-between; align-items: center; padding: 6px 0 14px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0 14px 0;
     }
-    .brand-cluster { display: flex; align-items: center; gap: 10px; }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
     .core-logo {
-      width: 36px; height: 36px; border-radius: 8px;
-      border: 1px solid var(--cyan-accent);
-      background: #0d1520;
-      box-shadow: 0 0 12px rgba(0, 242, 254, 0.35);
+      width: 40px;
+      height: 40px;
+      filter: drop-shadow(0 0 12px rgba(0, 242, 254, 0.45));
     }
+
     .engine-title {
-      font-size: 19px; font-weight: 700; letter-spacing: 0.08em;
-      color: var(--cyan-accent); text-shadow: 0 0 12px rgba(0, 242, 254, 0.35);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--cyan-accent);
+      text-shadow: 0 0 14px rgba(0, 242, 254, 0.35);
     }
+
     .sync-badge {
-      display: flex; align-items: center; gap: 6px; padding: 4px 10px;
-      background: rgba(0, 230, 118, 0.08); border: 1px solid rgba(0, 230, 118, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background: rgba(0, 230, 118, 0.08);
+      border: 1px solid rgba(0, 230, 118, 0.25);
       border-radius: 999px;
     }
+
     .sync-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--emerald-accent); box-shadow: 0 0 8px var(--emerald-accent);
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--emerald-accent);
+      box-shadow: 0 0 8px var(--emerald-accent);
     }
-    .sync-label { font-size: 11px; font-weight: 600; color: var(--emerald-accent); }
-    .dashboard-content { flex: 1; overflow-y: auto; padding-bottom: 120px; }
+
+    .sync-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--emerald-accent);
+    }
+
+    /* Main Dynamic Content */
+    .dashboard-content {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 120px;
+    }
+
+    /* 3D Sentiment Gauge */
     .gauge-card-3d {
-      background: var(--panel-bg); backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border); border-radius: 20px;
-      padding: 14px; margin-bottom: 16px; text-align: center;
-      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      background: var(--panel-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 16px;
+      text-align: center;
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.18);
     }
-    .gauge-label { font-size: 11px; letter-spacing: 0.1em; color: #94A3B8; margin-bottom: 6px; }
-    .gauge-text { font-size: 20px; font-weight: 700; color: #FFF; letter-spacing: 0.05em; }
-    .section-title { font-size: 12px; letter-spacing: 0.08em; color: #64748B; margin-bottom: 12px; }
+
+    .gauge-label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: #94A3B8;
+      margin-bottom: 6px;
+    }
+
+    .gauge-text {
+      font-size: 22px;
+      font-weight: 700;
+      color: #FFF;
+      letter-spacing: 0.05em;
+    }
+
+    .section-title {
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      color: #64748B;
+      margin-bottom: 12px;
+    }
+
+    /* 3D Confluence Card */
     .card-3d {
-      background: var(--panel-bg); backdrop-filter: blur(24px);
-      border: 1px solid var(--glass-border); border-radius: 22px;
-      padding: 18px; margin-bottom: 14px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: 22px;
+      padding: 18px;
+      margin-bottom: 14px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.18);
+      transition: transform 0.15s ease-out;
     }
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-    .coin-id { font-size: 20px; font-weight: 700; letter-spacing: 0.04em; }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .coin-id {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
     .score-chip {
-      background: rgba(0, 230, 118, 0.15); border: 1px solid var(--emerald-accent);
-      color: var(--emerald-accent); padding: 4px 12px; border-radius: 999px;
-      font-size: 12px; font-weight: 700; box-shadow: 0 0 12px rgba(0, 230, 118, 0.25);
+      background: rgba(0, 230, 118, 0.15);
+      border: 1px solid var(--emerald-accent);
+      color: var(--emerald-accent);
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 0 12px rgba(0, 230, 118, 0.25);
     }
-    .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
     .data-cell {
-      background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 12px; padding: 10px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 10px;
     }
-    .cell-title { font-size: 10px; color: #94A3B8; margin-bottom: 4px; }
-    .cell-val { font-family: var(--font-mono); font-size: 14px; font-weight: 600; }
+
+    .cell-title {
+      font-size: 10px;
+      color: #94A3B8;
+      margin-bottom: 4px;
+    }
+
+    .cell-val {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 600;
+    }
+
     .cell-val.entry { color: var(--cyan-accent); }
     .cell-val.stop { color: var(--crimson-accent); }
     .cell-val.target { color: var(--emerald-accent); }
-    .card-actions { display: flex; gap: 10px; }
-    .action-btn {
-      flex: 1; background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--glass-border); color: #FFF;
-      padding: 10px; border-radius: 12px; font-family: var(--font-cyber);
-      font-size: 13px; font-weight: 600; cursor: pointer;
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
     }
+
+    .action-btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      color: #FFF;
+      padding: 12px;
+      border-radius: 12px;
+      font-family: var(--font-cyber);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Capital Preservation Shield */
     .preservation-shield {
-      background: rgba(10, 15, 22, 0.85); border: 1px solid rgba(0, 242, 254, 0.2);
-      border-radius: 22px; padding: 32px 16px; text-align: center;
+      background: rgba(10, 15, 22, 0.85);
+      border: 1px solid rgba(0, 242, 254, 0.2);
+      border-radius: 22px;
+      padding: 36px 16px;
+      text-align: center;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9);
     }
-    .shield-icon { font-size: 46px; margin-bottom: 12px; }
-    .shield-title { font-size: 18px; font-weight: 700; letter-spacing: 0.06em; margin-bottom: 8px; }
-    .shield-desc { font-size: 12px; color: #94A3B8; line-height: 1.5; }
+
+    .shield-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .shield-title {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    .shield-desc {
+      font-size: 12px;
+      color: #94A3B8;
+      line-height: 1.6;
+    }
+
+    /* Fixed Bottom Dock & Attribution Pill */
     .bottom-dock {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      padding: 8px 16px 18px 16px;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 8px 16px 20px 16px;
       background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.95) 40%, #000 100%);
-      display: flex; flex-direction: column; gap: 10px; align-items: center;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
     }
+
     .attribution-pill-3d {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      white-space: nowrap; background: rgba(10, 15, 24, 0.85);
-      backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 999px; padding: 7px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+      background: rgba(10, 15, 24, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      padding: 8px 18px;
       box-shadow: 0 10px 24px rgba(0, 0, 0, 0.8), 0 0 14px rgba(0, 242, 254, 0.12);
-      font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
+
     .attr-bolt { color: var(--cyan-accent); }
     .attr-brand { color: var(--cyan-accent); font-weight: 700; }
     .attr-dot { color: rgba(255, 255, 255, 0.25); }
@@ -129,9 +291,40 @@
 </head>
 <body>
   <div class="app-viewport">
+    <!-- Top-Left Header with Locked 3D Cybernetic Logo -->
     <header class="top-header">
       <div class="brand-cluster">
-        <img src="assets/icons/coinsift-core-logo.png" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%2300F2FE\'><path d=\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v2h-2zm0 4h2v6h-2z\'/></svg>'" alt="Logo" class="core-logo" />
+        <svg class="core-logo" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="chassisBorder" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#00F2FE" stop-opacity="0.8"/>
+              <stop offset="50%" stop-color="#00E676" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
+            </linearGradient>
+            <linearGradient id="coinGrad" x1="30" y1="20" x2="90" y2="85" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#1E293B"/>
+              <stop offset="50%" stop-color="#0F172A"/>
+              <stop offset="100%" stop-color="#020617"/>
+            </linearGradient>
+            <linearGradient id="sGrad" x1="42" y1="36" x2="78" y2="76" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#00F2FE"/>
+              <stop offset="100%" stop-color="#00E676"/>
+            </linearGradient>
+            <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+          </defs>
+          <rect x="2" y="2" width="116" height="116" rx="26" fill="#070B12" stroke="url(#chassisBorder)" stroke-width="2.5"/>
+          <path d="M22 88 L60 104 L98 88 L60 72 Z" fill="rgba(0, 230, 118, 0.08)" stroke="#00E676" stroke-width="1.2" stroke-dasharray="3 2"/>
+          <path d="M30 82 L60 94 L90 82 L60 70 Z" fill="rgba(0, 242, 254, 0.12)" stroke="#00F2FE" stroke-width="1.5"/>
+          <line x1="60" y1="70" x2="60" y2="60" stroke="#00F2FE" stroke-width="1.5"/>
+          <circle cx="22" cy="88" r="2" fill="#00E676"/>
+          <circle cx="98" cy="88" r="2" fill="#00E676"/>
+          <circle cx="60" cy="50" r="28" fill="url(#coinGrad)" stroke="#00F2FE" stroke-width="2" filter="url(#neonGlow)"/>
+          <circle cx="60" cy="50" r="24" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1"/>
+          <path d="M68 38 H52 C48 38 46 40 46 44 V47 C46 51 48 53 52 53 H68 C72 53 74 55 74 59 V62 C74 66 72 68 68 68 H50 M46 41 H48 M72 65 H74" stroke="url(#sGrad)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
         <span class="engine-title">COINSIFT ENGINE</span>
       </div>
       <div class="sync-badge">
@@ -180,6 +373,7 @@
       </div>
     </main>
 
+    <!-- Locked Attribution Single-Line 3D Pill -->
     <footer class="bottom-dock">
       <div class="attribution-pill-3d">
         <span class="attr-bolt">⚡</span>
@@ -198,16 +392,49 @@
     fetch('data/signals.json?t=' + Date.now())
       .then(r => r.json())
       .then(d => {
-        if(d.market_regime) {
-          document.getElementById('biasText').innerText = `${d.market_regime.bias.toUpperCase()} (${d.market_regime.fear_greed_score}/100)`;
+        if (d.market_regime) {
+          const score = d.market_regime.fear_greed_score || 50;
+          document.getElementById('biasText').innerText = `${d.market_regime.bias.toUpperCase()} (${score}/100)`;
         }
-        if(d.shortlist_count === 0) {
+        if (d.shortlist_count === 0 || !d.setups || !d.setups.length) {
           document.getElementById('cardsFeed').innerHTML = `
             <div class="preservation-shield">
               <div class="shield-icon">🛡️</div>
               <div class="shield-title">CAPITAL PRESERVED</div>
-              <p class="shield-desc">No candidates crossed ≥ 80/100 threshold.<br>Cash is an active position.</p>
+              <p class="shield-desc">No market candidates crossed the ≥ 80/100 confluence barrier.<br>Market conditions present unfavorable risk-to-reward metrics.<br><strong>Cash is an active position.</strong></p>
             </div>`;
+        } else if (d.setups && d.setups.length > 0) {
+          const cardsHtml = d.setups.map(coin => `
+            <div class="card-3d">
+              <div class="card-header">
+                <div class="coin-id">#${coin.pair}</div>
+                <div class="score-chip">${coin.confluence_score}/100</div>
+              </div>
+              <div class="data-grid">
+                <div class="data-cell">
+                  <div class="cell-title">ENTRY ZONE</div>
+                  <div class="cell-val entry">$${coin.entry_zone[0]} – $${coin.entry_zone[1]}</div>
+                </div>
+                <div class="data-cell">
+                  <div class="cell-title">MARKET PRICE</div>
+                  <div class="cell-val">$${coin.market_price}</div>
+                </div>
+                <div class="data-cell">
+                  <div class="cell-title">INVALIDATION (SL)</div>
+                  <div class="cell-val stop">$${coin.invalidation}</div>
+                </div>
+                <div class="data-cell">
+                  <div class="cell-title">TARGETS</div>
+                  <div class="cell-val target">$${coin.target_1} / $${coin.target_2}</div>
+                </div>
+              </div>
+              <div class="card-actions">
+                <button class="action-btn" onclick="window.open('https://www.tradingview.com/chart/?symbol=COINBASE:${coin.symbol}USD')">📈 TradingView</button>
+                <button class="action-btn" onclick="navigator.clipboard.writeText('COINSIFT: ${coin.pair} Entry: ${coin.market_price} SL: ${coin.invalidation} TP: ${coin.target_1}'); alert('Signal copied!')">📋 Copy Trade</button>
+              </div>
+            </div>
+          `).join('');
+          document.getElementById('cardsFeed').innerHTML = cardsHtml;
         }
       })
       .catch(() => {});
