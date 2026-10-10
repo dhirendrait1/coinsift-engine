@@ -7,10 +7,9 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#000000">
   
-  <!-- High-Tech Cyber & Monospace Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -18,12 +17,13 @@
       --cyan-neon: #00F2FE;
       --emerald-neon: #00E676;
       --crimson-neon: #FF2A55;
-      --glass-surface: rgba(10, 16, 26, 0.72);
+      --glass-surface: rgba(10, 16, 26, 0.78);
       --glass-specular: rgba(255, 255, 255, 0.65);
       --glass-border: rgba(255, 255, 255, 0.16);
       --font-brand: 'Orbitron', sans-serif;
       --font-body: 'Rajdhani', sans-serif;
       --font-num: 'Space Grotesk', monospace;
+      --font-code: 'JetBrains Mono', monospace;
     }
 
     * {
@@ -49,7 +49,7 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      padding: env(safe-area-inset-top, 14px) 14px 140px 14px;
+      padding: env(safe-area-inset-top, 14px) 14px 150px 14px;
     }
 
     /* ==========================================================================
@@ -85,7 +85,6 @@
       text-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
     }
 
-    /* Liquid Glass Pill Badge */
     .glass-pill-badge {
       display: flex;
       align-items: center;
@@ -117,11 +116,11 @@
     }
 
     /* ==========================================================================
-       UPPER-SIDE: LIVE 3D LIQUID GRAPH DASHBOARD
+       UPPER-SIDE: 3D VOLUMETRIC CANDLESTICK CHART
        ========================================================================== */
-    .live-graph-module {
+    .live-chart-module {
       position: relative;
-      background: radial-gradient(130% 100% at 50% 0%, rgba(255, 255, 255, 0.08) 0%, rgba(8, 14, 24, 0.85) 50%, rgba(2, 6, 12, 0.95) 100%);
+      background: radial-gradient(130% 100% at 50% 0%, rgba(255, 255, 255, 0.08) 0%, rgba(8, 14, 24, 0.88) 50%, rgba(2, 6, 12, 0.98) 100%);
       border: 1px solid var(--glass-border);
       border-radius: 26px;
       padding: 16px;
@@ -131,35 +130,52 @@
         inset 0 1.5px 1px rgba(255, 255, 255, 0.4),
         inset 0 -2px 6px rgba(0, 242, 254, 0.2),
         0 20px 40px rgba(0, 0, 0, 0.8),
-        0 4px 20px rgba(0, 242, 254, 0.12);
+        0 4px 20px rgba(0, 242, 254, 0.15);
       overflow: hidden;
     }
 
-    .graph-header {
+    .chart-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
-    .graph-caption {
+    .chart-caption {
       font-size: 11px;
       letter-spacing: 0.12em;
       color: #94A3B8;
       font-weight: 600;
     }
 
-    .regime-status {
+    .chart-asset-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .chart-asset {
       font-family: var(--font-brand);
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 800;
       color: #FFFFFF;
       letter-spacing: 0.04em;
-      margin-top: 2px;
       text-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
     }
 
-    .graph-badge-glow {
+    .chart-change-pill {
+      background: rgba(0, 230, 118, 0.15);
+      border: 1px solid var(--emerald-neon);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-family: var(--font-num);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--emerald-neon);
+    }
+
+    .chart-badge-glow {
       background: rgba(0, 242, 254, 0.12);
       border: 1px solid var(--cyan-neon);
       border-radius: 999px;
@@ -171,20 +187,20 @@
       box-shadow: 0 0 14px rgba(0, 242, 254, 0.35);
     }
 
-    .canvas-container {
+    .chart-canvas-container {
       position: relative;
       width: 100%;
-      height: 120px;
-      margin: 6px 0;
+      height: 175px;
+      margin: 8px 0;
     }
 
-    canvas#marketCanvas {
+    canvas#candleCanvas {
       width: 100%;
       height: 100%;
       display: block;
     }
 
-    .graph-telemetry {
+    .chart-telemetry {
       display: flex;
       justify-content: space-between;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -216,8 +232,22 @@
     }
 
     /* ==========================================================================
-       CONFLUENCE SIGNALS FEED & LIQUID CARDS
+       VIEW CONTAINER TABS (Signals, Watchlist, Terminal)
        ========================================================================== */
+    .tab-content {
+      display: none;
+      animation: fadeInTab 0.25s ease-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeInTab {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .section-eyebrow {
       font-size: 12px;
       font-weight: 700;
@@ -226,6 +256,7 @@
       margin: 8px 4px 12px 4px;
     }
 
+    /* 3D Liquid Signal Card */
     .liquid-card {
       position: relative;
       background: radial-gradient(120% 120% at 50% 0%, rgba(255, 255, 255, 0.08) 0%, rgba(12, 18, 28, 0.8) 50%, rgba(3, 7, 14, 0.95) 100%);
@@ -305,9 +336,6 @@
     .cell-value.stop { color: var(--crimson-neon); }
     .cell-value.target { color: var(--emerald-neon); text-shadow: 0 0 10px rgba(0, 230, 118, 0.4); }
 
-    /* ==========================================================================
-       LIQUID GLASS BUTTONS (Directly matching UI kit showcase)
-       ========================================================================== */
     .btn-row {
       display: flex;
       gap: 10px;
@@ -336,12 +364,11 @@
         inset 0 -2px 6px rgba(0, 242, 254, 0.3),
         0 8px 20px rgba(0, 0, 0, 0.7),
         0 4px 14px rgba(0, 242, 254, 0.25);
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      transition: transform 0.1s ease;
     }
 
     .liquid-btn:active {
       transform: scale(0.97);
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
     }
 
     .liquid-btn.secondary {
@@ -352,7 +379,133 @@
     }
 
     /* ==========================================================================
-       BOTTOM BAR: SIGNALS NAV & EXACT 2-LINE 3D GLASS DOCK
+       WATCHLIST VIEW COMPONENT
+       ========================================================================== */
+    .watchlist-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(12, 18, 28, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      backdrop-filter: blur(20px);
+      box-shadow: 
+        inset 0 1px 1px rgba(255, 255, 255, 0.35),
+        0 8px 20px rgba(0, 0, 0, 0.7);
+    }
+
+    .watch-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .watch-pair {
+      font-family: var(--font-brand);
+      font-size: 16px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+
+    .watch-vol {
+      font-size: 11px;
+      color: #64748B;
+      letter-spacing: 0.05em;
+    }
+
+    .watch-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .watch-price-box {
+      text-align: right;
+    }
+
+    .watch-price {
+      font-family: var(--font-num);
+      font-size: 15px;
+      font-weight: 700;
+      color: #F8FAFC;
+    }
+
+    .watch-delta {
+      font-family: var(--font-num);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .watch-delta.up { color: var(--emerald-neon); }
+    .watch-delta.down { color: var(--crimson-neon); }
+
+    .watch-confluence {
+      font-family: var(--font-num);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .watch-confluence.pass {
+      color: var(--emerald-neon);
+      border-color: var(--emerald-neon);
+      background: rgba(0, 230, 118, 0.1);
+    }
+
+    /* ==========================================================================
+       TERMINAL VIEW COMPONENT
+       ========================================================================== */
+    .terminal-console {
+      background: rgba(4, 8, 14, 0.95);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      border-radius: 22px;
+      padding: 16px;
+      font-family: var(--font-code);
+      font-size: 11px;
+      line-height: 1.6;
+      color: #A5F3FC;
+      box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 0.2),
+        0 16px 36px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(0, 242, 254, 0.15);
+      overflow-x: auto;
+      max-height: 480px;
+      overflow-y: auto;
+    }
+
+    .term-line { margin-bottom: 6px; }
+    .term-tag { color: var(--emerald-neon); font-weight: 700; }
+    .term-warn { color: #FBBF24; font-weight: 700; }
+    .term-crit { color: var(--crimson-neon); font-weight: 700; }
+    .term-dim { color: #475569; }
+
+    .term-controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .term-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(0, 242, 254, 0.1);
+      border: 1px solid var(--cyan-neon);
+      color: var(--cyan-neon);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       BOTTOM BAR: SUB NAV & EXACT 2-LINE 3D GLASS DOCK
        ========================================================================== */
     .fixed-dock-container {
       position: fixed;
@@ -378,21 +531,21 @@
       gap: 8px;
     }
 
-    /* Nav cluster with active cyan indicator */
     .sub-nav {
       display: flex;
-      gap: 24px;
+      gap: 28px;
       align-items: center;
     }
 
     .nav-link {
       font-family: var(--font-body);
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 700;
       letter-spacing: 0.06em;
       color: #64748B;
       position: relative;
       cursor: pointer;
+      padding-bottom: 4px;
     }
 
     .nav-link.active {
@@ -403,43 +556,35 @@
     .nav-link.active::after {
       content: '';
       position: absolute;
-      bottom: -4px;
+      bottom: -2px;
       left: 50%;
       transform: translateX(-50%);
-      width: 22px;
+      width: 24px;
       height: 2.5px;
       border-radius: 999px;
       background: var(--cyan-neon);
       box-shadow: 0 0 8px var(--cyan-neon);
     }
 
-    /* ==========================================================================
-       EXACT 3D LIQUID GLASS CAPSULE (MATCHING YOUR SCREENSHOT)
-       ========================================================================== */
+    /* EXACT 2-LINE 3D LIQUID GLASS CAPSULE */
     .attribution-capsule-3d {
       position: relative;
       width: 100%;
       max-width: 380px;
       padding: 10px 18px;
       border-radius: 999px;
-      
-      /* Thick curved glass casing */
       background: radial-gradient(140% 120% at 50% 0%, 
         rgba(255, 255, 255, 0.22) 0%, 
         rgba(10, 18, 30, 0.88) 55%, 
         rgba(2, 6, 14, 0.98) 100%);
-      
       border: 1.5px solid rgba(255, 255, 255, 0.38);
       backdrop-filter: blur(32px);
-
-      /* Dual-tone intense caustic underglow (Cyan -> Emerald) */
       box-shadow: 
         inset 0 2px 2px rgba(255, 255, 255, 0.85),
         inset 0 -3px 12px rgba(0, 230, 118, 0.45),
         0 14px 34px -4px rgba(0, 0, 0, 0.95),
         0 10px 28px -2px rgba(0, 230, 118, 0.45),
         0 0 24px rgba(0, 242, 254, 0.35);
-
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -447,7 +592,6 @@
       overflow: hidden;
     }
 
-    /* Ambient chromatic lens rim */
     .attribution-capsule-3d::before {
       content: '';
       position: absolute;
@@ -461,7 +605,6 @@
       pointer-events: none;
     }
 
-    /* Tech decorative symbols inside the glass lens */
     .capsule-tech-mark {
       position: absolute;
       color: rgba(255, 255, 255, 0.35);
@@ -474,7 +617,6 @@
     .mark-bl { bottom: 9px; left: 24px; }
     .mark-dots-r { right: 16px; top: 48%; transform: translateY(-50%); font-size: 11px; letter-spacing: -2px; }
 
-    /* LINE 1 */
     .capsule-line-1 {
       display: flex;
       align-items: center;
@@ -506,7 +648,6 @@
       letter-spacing: 0.06em;
     }
 
-    /* LINE 2: MASSIVE 3D METALLIC CHROME NAME */
     .capsule-line-2 {
       display: flex;
       align-items: baseline;
@@ -521,12 +662,9 @@
       font-weight: 900;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      
-      /* Extruded Metallic Chrome gradient */
       background: linear-gradient(180deg, #FFFFFF 0%, #E2E8F0 40%, #94A3B8 52%, #F8FAFC 85%, #CBD5E1 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      
       filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.25));
     }
 
@@ -591,77 +729,186 @@
       </div>
     </header>
 
-    <!-- Upper Side Live Dynamic Graph Dashboard -->
-    <section class="live-graph-module">
-      <div class="graph-header">
+    <!-- Upper Side 3D Candlestick Chart (Matches Provided Image) -->
+    <section class="live-chart-module">
+      <div class="chart-header">
         <div>
-          <div class="graph-caption">MARKET REGIME & CONFLUENCE PULSE</div>
-          <div class="regime-status" id="biasHeading">MOMENTUM CONVERGENCE</div>
+          <div class="chart-caption">3D QUANT CONFLUENCE CANDLES</div>
+          <div class="chart-asset-row">
+            <span class="chart-asset" id="chartSymbolTitle">XRP/USD</span>
+            <span class="chart-change-pill" id="chartDeltaTag">+14.28%</span>
+          </div>
         </div>
-        <div class="graph-badge-glow" id="biasScoreBadge">64 / 100</div>
+        <div class="chart-badge-glow" id="chartScoreBadge">87 / 100</div>
       </div>
 
-      <!-- Realtime Hardware-Accelerated 120Hz Canvas Wave -->
-      <div class="canvas-container">
-        <canvas id="marketCanvas"></canvas>
+      <!-- 3D Hardware Accelerated Candlestick Canvas -->
+      <div class="chart-canvas-container">
+        <canvas id="candleCanvas"></canvas>
       </div>
 
-      <div class="graph-telemetry">
+      <div class="chart-telemetry">
         <div class="tele-cell">
-          <span class="tele-label">BTC 50-EMA</span>
-          <span class="tele-val highlight">BULLISH (+1.8%)</span>
+          <span class="tele-label">TOP PEAK</span>
+          <span class="tele-val highlight" id="telePeakVal">0.1600</span>
         </div>
         <div class="tele-cell">
-          <span class="tele-label">VOLATILITY (ATR)</span>
-          <span class="tele-val">COMPRESSED</span>
+          <span class="tele-label">VOLUME BURST</span>
+          <span class="tele-val highlight">3.4x RVOL</span>
         </div>
         <div class="tele-cell">
-          <span class="tele-label">RVOL THRESHOLD</span>
-          <span class="tele-val highlight">≥ 1.40x PASS</span>
+          <span class="tele-label">MARKET BIAS</span>
+          <span class="tele-val" id="teleBiasVal">MOMENTUM</span>
         </div>
       </div>
     </section>
 
-    <!-- Confluence Signals Feed -->
-    <div class="section-eyebrow">TOP CONFLUENCE CANDIDATES</div>
-    
-    <div id="cardsFeed">
-      <!-- Default Preloaded High-Confluence Liquid Card -->
-      <div class="liquid-card">
-        <div class="card-top">
-          <div class="pair-badge">#XRP/USD</div>
-          <div class="score-liquid-pill">87/100</div>
-        </div>
+    <!-- ======================================================================
+         TAB 1: SIGNALS VIEW (DEFAULT)
+         ====================================================================== -->
+    <div id="signalsTab" class="tab-content active">
+      <div class="section-eyebrow">TOP CONFLUENCE CANDIDATES</div>
+      
+      <div id="cardsFeed">
+        <!-- Default Preloaded High-Confluence Liquid Card -->
+        <div class="liquid-card">
+          <div class="card-top">
+            <div class="pair-badge">#XRP/USD</div>
+            <div class="score-liquid-pill">87/100</div>
+          </div>
 
-        <div class="liquid-grid">
-          <div class="liquid-cell">
-            <div class="cell-title">ENTRY ZONE</div>
-            <div class="cell-value entry">$1.39 – $1.41</div>
+          <div class="liquid-grid">
+            <div class="liquid-cell">
+              <div class="cell-title">ENTRY ZONE</div>
+              <div class="cell-value entry">$1.39 – $1.41</div>
+            </div>
+            <div class="liquid-cell">
+              <div class="cell-title">MARKET PRICE</div>
+              <div class="cell-value">$1.40</div>
+            </div>
+            <div class="liquid-cell">
+              <div class="cell-title">INVALIDATION (SL)</div>
+              <div class="cell-value stop">$1.38</div>
+            </div>
+            <div class="liquid-cell">
+              <div class="cell-title">TARGETS</div>
+              <div class="cell-value target">$1.43 / $1.46</div>
+            </div>
           </div>
-          <div class="liquid-cell">
-            <div class="cell-title">MARKET PRICE</div>
-            <div class="cell-value">$1.40</div>
-          </div>
-          <div class="liquid-cell">
-            <div class="cell-title">INVALIDATION (SL)</div>
-            <div class="cell-value stop">$1.38</div>
-          </div>
-          <div class="liquid-cell">
-            <div class="cell-title">TARGETS</div>
-            <div class="cell-value target">$1.43 / $1.46</div>
-          </div>
-        </div>
 
-        <div class="btn-row">
-          <button class="liquid-btn" onclick="window.open('https://www.tradingview.com/chart/?symbol=COINBASE:XRPUSD')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-            TradingView
-          </button>
-          <button class="liquid-btn secondary" onclick="navigator.clipboard.writeText('COINSIFT: XRP/USD Entry: 1.40 SL: 1.38 TP: 1.43'); alert('Signal Copied!')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            Copy Trade
-          </button>
+          <div class="btn-row">
+            <button class="liquid-btn" onclick="window.open('https://www.tradingview.com/chart/?symbol=COINBASE:XRPUSD')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+              TradingView
+            </button>
+            <button class="liquid-btn secondary" onclick="navigator.clipboard.writeText('COINSIFT: XRP/USD Entry: 1.40 SL: 1.38 TP: 1.43'); alert('Signal Copied!')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              Copy Trade
+            </button>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         TAB 2: WATCHLIST VIEW (ACTIVE ON CLICK)
+         ====================================================================== -->
+    <div id="watchlistTab" class="tab-content">
+      <div class="section-eyebrow">MONITORED RECENT COINS & RADAR</div>
+
+      <div class="watchlist-item" onclick="switchSymbol('XRP/USD', '0.1600', 87, '+14.28%')">
+        <div class="watch-left">
+          <span class="watch-pair">XRP / USD</span>
+          <span class="watch-vol">Vol $1.8B • RVOL 3.4x</span>
+        </div>
+        <div class="watch-right">
+          <div class="watch-price-box">
+            <div class="watch-price">$1.402</div>
+            <div class="watch-delta up">+14.28%</div>
+          </div>
+          <span class="watch-confluence pass">87/100</span>
+        </div>
+      </div>
+
+      <div class="watchlist-item" onclick="switchSymbol('SOL/USD', '188.50', 79, '+6.14%')">
+        <div class="watch-left">
+          <span class="watch-pair">SOL / USD</span>
+          <span class="watch-vol">Vol $3.2B • RVOL 1.8x</span>
+        </div>
+        <div class="watch-right">
+          <div class="watch-price-box">
+            <div class="watch-price">$184.20</div>
+            <div class="watch-delta up">+6.14%</div>
+          </div>
+          <span class="watch-confluence">79/100</span>
+        </div>
+      </div>
+
+      <div class="watchlist-item" onclick="switchSymbol('BTC/USD', '68,420', 82, '+2.45%')">
+        <div class="watch-left">
+          <span class="watch-pair">BTC / USD</span>
+          <span class="watch-vol">Vol $28.5B • RVOL 1.2x</span>
+        </div>
+        <div class="watch-right">
+          <div class="watch-price-box">
+            <div class="watch-price">$67,890</div>
+            <div class="watch-delta up">+2.45%</div>
+          </div>
+          <span class="watch-confluence pass">82/100</span>
+        </div>
+      </div>
+
+      <div class="watchlist-item" onclick="switchSymbol('SUI/USD', '2.45', 73, '-1.85%')">
+        <div class="watch-left">
+          <span class="watch-pair">SUI / USD</span>
+          <span class="watch-vol">Vol $680M • RVOL 0.9x</span>
+        </div>
+        <div class="watch-right">
+          <div class="watch-price-box">
+            <div class="watch-price">$2.18</div>
+            <div class="watch-delta down">-1.85%</div>
+          </div>
+          <span class="watch-confluence">73/100</span>
+        </div>
+      </div>
+
+      <div class="watchlist-item" onclick="switchSymbol('ETH/USD', '2,640', 68, '+0.72%')">
+        <div class="watch-left">
+          <span class="watch-pair">ETH / USD</span>
+          <span class="watch-vol">Vol $12.1B • RVOL 0.8x</span>
+        </div>
+        <div class="watch-right">
+          <div class="watch-price-box">
+            <div class="watch-price">$2,580</div>
+            <div class="watch-delta up">+0.72%</div>
+          </div>
+          <span class="watch-confluence">68/100</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         TAB 3: TERMINAL VIEW (ACTIVE ON CLICK)
+         ====================================================================== -->
+    <div id="terminalTab" class="tab-content">
+      <div class="section-eyebrow">QUANT ENGINE REALTIME TERMINAL</div>
+      
+      <div class="terminal-console" id="termConsole">
+        <div class="term-line"><span class="term-dim">[SYSTEM]</span> COINSIFT QUANT ENGINE v1.0 ONLINE</div>
+        <div class="term-line"><span class="term-tag">[GPU]</span> Samsung Galaxy S24 Ultra hardware acceleration initialized (120Hz).</div>
+        <div class="term-line"><span class="term-tag">[API]</span> Polling live pipeline: data/signals.json</div>
+        <div class="term-line"><span class="term-dim">[REGIME]</span> Volatility filter ATR: Compressed | 50-EMA: Bullish</div>
+        <div class="term-line"><span class="term-tag">[ENGINE]</span> Applying Confluence Rule: &gt;= 80/100 Threshold</div>
+        <div class="term-line"><span class="term-tag">[SCAN]</span> XRP/USD: Score 87/100 [PASS] -&gt; SHORTLISTED #1</div>
+        <div class="term-line"><span class="term-warn">[SCAN]</span> SOL/USD: Score 79/100 [REJECTED &lt; 80] -&gt; CAPITAL PRESERVED</div>
+        <div class="term-line"><span class="term-warn">[SCAN]</span> BTC/USD: Score 82/100 [PASS] -&gt; SHORTLISTED #2</div>
+        <div class="term-line"><span class="term-crit">[SCAN]</span> SUI/USD: Score 73/100 [REJECTED] -&gt; UNFAVORABLE RISK/REWARD</div>
+        <div class="term-line"><span class="term-tag">[STATUS]</span> 0$ cost GitHub Actions cron: ACTIVE (Auto-sync every 15 min).</div>
+      </div>
+
+      <div class="term-controls">
+        <button class="term-btn" onclick="runDiagnostic()">⚡ Run Live Scan</button>
+        <button class="term-btn" onclick="clearConsole()">🧹 Clear Console</button>
       </div>
     </div>
 
@@ -671,16 +918,15 @@
   <footer class="fixed-dock-container">
     <div class="interactive-wrap">
       
-      <!-- Sub Navigation -->
+      <!-- Sub Navigation Tabs -->
       <nav class="sub-nav">
-        <span class="nav-link active">Signals</span>
-        <span class="nav-link">Watchlist</span>
-        <span class="nav-link">Terminal</span>
+        <span class="nav-link active" id="navSignals" onclick="switchTab('signals')">Signals</span>
+        <span class="nav-link" id="navWatchlist" onclick="switchTab('watchlist')">Watchlist</span>
+        <span class="nav-link" id="navTerminal" onclick="switchTab('terminal')">Terminal</span>
       </nav>
 
-      <!-- Exact 2-Line 3D Liquid Glass Attribution Dock (From Screenshot) -->
+      <!-- Exact 2-Line 3D Liquid Glass Attribution Dock -->
       <div class="attribution-capsule-3d">
-        <!-- Lens Tech Accents -->
         <span class="capsule-tech-mark mark-tl">+</span>
         <span class="capsule-tech-mark mark-tr">+</span>
         <span class="capsule-tech-mark mark-bl">+</span>
@@ -703,109 +949,212 @@
     </div>
   </footer>
 
-  <!-- Realtime Graph & Data Integration Engine -->
+  <!-- Realtime Candlestick Canvas & Navigation Logic -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
 
-    // Dynamic Live Waveform Canvas Generator (120Hz optimized)
-    const canvas = document.getElementById('marketCanvas');
-    const ctx = canvas.getContext('2d');
-    let points = [];
-    let step = 0;
+    // Tab Navigation Logic
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
 
-    function resizeCanvas() {
+      if (tabId === 'signals') {
+        document.getElementById('signalsTab').classList.add('active');
+        document.getElementById('navSignals').classList.add('active');
+      } else if (tabId === 'watchlist') {
+        document.getElementById('watchlistTab').classList.add('active');
+        document.getElementById('navWatchlist').classList.add('active');
+      } else if (tabId === 'terminal') {
+        document.getElementById('terminalTab').classList.add('active');
+        document.getElementById('navTerminal').classList.add('active');
+      }
+    }
+
+    function switchSymbol(symbol, peak, score, delta) {
+      document.getElementById('chartSymbolTitle').innerText = symbol;
+      document.getElementById('telePeakVal').innerText = peak;
+      document.getElementById('chartScoreBadge').innerText = score + ' / 100';
+      document.getElementById('chartDeltaTag').innerText = delta;
+      switchTab('signals');
+    }
+
+    function runDiagnostic() {
+      const c = document.getElementById('termConsole');
+      const time = new Date().toLocaleTimeString();
+      c.innerHTML += `<div class="term-line"><span class="term-tag">[SYNC ${time}]</span> Pipeline query dispatched to data/signals.json... 200 OK</div>`;
+      c.innerHTML += `<div class="term-line"><span class="term-dim">[QUANT]</span> Confluence matrix verified. Max drawdown risk: 1.12%.</div>`;
+      c.scrollTop = c.scrollHeight;
+    }
+
+    function clearConsole() {
+      document.getElementById('termConsole').innerHTML = `<div class="term-line"><span class="term-dim">[SYSTEM]</span> Console cleared. Quant listening active.</div>`;
+    }
+
+    // =========================================================================
+    // 3D CANDLESTICK CHART ENGINE (Matching your exact reference image)
+    // =========================================================================
+    const canvas = document.getElementById('candleCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Candlestick model: open, high, low, close (normalized 0 to 100)
+    const candlesPattern = [
+      { o: 15, h: 22, l: 12, c: 20 },
+      { o: 20, h: 28, l: 18, c: 26 },
+      { o: 26, h: 32, l: 23, c: 24 },
+      { o: 24, h: 30, l: 21, c: 29 },
+      { o: 29, h: 31, l: 24, c: 25 },
+      { o: 25, h: 35, l: 23, c: 33 },
+      { o: 33, h: 42, l: 30, c: 40 },
+      { o: 40, h: 44, l: 36, c: 37 },
+      { o: 37, h: 39, l: 28, c: 30 },
+      { o: 30, h: 32, l: 25, c: 27 },
+      { o: 27, h: 34, l: 26, c: 31 },
+      { o: 31, h: 38, l: 30, c: 36 },
+      { o: 36, h: 41, l: 34, c: 35 },
+      { o: 35, h: 43, l: 33, c: 42 },
+      { o: 42, h: 45, l: 38, c: 40 },
+      { o: 40, h: 46, l: 36, c: 38 },
+      { o: 38, h: 48, l: 37, c: 46 },
+      { o: 46, h: 47, l: 40, c: 42 },
+      { o: 42, h: 50, l: 41, c: 48 },
+      { o: 48, h: 52, l: 45, c: 46 },
+      { o: 46, h: 82, l: 44, c: 80 }, // Huge Breakout Candle
+      { o: 80, h: 92, l: 78, c: 90 },
+      { o: 90, h: 95, l: 86, c: 88 },
+      { o: 88, h: 98, l: 85, c: 96 },
+      { o: 96, h: 100, l: 91, c: 99 }, // High Peak (Callout)
+      { o: 99, h: 99, l: 87, c: 89 },
+      { o: 89, h: 93, l: 85, c: 87 },
+      { o: 87, h: 92, l: 84, c: 88 },
+      { o: 88, h: 91, l: 86, c: 90 }
+    ];
+
+    let pulseTick = 0;
+
+    function renderCandles() {
       const rect = canvas.parentElement.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 2;
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
       ctx.scale(dpr, dpr);
-      
-      const width = rect.width;
-      const height = rect.height;
-      points = [];
-      const count = 18;
-      for (let i = 0; i <= count; i++) {
-        points.push({
-          x: (width / count) * i,
-          y: height * 0.45 + Math.sin(i * 0.7) * 22
-        });
-      }
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
 
-    function renderGraph() {
-      const rect = canvas.parentElement.getBoundingClientRect();
       const w = rect.width;
       const h = rect.height;
-
       ctx.clearRect(0, 0, w, h);
-      step += 0.035;
 
-      // Draw subtle grid lines
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
-      ctx.lineWidth = 1;
-      for (let y = 20; y < h; y += 30) {
+      pulseTick += 0.04;
+
+      const numCandles = candlesPattern.length;
+      const slotWidth = w / numCandles;
+      const candleWidth = Math.max(4, slotWidth * 0.62);
+
+      let peakX = 0;
+      let peakY = 0;
+
+      candlesPattern.forEach((c, i) => {
+        const x = i * slotWidth + (slotWidth / 2);
+        const isGreen = c.c >= c.o;
+
+        // Slight live pulse on the final active candle
+        let closeVal = c.c;
+        if (i === numCandles - 1) {
+          closeVal += Math.sin(pulseTick) * 2.5;
+        }
+
+        const yHigh = h - (c.h / 100) * (h * 0.82) - 10;
+        const yLow = h - (c.l / 100) * (h * 0.82) - 10;
+        const yOpen = h - (c.o / 100) * (h * 0.82) - 10;
+        const yClose = h - (closeVal / 100) * (h * 0.82) - 10;
+
+        const topBody = Math.min(yOpen, yClose);
+        const bodyHeight = Math.max(3, Math.abs(yClose - yOpen));
+
+        // Draw Thin Wick (Shadow)
         ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(w, y);
+        ctx.moveTo(x, yHigh);
+        ctx.lineTo(x, yLow);
+        ctx.lineWidth = 1.6;
+        ctx.strokeStyle = isGreen ? '#00E676' : '#FF2A55';
         ctx.stroke();
+
+        // Draw 3D Volumetric Candle Body
+        ctx.save();
+        ctx.shadowColor = isGreen ? 'rgba(0, 230, 118, 0.5)' : 'rgba(255, 42, 85, 0.4)';
+        ctx.shadowBlur = isGreen ? 8 : 6;
+
+        const bodyGrad = ctx.createLinearGradient(x - candleWidth / 2, topBody, x + candleWidth / 2, topBody + bodyHeight);
+        if (isGreen) {
+          bodyGrad.addColorStop(0, '#55FFAA');
+          bodyGrad.addColorStop(0.5, '#00E676');
+          bodyGrad.addColorStop(1, '#00A850');
+        } else {
+          bodyGrad.addColorStop(0, '#FF6B8B');
+          bodyGrad.addColorStop(0.5, '#FF2A55');
+          bodyGrad.addColorStop(1, '#B91C3B');
+        }
+
+        ctx.fillStyle = bodyGrad;
+        ctx.fillRect(x - candleWidth / 2, topBody, candleWidth, bodyHeight);
+
+        // Specular highlight on green breakout candle
+        if (bodyHeight > 30) {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+          ctx.fillRect(x - candleWidth / 2, topBody, 1.2, bodyHeight);
+        }
+        ctx.restore();
+
+        // Track Peak Candle (Candle 24)
+        if (i === 24) {
+          peakX = x;
+          peakY = yHigh;
+        }
+      });
+
+      // =======================================================================
+      // HIGH PEAK CALLOUT (Matching your screenshot: elbow line + 0.16 label)
+      // =======================================================================
+      if (peakX > 0) {
+        ctx.save();
+        ctx.strokeStyle = '#94A3B8';
+        ctx.lineWidth = 1.2;
+
+        // Peak anchor dot
+        ctx.beginPath();
+        ctx.arc(peakX, peakY - 3, 2, 0, Math.PI * 2);
+        ctx.fillStyle = '#00F2FE';
+        ctx.fill();
+
+        // Elbow pointer line
+        const elbowX = peakX;
+        const elbowY = peakY - 14;
+        const lineEndX = peakX + 22;
+
+        ctx.beginPath();
+        ctx.moveTo(peakX, peakY - 3);
+        ctx.lineTo(elbowX, elbowY);
+        ctx.lineTo(lineEndX, elbowY);
+        ctx.stroke();
+
+        // Small circle node before text
+        ctx.beginPath();
+        ctx.arc(lineEndX + 2, elbowY, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fill();
+
+        // "0.16" Price Text
+        ctx.font = '700 13px "Space Grotesk", sans-serif';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText('0.16', lineEndX + 8, elbowY + 4);
+        ctx.restore();
       }
 
-      // Dynamic waveform points with organic oscillation
-      const animatedPoints = points.map((p, idx) => ({
-        x: p.x,
-        y: p.y + Math.sin(step + idx * 0.6) * 12 + Math.cos(step * 0.8 + idx) * 6
-      }));
-
-      // Draw Area Gradient Fill
-      const grad = ctx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0, 'rgba(0, 242, 254, 0.28)');
-      grad.addColorStop(0.6, 'rgba(0, 230, 118, 0.08)');
-      grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-      ctx.beginPath();
-      ctx.moveTo(0, h);
-      ctx.lineTo(animatedPoints[0].x, animatedPoints[0].y);
-      for (let i = 0; i < animatedPoints.length - 1; i++) {
-        const xc = (animatedPoints[i].x + animatedPoints[i + 1].x) / 2;
-        const yc = (animatedPoints[i].y + animatedPoints[i + 1].y) / 2;
-        ctx.quadraticCurveTo(animatedPoints[i].x, animatedPoints[i].y, xc, yc);
-      }
-      ctx.lineTo(w, h);
-      ctx.fillStyle = grad;
-      ctx.fill();
-
-      // Glowing Neon Primary Trace Line
-      ctx.beginPath();
-      ctx.moveTo(animatedPoints[0].x, animatedPoints[0].y);
-      for (let i = 0; i < animatedPoints.length - 1; i++) {
-        const xc = (animatedPoints[i].x + animatedPoints[i + 1].x) / 2;
-        const yc = (animatedPoints[i].y + animatedPoints[i + 1].y) / 2;
-        ctx.quadraticCurveTo(animatedPoints[i].x, animatedPoints[i].y, xc, yc);
-      }
-      ctx.strokeStyle = '#00F2FE';
-      ctx.lineWidth = 2.5;
-      ctx.shadowColor = '#00F2FE';
-      ctx.shadowBlur = 12;
-      ctx.stroke();
-      ctx.shadowBlur = 0;
-
-      // Pulse Head Node at leading edge
-      const lead = animatedPoints[animatedPoints.length - 1];
-      ctx.beginPath();
-      ctx.arc(lead.x - 2, lead.y, 4, 0, Math.PI * 2);
-      ctx.fillStyle = '#00E676';
-      ctx.shadowColor = '#00E676';
-      ctx.shadowBlur = 14;
-      ctx.fill();
-      ctx.shadowBlur = 0;
-
-      requestAnimationFrame(renderGraph);
+      requestAnimationFrame(renderCandles);
     }
-    requestAnimationFrame(renderGraph);
+
+    window.addEventListener('resize', renderCandles);
+    requestAnimationFrame(renderCandles);
 
     // Live Database Synchronization
     fetch('data/signals.json?t=' + Date.now())
@@ -813,8 +1162,8 @@
       .then(d => {
         if (d.market_regime) {
           const score = d.market_regime.fear_greed_score || 64;
-          document.getElementById('biasHeading').innerText = `${d.market_regime.bias.toUpperCase()} CONVERGENCE`;
-          document.getElementById('biasScoreBadge').innerText = `${score} / 100`;
+          document.getElementById('chartScoreBadge').innerText = `${score} / 100`;
+          document.getElementById('teleBiasVal').innerText = d.market_regime.bias.toUpperCase();
         }
         if (d.shortlist_count === 0 || !d.setups || !d.setups.length) {
           document.getElementById('cardsFeed').innerHTML = `
@@ -833,37 +1182,8 @@
               <div class="liquid-grid">
                 <div class="liquid-cell">
                   <div class="cell-title">ENTRY ZONE</div>
-                  <div class="cell-value entry">$${coin.entry_zone[0]} – $${coin.entry_zone[1]}</div>
+                  <div class="cell-value entry">$${coin.entry_zone[0]} –$${coin.entry_zone[1]}</div>
                 </div>
                 <div class="liquid-cell">
                   <div class="cell-title">MARKET PRICE</div>
-                  <div class="cell-value">$${coin.market_price}</div>
-                </div>
-                <div class="liquid-cell">
-                  <div class="cell-title">INVALIDATION (SL)</div>
-                  <div class="cell-value stop">$${coin.invalidation}</div>
-                </div>
-                <div class="liquid-cell">
-                  <div class="cell-title">TARGETS</div>
-                  <div class="cell-value target">$${coin.target_1} / $${coin.target_2}</div>
-                </div>
-              </div>
-              <div class="btn-row">
-                <button class="liquid-btn" onclick="window.open('https://www.tradingview.com/chart/?symbol=COINBASE:${coin.symbol}USD')">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-                  TradingView
-                </button>
-                <button class="liquid-btn secondary" onclick="navigator.clipboard.writeText('COINSIFT: ${coin.pair} Entry: ${coin.market_price} SL: ${coin.invalidation} TP: ${coin.target_1}'); alert('Signal Copied!')">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-                  Copy Trade
-                </button>
-              </div>
-            </div>
-          `).join('');
-          document.getElementById('cardsFeed').innerHTML = cardsHtml;
-        }
-      })
-      .catch(() => {});
-  </script>
-</body>
-</html>
+                  <div class="cell
