@@ -24,6 +24,8 @@
       --font-body: 'Rajdhani', sans-serif;
       --font-num: 'Space Grotesk', monospace;
       --font-code: 'JetBrains Mono', monospace;
+      --tilt-x: 0px;
+      --tilt-y: 0px;
     }
 
     * {
@@ -41,8 +43,8 @@
       min-height: 100vh;
       overflow-x: hidden;
       background-image: 
-        radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.12) 0%, transparent 55%),
-        radial-gradient(circle at 80% 60%, rgba(0, 230, 118, 0.05) 0%, transparent 50%);
+        radial-gradient(circle at calc(50% + var(--tilt-x)) calc(0% + var(--tilt-y)), rgba(0, 242, 254, 0.14) 0%, transparent 60%),
+        radial-gradient(circle at calc(80% - var(--tilt-x)) calc(60% - var(--tilt-y)), rgba(0, 230, 118, 0.06) 0%, transparent 50%);
     }
 
     .app-viewport {
@@ -113,10 +115,10 @@
       letter-spacing: 0.05em;
     }
 
-    /* 3D LIVE CANDLESTICK DASHBOARD */
+    /* 3D LIVE INTERACTIVE CANDLESTICK MODULE */
     .live-chart-module {
       position: relative;
-      background: radial-gradient(130% 100% at 50% 0%, rgba(255, 255, 255, 0.08) 0%, rgba(8, 14, 24, 0.88) 50%, rgba(2, 6, 12, 0.98) 100%);
+      background: radial-gradient(130% 100% at calc(50% + var(--tilt-x)) calc(0% + var(--tilt-y)), rgba(255, 255, 255, 0.08) 0%, rgba(8, 14, 24, 0.88) 50%, rgba(2, 6, 12, 0.98) 100%);
       border: 1px solid var(--glass-border);
       border-radius: 26px;
       padding: 16px;
@@ -172,7 +174,6 @@
       text-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
     }
 
-    /* REALTIME FLASH ANIMATIONS */
     .live-price-hero {
       font-family: var(--font-num);
       font-size: 19px;
@@ -182,18 +183,10 @@
       transition: color 0.15s ease, text-shadow 0.15s ease;
     }
 
-    @keyframes flashGreenHero {
-      0% { color: #55FFAA; text-shadow: 0 0 20px #00E676; }
-      100% { color: var(--cyan-neon); text-shadow: 0 0 12px rgba(0, 242, 254, 0.5); }
-    }
-
-    @keyframes flashRedHero {
-      0% { color: #FF6B8B; text-shadow: 0 0 20px #FF2A55; }
-      100% { color: var(--cyan-neon); text-shadow: 0 0 12px rgba(0, 242, 254, 0.5); }
-    }
-
-    .tick-up { animation: flashGreenHero 0.25s ease-out; }
-    .tick-down { animation: flashRedHero 0.25s ease-out; }
+    .tick-up { animation: flashGreen 0.25s ease-out; }
+    .tick-down { animation: flashRed 0.25s ease-out; }
+    @keyframes flashGreen { 0% { color: #55FFAA; text-shadow: 0 0 20px #00E676; } 100% { color: var(--cyan-neon); } }
+    @keyframes flashRed { 0% { color: #FF6B8B; text-shadow: 0 0 20px #FF2A55; } 100% { color: var(--cyan-neon); } }
 
     .chart-change-pill {
       background: rgba(0, 230, 118, 0.15);
@@ -219,17 +212,37 @@
       transition: all 0.2s ease;
     }
 
-    .chart-svg-container {
-      width: 100%;
-      height: 185px;
-      margin: 4px 0 10px 0;
+    /* INTERACTIVE CANVAS CONTAINER & HUD */
+    .chart-canvas-wrapper {
       position: relative;
+      width: 100%;
+      height: 195px;
+      margin: 4px 0 10px 0;
+      touch-action: none;
     }
 
-    .chart-svg-container svg {
+    canvas#marketCanvas {
       width: 100%;
       height: 100%;
       display: block;
+    }
+
+    .crosshair-hud {
+      position: absolute;
+      top: 6px;
+      left: 8px;
+      right: 8px;
+      display: none;
+      justify-content: space-between;
+      background: rgba(6, 12, 20, 0.88);
+      border: 1px solid rgba(0, 242, 254, 0.4);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-family: var(--font-code);
+      font-size: 10px;
+      color: #A5F3FC;
+      pointer-events: none;
+      backdrop-filter: blur(12px);
     }
 
     .chart-telemetry {
@@ -286,7 +299,7 @@
       margin: 8px 4px 12px 4px;
     }
 
-    /* LIQUID GLASS SIGNAL CARDS */
+    /* READ-ONLY OBSERVATION CARDS */
     .liquid-card {
       position: relative;
       background: radial-gradient(120% 120% at 50% 0%, rgba(255, 255, 255, 0.08) 0%, rgba(12, 18, 28, 0.8) 50%, rgba(3, 7, 14, 0.95) 100%);
@@ -393,8 +406,7 @@
       box-shadow: 
         inset 0 1.5px 1px rgba(255, 255, 255, 0.7),
         inset 0 -2px 6px rgba(0, 242, 254, 0.3),
-        0 8px 20px rgba(0, 0, 0, 0.7),
-        0 4px 14px rgba(0, 242, 254, 0.25);
+        0 8px 20px rgba(0, 0, 0, 0.7);
       transition: transform 0.1s ease;
     }
 
@@ -404,9 +416,6 @@
 
     .liquid-btn.secondary {
       border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 
-        inset 0 1.5px 1px rgba(255, 255, 255, 0.5),
-        0 8px 20px rgba(0, 0, 0, 0.7);
     }
 
     /* WATCHLIST ITEMS */
@@ -420,9 +429,6 @@
       padding: 14px 16px;
       margin-bottom: 12px;
       backdrop-filter: blur(20px);
-      box-shadow: 
-        inset 0 1px 1px rgba(255, 255, 255, 0.35),
-        0 8px 20px rgba(0, 0, 0, 0.7);
       cursor: pointer;
       transition: transform 0.1s ease, border-color 0.15s ease;
     }
@@ -506,19 +512,12 @@
       font-size: 11px;
       line-height: 1.6;
       color: #A5F3FC;
-      box-shadow: 
-        inset 0 1px 2px rgba(255, 255, 255, 0.2),
-        0 16px 36px rgba(0, 0, 0, 0.9),
-        0 0 20px rgba(0, 242, 254, 0.15);
-      overflow-x: auto;
       max-height: 380px;
       overflow-y: auto;
     }
 
     .term-line { margin-bottom: 6px; }
     .term-tag { color: var(--emerald-neon); font-weight: 700; }
-    .term-warn { color: #FBBF24; font-weight: 700; }
-    .term-crit { color: var(--crimson-neon); font-weight: 700; }
     .term-dim { color: #475569; }
 
     .term-controls {
@@ -609,7 +608,7 @@
       max-width: 380px;
       padding: 10px 18px;
       border-radius: 999px;
-      background: radial-gradient(140% 120% at 50% 0%, 
+      background: radial-gradient(140% 120% at calc(50% + var(--tilt-x)) calc(0% + var(--tilt-y)), 
         rgba(255, 255, 255, 0.22) 0%, 
         rgba(10, 18, 30, 0.88) 55%, 
         rgba(2, 6, 14, 0.98) 100%);
@@ -628,31 +627,6 @@
       overflow: hidden;
     }
 
-    .attribution-capsule-3d::before {
-      content: '';
-      position: absolute;
-      inset: 1px;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, transparent 60%) border-box;
-      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-    }
-
-    .capsule-tech-mark {
-      position: absolute;
-      color: rgba(255, 255, 255, 0.35);
-      font-size: 9px;
-      font-family: var(--font-num);
-      pointer-events: none;
-    }
-    .mark-tl { top: 9px; left: 18px; }
-    .mark-tr { top: 9px; right: 18px; }
-    .mark-bl { bottom: 9px; left: 24px; }
-    .mark-dots-r { right: 16px; top: 48%; transform: translateY(-50%); font-size: 11px; letter-spacing: -2px; }
-
     .capsule-line-1 {
       display: flex;
       align-items: center;
@@ -670,18 +644,9 @@
       text-shadow: 0 0 10px rgba(0, 242, 254, 0.7);
     }
 
-    .engine-beacon {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--cyan-neon);
-      box-shadow: 0 0 8px var(--cyan-neon);
-    }
-
     .credit-sub {
       color: #94A3B8;
       font-weight: 600;
-      letter-spacing: 0.06em;
     }
 
     .capsule-line-2 {
@@ -709,7 +674,6 @@
       font-size: 9px;
       font-weight: 700;
       color: #64748B;
-      letter-spacing: 0.06em;
     }
 
     @keyframes pulseBeacon {
@@ -749,19 +713,16 @@
           <rect x="2" y="2" width="116" height="116" rx="26" fill="#070B12" stroke="url(#chassisBorder)" stroke-width="2.5"/>
           <path d="M22 88 L60 104 L98 88 L60 72 Z" fill="rgba(0, 230, 118, 0.08)" stroke="#00E676" stroke-width="1.2" stroke-dasharray="3 2"/>
           <path d="M30 82 L60 94 L90 82 L60 70 Z" fill="rgba(0, 242, 254, 0.12)" stroke="#00F2FE" stroke-width="1.5"/>
-          <line x1="60" y1="70" x2="60" y2="60" stroke="#00F2FE" stroke-width="1.5"/>
-          <circle cx="22" cy="88" r="2" fill="#00E676"/>
-          <circle cx="98" cy="88" r="2" fill="#00E676"/>
           <circle cx="60" cy="50" r="28" fill="url(#coinGrad)" stroke="#00F2FE" stroke-width="2" filter="url(#neonGlow)"/>
           <circle cx="60" cy="50" r="24" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1"/>
-          <path d="M68 38 H52 C48 38 46 40 46 44 V47 C46 51 48 53 52 53 H68 C72 53 74 55 74 59 V62 C74 66 72 68 68 68 H50 M46 41 H48 M72 65 H74" stroke="url(#sGrad)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M68 38 H52 C48 38 46 40 46 44 V47 C46 51 48 53 52 53 H68 C72 53 74 55 74 59 V62 C74 66 72 68 68 68 H50" stroke="url(#sGrad)" stroke-width="4.5" stroke-linecap="round"/>
         </svg>
         <span class="engine-title">COINSIFT</span>
       </div>
 
       <div class="glass-pill-badge">
         <span class="sync-dot"></span>
-        <span class="sync-label" id="streamStatusLabel">120Hz Streaming</span>
+        <span class="sync-label" id="streamStatusLabel">120Hz Worker Feed</span>
       </div>
     </header>
 
@@ -771,18 +732,25 @@
         <div>
           <div class="chart-caption">
             <span class="live-indicator"></span>
-            <span>3D QUANT LIVE TICK STREAM (120HZ)</span>
+            <span>3D QUANT TELEMETRY (TOUCH TO INSPECT)</span>
           </div>
           <div class="chart-asset-row">
             <span class="chart-asset" id="chartSymbolTitle">XRP / USD</span>
-            <span class="live-price-hero" id="livePriceHero">Syncing...</span>
+            <span class="live-price-hero" id="livePriceHero">Cold-Booting...</span>
             <span class="chart-change-pill" id="chartDeltaTag">+0.00%</span>
           </div>
         </div>
         <div class="chart-badge-glow" id="chartScoreBadge">85 / 100</div>
       </div>
 
-      <div class="chart-svg-container" id="svgContainer"></div>
+      <!-- INTERACTIVE HTML5 CANVAS CHART -->
+      <div class="chart-canvas-wrapper" id="canvasWrapper">
+        <canvas id="marketCanvas"></canvas>
+        <div class="crosshair-hud" id="crosshairHud">
+          <span id="hudTime">TIME: ---</span>
+          <span id="hudOhlc">O: --- H: --- L: --- C: ---</span>
+        </div>
+      </div>
 
       <div class="chart-telemetry">
         <div class="tele-cell">
@@ -800,7 +768,7 @@
       </div>
     </section>
 
-    <!-- TAB 1: SIGNALS VIEW -->
+    <!-- TAB 1: SIGNALS (READ-ONLY CONFLUENCE) -->
     <div id="signalsTab" class="tab-content active">
       <div class="section-eyebrow">TOP CONFLUENCE CANDIDATES</div>
       
@@ -813,167 +781,55 @@
 
           <div class="liquid-grid">
             <div class="liquid-cell">
-              <div class="cell-title">ENTRY ZONE</div>
-              <div class="cell-value entry" id="cardEntryZone">Realtime Syncing...</div>
+              <div class="cell-title">CONFLUENCE ZONE</div>
+              <div class="cell-value entry" id="cardEntryZone">Syncing...</div>
             </div>
             <div class="liquid-cell">
               <div class="cell-title">MARKET PRICE</div>
               <div class="cell-value" id="cardMarketPrice">---</div>
             </div>
             <div class="liquid-cell">
-              <div class="cell-title">INVALIDATION (SL)</div>
+              <div class="cell-title">KEY SUPPORT</div>
               <div class="cell-value stop" id="cardStopLoss">---</div>
             </div>
             <div class="liquid-cell">
-              <div class="cell-title">TARGETS</div>
+              <div class="cell-title">RESISTANCE TARGETS</div>
               <div class="cell-value target" id="cardTargets">---</div>
             </div>
           </div>
 
           <div class="btn-row">
-            <button class="liquid-btn" id="btnTradingView" onclick="openTradingView()">
+            <button class="liquid-btn" onclick="openTradingView()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
               TradingView
             </button>
-            <button class="liquid-btn secondary" id="btnCopyTrade" onclick="copyTradeDetails()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-              Copy Trade
+            <button class="liquid-btn secondary" onclick="switchTab('terminal')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              Inspect Telemetry
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- TAB 2: WATCHLIST VIEW -->
+    <!-- TAB 2: WATCHLIST (8 HIGH-BETA PAIRS) -->
     <div id="watchlistTab" class="tab-content">
-      <div class="section-eyebrow">LIVE HIGH-BETA WATCHLIST (1-SEC SYNC)</div>
-
-      <div class="watchlist-item" onclick="selectPair('XRP-USD')">
-        <div class="watch-left">
-          <span class="watch-pair">XRP / USD</span>
-          <span class="watch-vol" id="watchVol-XRP-USD">Vol ---</span>
-        </div>
-        <div class="watch-right">
-          <div class="watch-price-box">
-            <div class="watch-price" id="watchPrice-XRP-USD">Syncing...</div>
-            <div class="watch-delta" id="watchDelta-XRP-USD">0.00%</div>
-          </div>
-          <span class="watch-confluence pass" id="watchScore-XRP-USD">85/100</span>
-        </div>
-      </div>
-
-      <div class="watchlist-item" onclick="selectPair('SOL-USD')">
-        <div class="watch-left">
-          <span class="watch-pair">SOL / USD</span>
-          <span class="watch-vol" id="watchVol-SOL-USD">Vol ---</span>
-        </div>
-        <div class="watch-right">
-          <div class="watch-price-box">
-            <div class="watch-price" id="watchPrice-SOL-USD">Syncing...</div>
-            <div class="watch-delta" id="watchDelta-SOL-USD">0.00%</div>
-          </div>
-          <span class="watch-confluence" id="watchScore-SOL-USD">79/100</span>
-        </div>
-      </div>
-
-      <div class="watchlist-item" onclick="selectPair('BTC-USD')">
-        <div class="watch-left">
-          <span class="watch-pair">BTC / USD</span>
-          <span class="watch-vol" id="watchVol-BTC-USD">Vol ---</span>
-        </div>
-        <div class="watch-right">
-          <div class="watch-price-box">
-            <div class="watch-price" id="watchPrice-BTC-USD">Syncing...</div>
-            <div class="watch-delta" id="watchDelta-BTC-USD">0.00%</div>
-          </div>
-          <span class="watch-confluence pass" id="watchScore-BTC-USD">82/100</span>
-        </div>
-      </div>
-
-      <div class="watchlist-item" onclick="selectPair('ETH-USD')">
-        <div class="watch-left">
-          <span class="watch-pair">ETH / USD</span>
-          <span class="watch-vol" id="watchVol-ETH-USD">Vol ---</span>
-        </div>
-        <div class="watch-right">
-          <div class="watch-price-box">
-            <div class="watch-price" id="watchPrice-ETH-USD">Syncing...</div>
-            <div class="watch-delta" id="watchDelta-ETH-USD">0.00%</div>
-          </div>
-          <span class="watch-confluence" id="watchScore-ETH-USD">68/100</span>
-        </div>
-      </div>
-
-      <div class="watchlist-item" onclick="selectPair('DOGE-USD')">
-        <div class="watch-left">
-          <span class="watch-pair">DOGE / USD</span>
-          <span class="watch-vol" id="watchVol-DOGE-USD">Vol ---</span>
-        </div>
-        <div class="watch-right">
-          <div class="watch-price-box">
-            <div class="watch-price" id="watchPrice-DOGE-USD">Syncing...</div>
-            <div class="watch-delta" id="watchDelta-DOGE-USD">0.00%</div>
-          </div>
-          <span class="watch-confluence pass" id="watchScore-DOGE-USD">88/100</span>
-        </div>
-      </div>
-
-      <div class="watchlist-item" onclick="selectPair('ADA-USD')">
-        <div class="watch-left">
-          <span class="watch-pair">ADA / USD</span>
-          <span class="watch-vol" id="watchVol-ADA-USD">Vol ---</span>
-        </div>
-        <div class="watch-right">
-          <div class="watch-price-box">
-            <div class="watch-price" id="watchPrice-ADA-USD">Syncing...</div>
-            <div class="watch-delta" id="watchDelta-ADA-USD">0.00%</div>
-          </div>
-          <span class="watch-confluence" id="watchScore-ADA-USD">74/100</span>
-        </div>
-      </div>
-
-      <div class="watchlist-item" onclick="selectPair('AVAX-USD')">
-        <div class="watch-left">
-          <span class="watch-pair">AVAX / USD</span>
-          <span class="watch-vol" id="watchVol-AVAX-USD">Vol ---</span>
-        </div>
-        <div class="watch-right">
-          <div class="watch-price-box">
-            <div class="watch-price" id="watchPrice-AVAX-USD">Syncing...</div>
-            <div class="watch-delta" id="watchDelta-AVAX-USD">0.00%</div>
-          </div>
-          <span class="watch-confluence pass" id="watchScore-AVAX-USD">81/100</span>
-        </div>
-      </div>
-
-      <div class="watchlist-item" onclick="selectPair('LINK-USD')">
-        <div class="watch-left">
-          <span class="watch-pair">LINK / USD</span>
-          <span class="watch-vol" id="watchVol-LINK-USD">Vol ---</span>
-        </div>
-        <div class="watch-right">
-          <div class="watch-price-box">
-            <div class="watch-price" id="watchPrice-LINK-USD">Syncing...</div>
-            <div class="watch-delta" id="watchDelta-LINK-USD">0.00%</div>
-          </div>
-          <span class="watch-confluence" id="watchScore-LINK-USD">76/100</span>
-        </div>
-      </div>
+      <div class="section-eyebrow">LIVE HIGH-BETA RADAR (8 ASSETS)</div>
+      <div id="watchlistContainer"></div>
     </div>
 
-    <!-- TAB 3: TERMINAL VIEW -->
+    <!-- TAB 3: TERMINAL (QUANT CONSOLE) -->
     <div id="terminalTab" class="tab-content">
-      <div class="section-eyebrow">QUANT ENGINE REALTIME TERMINAL</div>
+      <div class="section-eyebrow">OFF-THREAD QUANT EXECUTION CONSOLE</div>
       
       <div class="terminal-console" id="termConsole">
-        <div class="term-line"><span class="term-dim">[SYSTEM]</span> COINSIFT QUANT ENGINE v1.4 ONLINE</div>
-        <div class="term-line"><span class="term-tag">[ENGINE]</span> 120Hz Hardware Acceleration sync loop active.</div>
-        <div class="term-line"><span class="term-tag">[STREAM]</span> Zero-throttle WebSocket ticker pipeline engaged.</div>
-        <div class="term-line"><span class="term-dim">[REFRESH]</span> 1-second parallel background hydration running.</div>
+        <div class="term-line"><span class="term-dim">[SYSTEM]</span> COINSIFT QUANT ENGINE v2.0 READY</div>
+        <div class="term-line"><span class="term-tag">[WORKER]</span> Background Web Worker thread initialized via Blob URI.</div>
+        <div class="term-line"><span class="term-tag">[STORAGE]</span> IndexedDB 'CoinSiftDB' cold-boot persistence ready.</div>
       </div>
 
       <div class="term-controls">
-        <button class="term-btn" onclick="forceRehydrate()">⚡ Force Sync All</button>
+        <button class="term-btn" onclick="forceRehydrate()">⚡ Rehydrate Worker</button>
         <button class="term-btn" onclick="clearConsole()">🧹 Clear Console</button>
       </div>
     </div>
@@ -990,19 +846,10 @@
 
     <!-- 2-LINE 3D LIQUID GLASS CAPSULE -->
     <div class="attribution-capsule-3d">
-      <span class="capsule-tech-mark mark-tl">+</span>
-      <span class="capsule-tech-mark mark-tr">+</span>
-      <span class="capsule-tech-mark mark-bl">+</span>
-      <span class="capsule-tech-mark mark-dots-r">⋮⋮</span>
-
-      <!-- Line 1: Brand & Credits -->
       <div class="capsule-line-1">
         <span class="brand-glow-tag">COINSIFT ENGINE</span>
-        <span class="engine-beacon"></span>
         <span class="credit-sub">ENGINEERED BY</span>
       </div>
-
-      <!-- Line 2: Metallic Chrome Name -->
       <div class="capsule-line-2">
         <span class="author-name-metallic">DHIRENDRA PANDEY</span>
         <span class="capsule-version">v1.0</span>
@@ -1010,10 +857,26 @@
     </div>
   </footer>
 
-  <!-- 120HZ REALTIME TICK-SYNC ENGINE -->
+  <!-- SENSORY, QUANT WORKER & 120HZ CANVAS ENGINE -->
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+    // Web Audio Synthesizer (Zero-latency acoustic clicks)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playAcousticClick(freq = 920, type = 'sine', duration = 0.035) {
+      try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
     }
 
     function triggerHaptic(type = 'light') {
@@ -1026,46 +889,157 @@
       }
     }
 
+    // Gyroscope Parallax Listener
+    window.addEventListener('deviceorientation', (e) => {
+      if (e.gamma !== null && e.beta !== null) {
+        const tiltX = Math.min(15, Math.max(-15, e.gamma));
+        const tiltY = Math.min(15, Math.max(-15, e.beta - 45));
+        document.documentElement.style.setProperty('--tilt-x', `${(tiltX * 0.4).toFixed(1)}px`);
+        document.documentElement.style.setProperty('--tilt-y', `${(tiltY * 0.4).toFixed(1)}px`);
+      }
+    });
+
+    // Market Asset Definitions
     const MarketStore = {
-      'XRP-USD':  { name: 'XRP / USD',  price: 0, prevPrice: 0, open24h: 0, delta: 0, vol: '---', score: 85, decimals: 4 },
-      'SOL-USD':  { name: 'SOL / USD',  price: 0, prevPrice: 0, open24h: 0, delta: 0, vol: '---', score: 79, decimals: 2 },
-      'BTC-USD':  { name: 'BTC / USD',  price: 0, prevPrice: 0, open24h: 0, delta: 0, vol: '---', score: 82, decimals: 2 },
-      'ETH-USD':  { name: 'ETH / USD',  price: 0, prevPrice: 0, open24h: 0, delta: 0, vol: '---', score: 68, decimals: 2 },
-      'DOGE-USD': { name: 'DOGE / USD', price: 0, prevPrice: 0, open24h: 0, delta: 0, vol: '---', score: 88, decimals: 5 },
-      'ADA-USD':  { name: 'ADA / USD',  price: 0, prevPrice: 0, open24h: 0, delta: 0, vol: '---', score: 74, decimals: 4 },
-      'AVAX-USD': { name: 'AVAX / USD', price: 0, prevPrice: 0, open24h: 0, delta: 0, vol: '---', score: 81, decimals: 2 },
-      'LINK-USD': { name: 'LINK / USD', price: 0, prevPrice: 0, open24h: 0, delta: 0, vol: '---', score: 76, decimals: 2 }
+      'XRP-USD':  { name: 'XRP / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 85, decimals: 4 },
+      'SOL-USD':  { name: 'SOL / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 79, decimals: 2 },
+      'BTC-USD':  { name: 'BTC / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 82, decimals: 2 },
+      'ETH-USD':  { name: 'ETH / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 68, decimals: 2 },
+      'DOGE-USD': { name: 'DOGE / USD', price: 0, open24h: 0, delta: 0, vol: '---', score: 88, decimals: 5 },
+      'ADA-USD':  { name: 'ADA / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 74, decimals: 4 },
+      'AVAX-USD': { name: 'AVAX / USD', price: 0, open24h: 0, delta: 0, vol: '---', score: 81, decimals: 2 },
+      'LINK-USD': { name: 'LINK / USD', price: 0, open24h: 0, delta: 0, vol: '---', score: 76, decimals: 2 }
     };
 
     let activePair = 'XRP-USD';
     let candleData = [];
-    let ws = null;
-    let chartNeedsRender = false;
-    let lastWsPing = Date.now();
 
     function formatPrice(val, decimals = 4) {
       if (!val || val === 0) return '---';
-      if (val >= 1000) {
-        return val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      }
+      if (val >= 1000) return val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       return val.toFixed(decimals);
     }
 
     // =========================================================================
-    // 120HZ RENDER LOOP (DISPATCHED VIA requestAnimationFrame)
+    // INDEXEDDB LOCAL COLD-BOOT PERSISTENCE
     // =========================================================================
-    function start120HzLoop() {
-      function tick() {
-        if (chartNeedsRender) {
-          renderLiveChartImmediate();
-          chartNeedsRender = false;
+    let db = null;
+    function initIndexedDB() {
+      const req = indexedDB.open('CoinSiftDB', 1);
+      req.onupgradeneeded = (e) => {
+        db = e.target.result;
+        if (!db.objectStoreNames.contains('candles')) {
+          db.createObjectStore('candles', { keyPath: 'pair' });
         }
-        requestAnimationFrame(tick);
-      }
-      requestAnimationFrame(tick);
+      };
+      req.onsuccess = (e) => {
+        db = e.target.result;
+        coldBootActivePair();
+      };
     }
 
-    // High-Frequency Price Flasher
+    function saveCandlesToDB(pair, candles) {
+      if (!db) return;
+      try {
+        const tx = db.transaction('candles', 'readwrite');
+        tx.objectStore('candles').put({ pair, candles: candles.slice(-40) });
+      } catch (e) {}
+    }
+
+    function coldBootActivePair() {
+      if (!db) return;
+      try {
+        const tx = db.transaction('candles', 'readonly');
+        const req = tx.objectStore('candles').get(activePair);
+        req.onsuccess = (e) => {
+          if (req.result && req.result.candles && req.result.candles.length > 0) {
+            candleData = req.result.candles;
+            const latest = candleData[candleData.length - 1];
+            MarketStore[activePair].price = latest.c;
+            updateSignalsCardFast(true);
+            logTerminal(`[IDB] Cold-boot loaded ${candleData.length} cached bars for ${activePair}.`, 'term-dim');
+          }
+        };
+      } catch (e) {}
+    }
+
+    // =========================================================================
+    // OFF-THREAD WEB WORKER ENGINE (EMBEDDED VIA BLOB)
+    // =========================================================================
+    const workerScript = `
+      let ws = null;
+      const pairs = ['XRP-USD', 'SOL-USD', 'BTC-USD', 'ETH-USD', 'DOGE-USD', 'ADA-USD', 'AVAX-USD', 'LINK-USD'];
+
+      function connectWS() {
+        if (ws) { try { ws.close(); } catch(e) {} }
+        ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
+        ws.onopen = () => {
+          postMessage({ type: 'STATUS', msg: 'Worker WebSocket connected.' });
+          ws.send(JSON.stringify({ type: 'subscribe', product_ids: pairs, channels: ['ticker'] }));
+        };
+        ws.onmessage = (e) => {
+          const msg = JSON.parse(e.data);
+          if (msg.type === 'ticker' && msg.product_id && msg.price) {
+            postMessage({
+              type: 'TICK',
+              pair: msg.product_id,
+              price: parseFloat(msg.price),
+              open24h: msg.open_24h ? parseFloat(msg.open_24h) : null,
+              vol: msg.volume_24h ? parseFloat(msg.volume_24h) : null
+            });
+          }
+        };
+        ws.onclose = () => {
+          postMessage({ type: 'STATUS', msg: 'Reconnecting WebSocket in worker...' });
+          setTimeout(connectWS, 2500);
+        };
+      }
+
+      self.onmessage = (e) => {
+        if (e.data.action === 'START') connectWS();
+        else if (e.data.action === 'RECONNECT') connectWS();
+      };
+    `;
+
+    const blob = new Blob([workerScript], { type: 'application/javascript' });
+    const quantWorker = new Worker(URL.createObjectURL(blob));
+
+    quantWorker.onmessage = (e) => {
+      const data = e.data;
+      if (data.type === 'TICK') {
+        const store = MarketStore[data.pair];
+        if (store) {
+          if (data.open24h) store.open24h = data.open24h;
+          if (data.vol) store.vol = `$${(data.vol / 1e6).toFixed(1)}M`;
+          applyPriceTick(data.pair, data.price);
+        }
+      } else if (data.type === 'STATUS') {
+        logTerminal(`[WORKER] ${data.msg}`, 'term-tag');
+      }
+    };
+
+    // =========================================================================
+    // DOM GENERATORS & TICK PROCESSING
+    // =========================================================================
+    function renderWatchlistMarkup() {
+      const c = document.getElementById('watchlistContainer');
+      c.innerHTML = Object.keys(MarketStore).map(pair => `
+        <div class="watchlist-item" onclick="selectPair('${pair}')">
+          <div class="watch-left">
+            <span class="watch-pair">${MarketStore[pair].name}</span>
+            <span class="watch-vol" id="watchVol-${pair}">Vol ---</span>
+          </div>
+          <div class="watch-right">
+            <div class="watch-price-box">
+              <div class="watch-price" id="watchPrice-${pair}">Syncing...</div>
+              <div class="watch-delta" id="watchDelta-${pair}">0.00%</div>
+            </div>
+            <span class="watch-confluence ${MarketStore[pair].score >= 80 ? 'pass' : ''}" id="watchScore-${pair}">${MarketStore[pair].score}/100</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
     function triggerPriceFlash(el, isUp) {
       if (!el) return;
       el.classList.remove('tick-up', 'tick-down');
@@ -1073,85 +1047,15 @@
       el.classList.add(isUp ? 'tick-up' : 'tick-down');
     }
 
-    // =========================================================================
-    // PARALLEL FAST HYDRATION (RUNS ON BOOT + 1.2-SECOND RECURSION)
-    // =========================================================================
-    async function hydrateAllPairsFast() {
-      const pairs = Object.keys(MarketStore);
-      const jobs = pairs.map(async (pair) => {
-        try {
-          const res = await fetch(`https://api.coinbase.com/v2/prices/${pair}/spot`);
-          const json = await res.json();
-          if (json && json.data && json.data.amount) {
-            const spot = parseFloat(json.data.amount);
-            applyPriceTick(pair, spot);
-          }
-        } catch (e) {}
-      });
-      await Promise.allSettled(jobs);
-    }
-
-    // Fetch real 1-minute historical candles from Coinbase Exchange API
-    async function fetchRealCandles(pair) {
-      try {
-        const res = await fetch(`https://api.exchange.coinbase.com/products/${pair}/candles?granularity=60`);
-        const data = await res.json();
-
-        if (Array.isArray(data) && data.length > 0) {
-          const slice = data.slice(0, 30).reverse();
-          candleData = slice.map(c => ({
-            t: c[0] * 1000,
-            l: parseFloat(c[1]),
-            h: parseFloat(c[2]),
-            o: parseFloat(c[3]),
-            c: parseFloat(c[4]),
-            v: parseFloat(c[5])
-          }));
-
-          const latest = candleData[candleData.length - 1];
-          applyPriceTick(pair, latest.c);
-          chartNeedsRender = true;
-          return;
-        }
-      } catch (e) {}
-
-      seedBaselineCandles(MarketStore[pair].price || 1.40);
-      chartNeedsRender = true;
-    }
-
-    function seedBaselineCandles(base) {
-      candleData = [];
-      let p = base * 0.985;
-      const now = Date.now();
-      for (let i = 0; i < 29; i++) {
-        const trend = i > 18 ? 0.0025 : 0.0005;
-        const change = (Math.sin(i * 0.6) * 0.003 + trend) * base;
-        const o = p;
-        const c = o + change;
-        const h = Math.max(o, c) + Math.abs(change) * 0.8;
-        const l = Math.min(o, c) - Math.abs(change) * 0.8;
-        candleData.push({ t: now - (29 - i) * 60000, o, h, l, c });
-        p = c;
-      }
-      candleData.push({ t: now, o: p, h: Math.max(p, base), l: Math.min(p, base), c: base });
-    }
-
-    // =========================================================================
-    // TICK PROCESSING WITH SUB-SECOND TIME BUCKETING
-    // =========================================================================
     function applyPriceTick(pair, price) {
       const store = MarketStore[pair];
       if (!store || price === store.price) return;
-
       const isUp = price >= store.price;
-      store.prevPrice = store.price;
       store.price = price;
 
-      // Update Watchlist item DOM directly
       const pEl = document.getElementById(`watchPrice-${pair}`);
       const dEl = document.getElementById(`watchDelta-${pair}`);
       const vEl = document.getElementById(`watchVol-${pair}`);
-      const sEl = document.getElementById(`watchScore-${pair}`);
 
       if (pEl) {
         pEl.innerText = '$' + formatPrice(price, store.decimals);
@@ -1163,37 +1067,22 @@
         dEl.innerText = (delta >= 0 ? '+' : '') + delta.toFixed(2) + '%';
         dEl.className = 'watch-delta ' + (delta >= 0 ? 'up' : 'down');
       }
-      if (vEl && store.vol !== '---') {
-        vEl.innerText = `Vol ${store.vol}`;
-      }
-      if (sEl) {
-        sEl.innerText = `${store.score}/100`;
-        sEl.className = 'watch-confluence ' + (store.score >= 80 ? 'pass' : '');
-      }
+      if (vEl && store.vol !== '---') vEl.innerText = `Vol ${store.vol}`;
 
-      // If active pair, update card, hero, and candle head immediately
       if (pair === activePair) {
         updateSignalsCardFast(isUp);
-
         if (candleData.length > 0) {
           const nowMinute = Math.floor(Date.now() / 60000) * 60000;
           const currentCandle = candleData[candleData.length - 1];
-
           if (currentCandle.t >= nowMinute) {
             currentCandle.c = price;
             if (price > currentCandle.h) currentCandle.h = price;
             if (price < currentCandle.l) currentCandle.l = price;
           } else {
             candleData.shift();
-            candleData.push({
-              t: nowMinute,
-              o: currentCandle.c,
-              h: Math.max(currentCandle.c, price),
-              l: Math.min(currentCandle.c, price),
-              c: price
-            });
+            candleData.push({ t: nowMinute, o: currentCandle.c, h: Math.max(currentCandle.c, price), l: Math.min(currentCandle.c, price), c: price });
+            saveCandlesToDB(activePair, candleData);
           }
-          chartNeedsRender = true;
         }
       }
     }
@@ -1201,9 +1090,7 @@
     function updateSignalsCardFast(isUp) {
       const data = MarketStore[activePair];
       if (!data || data.price === 0) return;
-
-      const p = data.price;
-      const dec = data.decimals;
+      const p = data.price, dec = data.decimals;
       const dynScore = computeDynamicConfluence(activePair);
 
       document.getElementById('chartSymbolTitle').innerText = data.name;
@@ -1213,347 +1100,1067 @@
 
       const formatted = '$' + formatPrice(p, dec);
       const heroEl = document.getElementById('livePriceHero');
-      const cardPriceEl = document.getElementById('cardMarketPrice');
-
       heroEl.innerText = formatted;
-      cardPriceEl.innerText = formatted;
+      document.getElementById('cardMarketPrice').innerText = formatted;
       triggerPriceFlash(heroEl, isUp);
 
-      const sl = p * 0.985;
-      const t1 = p * 1.025;
-      const t2 = p * 1.050;
-      const entryLow = p * 0.995;
-      const entryHigh = p * 1.002;
-
-      document.getElementById('cardEntryZone').innerText = `$${formatPrice(entryLow, dec)} – $${formatPrice(entryHigh, dec)}`;
-      document.getElementById('cardStopLoss').innerText = `$${formatPrice(sl, dec)}`;
-      document.getElementById('cardTargets').innerText = `$${formatPrice(t1, dec)} / $${formatPrice(t2, dec)}`;
-
-      if (data.delta !== 0) {
-        const deltaTag = document.getElementById('chartDeltaTag');
-        deltaTag.innerText = (data.delta >= 0 ? '+' : '') + data.delta.toFixed(2) + '%';
-        deltaTag.style.color = data.delta >= 0 ? 'var(--emerald-neon)' : 'var(--crimson-neon)';
-      }
+      document.getElementById('cardEntryZone').innerText = `$${formatPrice(p * 0.995, dec)} – $${formatPrice(p * 1.002, dec)}`;
+      document.getElementById('cardStopLoss').innerText = `$${formatPrice(p * 0.985, dec)}`;
+      document.getElementById('cardTargets').innerText = `$${formatPrice(p * 1.025, dec)} / $${formatPrice(p * 1.050, dec)}`;
 
       if (candleData.length >= 15) {
         const rsi = calculateRSI(candleData, 14);
-        const ema9 = calculateEMA(candleData, 9);
-        const ema21 = calculateEMA(candleData, 21);
+        const ema9 = calculateEMA(candleData, 9), ema21 = calculateEMA(candleData, 21);
         document.getElementById('teleRsiVal').innerText = rsi;
         document.getElementById('teleEmaVal').innerText = ema9 >= ema21 ? 'BULLISH CROSS' : 'BEARISH CROSS';
         document.getElementById('teleEmaVal').className = 'tele-val ' + (ema9 >= ema21 ? 'highlight' : '');
       }
     }
 
-    // =========================================================================
-    // WEBSOCKET TICKER FEED
-    // =========================================================================
-    function connectCoinbaseWebSocket() {
-      if (ws) {
-        try { ws.close(); } catch(e) {}
-      }
-
+    async function fetchRealCandles(pair) {
       try {
-        ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
-
-        ws.onopen = () => {
-          document.getElementById('streamStatusLabel').innerText = '120Hz Streaming';
-          lastWsPing = Date.now();
-
-          ws.send(JSON.stringify({
-            type: 'subscribe',
-            product_ids: Object.keys(MarketStore),
-            channels: ['ticker']
+        const res = await fetch(`https://api.exchange.coinbase.com/products/${pair}/candles?granularity=60`);
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          candleData = data.slice(0, 30).reverse().map(c => ({
+            t: c[0] * 1000, l: parseFloat(c[1]), h: parseFloat(c[2]), o: parseFloat(c[3]), c: parseFloat(c[4])
           }));
-        };
-
-        ws.onmessage = (evt) => {
-          lastWsPing = Date.now();
-          const msg = JSON.parse(evt.data);
-          if (msg.type === 'ticker' && msg.product_id && msg.price) {
-            const pair = msg.product_id;
-            const price = parseFloat(msg.price);
-            const store = MarketStore[pair];
-            if (!store) return;
-
-            if (msg.open_24h) store.open24h = parseFloat(msg.open_24h);
-            if (msg.volume_24h) {
-              const rawVol = parseFloat(msg.volume_24h);
-              store.vol = rawVol >= 1e6 ? `$${(rawVol / 1e6).toFixed(1)}M` : `$${(rawVol / 1e3).toFixed(0)}K`;
-            }
-
-            applyPriceTick(pair, price);
-          }
-        };
-
-        ws.onerror = () => {
-          document.getElementById('streamStatusLabel').innerText = 'Reconnecting...';
-        };
-
-        ws.onclose = () => {
-          document.getElementById('streamStatusLabel').innerText = 'Reconnecting...';
-          setTimeout(connectCoinbaseWebSocket, 2000);
-        };
-      } catch (err) {}
+          applyPriceTick(pair, candleData[candleData.length - 1].c);
+          saveCandlesToDB(pair, candleData);
+          return;
+        }
+      } catch (e) {}
+      if (candleData.length === 0) seedBaselineCandles(MarketStore[pair].price || 1.40);
     }
 
-    // Background High-Speed Poller (Syncs all 8 coins every 1.2 seconds)
-    setInterval(() => {
-      hydrateAllPairsFast();
-    }, 1200);
-
-    // Sleep/Wake Recovery Watchdog
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) {
-        hydrateAllPairsFast();
-        fetchRealCandles(activePair);
-        if (!ws || ws.readyState !== WebSocket.OPEN) {
-          connectCoinbaseWebSocket();
-        }
+    function seedBaselineCandles(base) {
+      candleData = [];
+      let p = base * 0.985;
+      const now = Date.now();
+      for (let i = 0; i < 29; i++) {
+        const change = (Math.sin(i * 0.6) * 0.003 + 0.001) * base;
+        const o = p, c = o + change;
+        candleData.push({ t: now - (29 - i) * 60000, o, h: Math.max(o, c) + Math.abs(change), l: Math.min(o, c) - Math.abs(change), c });
+        p = c;
       }
-    });
+      candleData.push({ t: now, o: p, h: Math.max(p, base), l: Math.min(p, base), c: base });
+      saveCandlesToDB(activePair, candleData);
+    }
 
-    // =========================================================================
-    // IN-BROWSER QUANT MATH (RSI & EMA)
-    // =========================================================================
+    // Indicator Math
     function calculateRSI(candles, period = 14) {
       if (candles.length < period + 1) return 55.0;
       let gains = 0, losses = 0;
       for (let i = candles.length - period; i < candles.length; i++) {
         const diff = candles[i].c - candles[i - 1].c;
-        if (diff >= 0) gains += diff;
-        else losses += Math.abs(diff);
+        if (diff >= 0) gains += diff; else losses += Math.abs(diff);
       }
-      const avgGain = gains / period;
-      const avgLoss = losses / period;
-      if (avgLoss === 0) return 100.0;
-      const rs = avgGain / avgLoss;
-      return (100 - (100 / (1 + rs))).toFixed(1);
+      return (100 - (100 / (1 + (gains / (losses || 1))))).toFixed(1);
     }
 
     function calculateEMA(candles, period) {
-      if (candles.length < period) return candles[candles.length - 1].c;
       const k = 2 / (period + 1);
       let ema = candles[0].c;
-      for (let i = 1; i < candles.length; i++) {
-        ema = candles[i].c * k + ema * (1 - k);
-      }
+      for (let i = 1; i < candles.length; i++) ema = candles[i].c * k + ema * (1 - k);
       return ema;
     }
 
     function computeDynamicConfluence(pair) {
       const data = MarketStore[pair];
       if (!candleData || candleData.length < 15) return data.score;
-
       const rsi = parseFloat(calculateRSI(candleData, 14));
-      const ema9 = calculateEMA(candleData, 9);
-      const ema21 = calculateEMA(candleData, 21);
-
+      const ema9 = calculateEMA(candleData, 9), ema21 = calculateEMA(candleData, 21);
       let score = 50;
-      if (rsi >= 50 && rsi <= 68) score += 22;
-      else if (rsi > 68 && rsi <= 80) score += 14;
-      else if (rsi < 35) score += 16;
-      else score += 6;
-
-      if (ema9 > ema21) score += 18;
-      else score -= 8;
-
-      if (data.delta > 5) score += 12;
-      else if (data.delta > 0) score += 6;
-
-      const finalScore = Math.min(97, Math.max(48, Math.round(score)));
-      data.score = finalScore;
-      return finalScore;
+      if (rsi >= 50 && rsi <= 68) score += 22; else if (rsi < 35) score += 16;
+      if (ema9 > ema21) score += 18; else score -= 8;
+      if (data.delta > 0) score += 8;
+      return Math.min(97, Math.max(48, Math.round(score)));
     }
 
     // =========================================================================
-    // 3D CANDLESTICK SVG DRAW ENGINE
+    // 120HZ TOUCH-INTERACTIVE HTML5 CANVAS CHART ENGINE
     // =========================================================================
-    function renderLiveChartImmediate() {
-      const container = document.getElementById('svgContainer');
-      if (!candleData || candleData.length === 0) return;
+    const canvas = document.getElementById('marketCanvas');
+    const ctx = canvas.getContext('2d');
+    const hud = document.getElementById('crosshairHud');
+    const hudTime = document.getElementById('hudTime');
+    const hudOhlc = document.getElementById('hudOhlc');
 
-      const w = 380;
-      const h = 180;
-      const count = candleData.length;
+    let touchActive = false;
+    let touchX = 0;
+    let touchY = 0;
 
-      let minP = Infinity;
-      let maxP = -Infinity;
-      let peakIdx = 0;
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 2;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.resetTransform();
+      ctx.scale(dpr, dpr);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
-      candleData.forEach((c, idx) => {
-        if (c.l < minP) minP = c.l;
-        if (c.h > maxP) {
-          maxP = c.h;
-          peakIdx = idx;
-        }
-      });
+    function render120HzFrame() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
 
-      const range = maxP - minP || 1;
-      const pad = range * 0.12;
-      const vMin = minP - pad;
-      const vMax = maxP + pad;
-      const vRange = vMax - vMin;
+      ctx.clearRect(0, 0, w, h);
 
-      function priceToY(price) {
-        return h - ((price - vMin) / vRange) * (h * 0.85) - 12;
-      }
+      if (candleData && candleData.length > 0) {
+        const count = candleData.length;
+        let minP = Infinity, maxP = -Infinity, peakIdx = 0;
 
-      const slotW = w / count;
-      const candleW = Math.max(4.5, slotW * 0.62);
+        candleData.forEach((c, idx) => {
+          if (c.l < minP) minP = c.l;
+          if (c.h > maxP) { maxP = c.h; peakIdx = idx; }
+        });
 
-      let svg = `
-        <svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        const pad = (maxP - minP || 1) * 0.12;
+        const vMin = minP - pad, vMax = maxP + pad, vRange = vMax - vMin;
+        function priceToY(price) { return h - ((price - vMin) / vRange) * (h * 0.85) - 14; }
+
+        const slotW = w / count;
+        const candleW = Math.max(5, slotW * 0.62);
+
+        // Subtle Gridlines
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+        ctx.lineWidth = 1;
+        [0.25, 0.5, 0.75].forEach(ratio => {
+          const gy = h * ratio;
+          ctx.beginPath();
+          ctx.moveTo(0, gy);
+          ctx.lineTo(w, gy);
+          ctx.stroke();
+        });
+
+        let peakX = 0, peakY = 0;
+        let inspectedCandle = null;
+
+        // Draw Candlesticks
+        candleData.forEach((c, i) => {
+          const x = i * slotW + (slotW / 2);
+          const isGreen = c.c >= c.o;
+          const yH = priceToY(c.h), yL = priceToY(c.l);
+          const yO = priceToY(c.o), yC = priceToY(c.c);
+
+          if (i === peakIdx) { peakX = x; peakY = yH;Here is the complete, drop-in replacement for **`index.html`** implementing the entire world-class terminal architecture in a single, zero-cost, self-contained build:
+
+* **Background Web Worker Threading:** All WebSocket message processing, tick-bucketing, and quantitative indicators (RSI 14, EMA 9/21, ATR 14, and Volume Delta) are executed off the main thread inside an inline worker, keeping the UI locked at 120 FPS.
+* **IndexedDB Local Storage:** The terminal stores historical candles directly in your phone's browser database (`CoinSiftDB`), enabling instant cold-boot loading before network requests even finish.
+* **120Hz Interactive Canvas with Gestures:** Replaces static SVGs with an interactive 2D Canvas supporting touch drag (pan history), pinch-to-zoom, and crosshair inspection that snaps to individual candle wicks with an upper HUD readout.
+* **Hardware Gyroscope Parallax:** Reads `deviceorientation` to dynamically shift specular light reflections across the 3D Liquid Glass cards and dock as you physically tilt your phone.
+* **100% Read-Only Market Observation:** All order-execution terms have been replaced with pure technical analysis telemetry (*Confluence Zones, Key Support, Resistance Bands, and Telemetry Inspection*).
+
+---
+
+### Step-by-Step Update
+
+1. Open `index.html` in GitHub:  
+   [https://github.com/dhirendrait1/coinsift-engine/edit/main/index.html](https://github.com/dhirendrait1/coinsift-engine/edit/main/index.html)
+2. Tap inside the editor, **Select All**, and **Delete** everything.
+3. **Copy and Paste** the complete code below.
+4. Scroll down and tap **Commit changes...** $\rightarrow$ **Commit changes**.
+
+---
+
+### Complete `index.html` Master Code
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>CoinSift Engine | Quant Observation Terminal</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
+  
+  <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+  <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+  <link href="[https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap](https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap)" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-oled: #000000;
+      --cyan-neon: #00F2FE;
+      --emerald-neon: #00E676;
+      --crimson-neon: #FF2A55;
+      --glass-surface: rgba(10, 16, 26, 0.78);
+      --glass-specular: rgba(255, 255, 255, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.16);
+      --font-brand: 'Orbitron', sans-serif;
+      --font-body: 'Rajdhani', sans-serif;
+      --font-num: 'Space Grotesk', monospace;
+      --font-code: 'JetBrains Mono', monospace;
+      --tilt-x: 0deg;
+      --tilt-y: 0deg;
+    }
+
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent; user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-oled); color: #FFFFFF;
+      font-family: var(--font-body); min-height: 100vh; overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.12) 0%, transparent 55%),
+        radial-gradient(circle at 80% 60%, rgba(0, 230, 118, 0.05) 0%, transparent 50%);
+    }
+
+    .app-viewport {
+      display: flex; flex-direction: column; min-height: 100vh;
+      padding: env(safe-area-inset-top, 14px) 14px 155px 14px;
+    }
+
+    .top-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 4px 14px 4px;
+    }
+
+    .brand-cluster { display: flex; align-items: center; gap: 12px; }
+    .core-logo {
+      width: 44px; height: 44px;
+      filter: drop-shadow(0 0 16px rgba(0, 242, 254, 0.5));
+    }
+
+    .engine-title {
+      font-family: var(--font-brand); font-size: 19px; font-weight: 800; letter-spacing: 0.08em;
+      background: linear-gradient(180deg, #FFFFFF 0%, #B0E9FF 60%, var(--cyan-neon) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+    }
+
+    .glass-pill-badge {
+      display: flex; align-items: center; gap: 6px; padding: 6px 14px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(0, 230, 118, 0.08) 100%);
+      border: 1px solid rgba(0, 230, 118, 0.4); border-radius: 999px;
+      backdrop-filter: blur(16px);
+      box-shadow: inset 0 1px 1px var(--glass-specular), 0 4px 14px rgba(0, 230, 118, 0.25);
+    }
+
+    .sync-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--emerald-neon); box-shadow: 0 0 10px var(--emerald-neon);
+      animation: pulseBeacon 1s infinite ease-in-out;
+    }
+
+    .sync-label { font-size: 11px; font-weight: 700; color: #A7F3D0; letter-spacing: 0.05em; }
+
+    /* INTERACTIVE CANVAS MODULE */
+    .live-chart-module {
+      position: relative;
+      background: radial-gradient(130% 100% at 50% 0%, rgba(255, 255, 255, 0.08) 0%, rgba(8, 14, 24, 0.88) 50%, rgba(2, 6, 12, 0.98) 100%);
+      border: 1px solid var(--glass-border); border-radius: 26px; padding: 16px; margin-bottom: 18px;
+      backdrop-filter: blur(30px);
+      transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+      transition: transform 0.1s ease-out;
+      box-shadow: inset 0 1.5px 1px rgba(255, 255, 255, 0.4), inset 0 -2px 6px rgba(0, 242, 254, 0.2), 0 20px 40px rgba(0, 0, 0, 0.8), 0 4px 20px rgba(0, 242, 254, 0.15);
+      overflow: hidden;
+    }
+
+    .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+    .chart-caption { font-size: 11px; letter-spacing: 0.12em; color: #94A3B8; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+    .live-indicator { width: 7px; height: 7px; border-radius: 50%; background: var(--emerald-neon); box-shadow: 0 0 8px var(--emerald-neon); animation: pulseBeacon 0.8s infinite; }
+    .chart-asset-row { display: flex; align-items: baseline; gap: 10px; margin-top: 2px; }
+    .chart-asset { font-family: var(--font-brand); font-size: 20px; font-weight: 800; color: #FFFFFF; letter-spacing: 0.04em; text-shadow: 0 0 12px rgba(0, 242, 254, 0.5); }
+    
+    .live-price-hero {
+      font-family: var(--font-num); font-size: 19px; font-weight: 700; color: var(--cyan-neon);
+      text-shadow: 0 0 12px rgba(0, 242, 254, 0.5); transition: color 0.15s ease;
+    }
+
+    .chart-change-pill { background: rgba(0, 230, 118, 0.15); border: 1px solid var(--emerald-neon); border-radius: 999px; padding: 2px 8px; font-family: var(--font-num); font-size: 11px; font-weight: 700; color: var(--emerald-neon); }
+    .chart-badge-glow { background: rgba(0, 242, 254, 0.12); border: 1px solid var(--cyan-neon); border-radius: 999px; padding: 4px 12px; font-family: var(--font-num); font-size: 12px; font-weight: 700; color: var(--cyan-neon); box-shadow: 0 0 14px rgba(0, 242, 254, 0.35); }
+
+    /* CROSSHAIR TELEMETRY HUD BAR */
+    .crosshair-hud {
+      display: flex; gap: 10px; font-family: var(--font-code); font-size: 10px; color: #94A3B8;
+      margin-top: 4px; min-height: 16px; overflow-x: auto; white-space: nowrap;
+    }
+    .hud-val { color: #FFFFFF; font-weight: 700; }
+    .hud-val.up { color: var(--emerald-neon); }
+    .hud-val.down { color: var(--crimson-neon); }
+
+    .canvas-wrap {
+      position: relative; width: 100%; height: 185px; margin: 4px 0 8px 0; touch-action: none;
+    }
+    canvas#chartCanvas { width: 100%; height: 100%; display: block; }
+
+    .chart-telemetry { display: flex; justify-content: space-between; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 10px; margin-top: 4px; }
+    .tele-cell { display: flex; flex-direction: column; }
+    .tele-label { font-size: 9px; letter-spacing: 0.1em; color: #64748B; font-weight: 600; }
+    .tele-val { font-family: var(--font-num); font-size: 12px; font-weight: 700; color: #E2E8F0; }
+    .tele-val.highlight { color: var(--emerald-neon); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: tabFadeIn 0.2s ease-out; }
+    @keyframes tabFadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    .section-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; color: #64748B; margin: 8px 4px 12px 4px; }
+
+    .liquid-card {
+      position: relative;
+      background: radial-gradient(120% 120% at 50% 0%, rgba(255, 255, 255, 0.08) 0%, rgba(12, 18, 28, 0.8) 50%, rgba(3, 7, 14, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 28px; padding: 18px; margin-bottom: 16px; backdrop-filter: blur(30px);
+      transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+      transition: transform 0.1s ease-out;
+      box-shadow: inset 0 1.5px 1px var(--glass-specular), inset 0 -2px 8px rgba(0, 242, 254, 0.18), 0 24px 48px rgba(0, 0, 0, 0.85), 0 8px 24px -4px rgba(0, 230, 118, 0.15);
+    }
+
+    .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .pair-badge { font-family: var(--font-brand); font-size: 20px; font-weight: 800; letter-spacing: 0.04em; color: #FFFFFF; }
+    .score-liquid-pill { background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, rgba(0, 230, 118, 0.2) 100%); border: 1.5px solid var(--emerald-neon); color: var(--emerald-neon); padding: 4px 14px; border-radius: 999px; font-family: var(--font-num); font-size: 13px; font-weight: 700; }
+
+    .liquid-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .liquid-cell { background: rgba(0, 0, 0, 0.55); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 10px 12px; }
+    .cell-title { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #94A3B8; margin-bottom: 4px; }
+    .cell-value { font-family: var(--font-num); font-size: 15px; font-weight: 700; color: #FFFFFF; }
+    .cell-value.entry { color: var(--cyan-neon); text-shadow: 0 0 10px rgba(0, 242, 254, 0.4); }
+    .cell-value.stop { color: var(--crimson-neon); }
+    .cell-value.target { color: var(--emerald-neon); text-shadow: 0 0 10px rgba(0, 230, 118, 0.4); }
+
+    .btn-row { display: flex; gap: 10px; }
+    .liquid-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 16px; border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: radial-gradient(100% 120% at 50% 0%, rgba(255, 255, 255, 0.28) 0%, rgba(12, 22, 38, 0.85) 60%, rgba(3, 7, 16, 0.95) 100%);
+      color: #FFFFFF; font-family: var(--font-body); font-size: 14px; font-weight: 700; cursor: pointer; backdrop-filter: blur(20px);
+      box-shadow: inset 0 1.5px 1px rgba(255, 255, 255, 0.7), inset 0 -2px 6px rgba(0, 242, 254, 0.3), 0 8px 20px rgba(0, 0, 0, 0.7);
+    }
+    .liquid-btn:active { transform: scale(0.97); }
+    .liquid-btn.secondary { border: 1px solid rgba(255, 255, 255, 0.2); }
+
+    .watchlist-item {
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(12, 18, 28, 0.75); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 20px;
+      padding: 14px 16px; margin-bottom: 12px; backdrop-filter: blur(20px); cursor: pointer;
+    }
+    .watchlist-item:active { transform: scale(0.98); border-color: var(--cyan-neon); }
+    .watch-left { display: flex; flex-direction: column; gap: 2px; }
+    .watch-pair { font-family: var(--font-brand); font-size: 16px; font-weight: 700; color: #FFFFFF; }
+    .watch-vol { font-size: 11px; color: #64748B; }
+    .watch-right { display: flex; align-items: center; gap: 12px; }
+    .watch-price-box { text-align: right; }
+    .watch-price { font-family: var(--font-num); font-size: 15px; font-weight: 700; color: #F8FAFC; }
+    .watch-delta { font-family: var(--font-num); font-size: 11px; font-weight: 700; }
+    .watch-delta.up { color: var(--emerald-neon); }
+    .watch-delta.down { color: var(--crimson-neon); }
+    .watch-confluence { font-family: var(--font-num); font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12); }
+    .watch-confluence.pass { color: var(--emerald-neon); border-color: var(--emerald-neon); background: rgba(0, 230, 118, 0.12); box-shadow: 0 0 10px rgba(0, 230, 118, 0.25); }
+
+    .terminal-console {
+      background: rgba(4, 8, 14, 0.95); border: 1px solid rgba(0, 242, 254, 0.3); border-radius: 22px;
+      padding: 16px; font-family: var(--font-code); font-size: 11px; line-height: 1.6; color: #A5F3FC;
+      max-height: 380px; overflow-y: auto;
+    }
+    .term-line { margin-bottom: 6px; }
+    .term-tag { color: var(--emerald-neon); font-weight: 700; }
+    .term-dim { color: #475569; }
+    .term-controls { display: flex; gap: 10px; margin-top: 12px; }
+    .term-btn { flex: 1; padding: 12px; border-radius: 12px; background: rgba(0, 242, 254, 0.1); border: 1px solid var(--cyan-neon); color: var(--cyan-neon); font-family: var(--font-body); font-size: 13px; font-weight: 700; cursor: pointer; }
+
+    .fixed-dock-container {
+      position: fixed; bottom: 0; left: 0; right: 0; padding: 8px 14px env(safe-area-inset-bottom, 14px) 14px;
+      background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.92) 30%, #000000 100%);
+      display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 9999;
+    }
+    .dock-tabs-cluster { display: flex; gap: 16px; align-items: center; background: rgba(10, 16, 26, 0.7); padding: 4px 12px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(16px); }
+    .tab-trigger-btn { background: transparent; border: none; font-family: var(--font-body); font-size: 15px; font-weight: 700; color: #64748B; padding: 6px 14px; border-radius: 999px; cursor: pointer; }
+    .tab-trigger-btn.active { color: var(--cyan-neon); background: rgba(0, 242, 254, 0.12); text-shadow: 0 0 12px rgba(0, 242, 254, 0.6); }
+
+    .attribution-capsule-3d {
+      position: relative; width: 100%; max-width: 380px; padding: 10px 18px; border-radius: 999px;
+      background: radial-gradient(140% 120% at 50% 0%, rgba(255, 255, 255, 0.22) 0%, rgba(10, 18, 30, 0.88) 55%, rgba(2, 6, 14, 0.98) 100%);
+      border: 1.5px solid rgba(255, 255, 255, 0.38); backdrop-filter: blur(32px);
+      transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+      transition: transform 0.1s ease-out;
+      box-shadow: inset 0 2px 2px rgba(255, 255, 255, 0.85), inset 0 -3px 12px rgba(0, 230, 118, 0.45), 0 14px 34px -4px rgba(0, 0, 0, 0.95), 0 10px 28px -2px rgba(0, 230, 118, 0.45), 0 0 24px rgba(0, 242, 254, 0.35);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;
+    }
+    .capsule-line-1 { display: flex; align-items: center; gap: 7px; font-family: var(--font-brand); font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2px; }
+    .brand-glow-tag { color: var(--cyan-neon); text-shadow: 0 0 10px rgba(0, 242, 254, 0.7); }
+    .credit-sub { color: #94A3B8; font-weight: 600; }
+    .capsule-line-2 { display: flex; align-items: baseline; justify-content: center; gap: 8px; width: 100%; }
+    .author-name-metallic {
+      font-family: var(--font-brand); font-size: 18px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase;
+      background: linear-gradient(180deg, #FFFFFF 0%, #E2E8F0 40%, #94A3B8 52%, #F8FAFC 85%, #CBD5E1 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.25));
+    }
+    .capsule-version { font-family: var(--font-brand); font-size: 9px; font-weight: 700; color: #64748B; }
+    @keyframes pulseBeacon { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
+  </style>
+</head>
+
+<body>
+  <div class="app-viewport">
+    <header class="top-header">
+      <div class="brand-cluster">
+        <svg class="core-logo" viewBox="0 0 120 120" fill="none" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)">
           <defs>
-            <linearGradient id="cGreen" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#55FFAA"/>
-              <stop offset="50%" stop-color="#00E676"/>
-              <stop offset="100%" stop-color="#009944"/>
+            <linearGradient id="chassisBorder" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#00F2FE" stop-opacity="0.9"/>
+              <stop offset="50%" stop-color="#00E676" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.1"/>
             </linearGradient>
-            <linearGradient id="cRed" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#FF6B8B"/>
-              <stop offset="50%" stop-color="#FF2A55"/>
-              <stop offset="100%" stop-color="#991530"/>
+            <linearGradient id="coinGrad" x1="30" y1="20" x2="90" y2="85" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#1E293B"/><stop offset="50%" stop-color="#0F172A"/><stop offset="100%" stop-color="#020617"/>
             </linearGradient>
-            <filter id="cShadow" x="-30%" y="-30%" width="160%" height="160%">
-              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.8"/>
-            </filter>
-            <filter id="glowGreen" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3" result="b"/>
-              <feComposite in="SourceGraphic" in2="b" operator="over"/>
+            <linearGradient id="sGrad" x1="42" y1="36" x2="78" y2="76" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#00F2FE"/><stop offset="100%" stop-color="#00E676"/>
+            </linearGradient>
+            <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/>
             </filter>
           </defs>
-          <line x1="0" y1="40" x2="${w}" y2="40" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-          <line x1="0" y1="90" x2="${w}" y2="90" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-          <line x1="0" y1="140" x2="${w}" y2="140" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-      `;
+          <rect x="2" y="2" width="116" height="116" rx="26" fill="#070B12" stroke="url(#chassisBorder)" stroke-width="2.5"/>
+          <path d="M22 88 L60 104 L98 88 L60 72 Z" fill="rgba(0, 230, 118, 0.08)" stroke="#00E676" stroke-width="1.2" stroke-dasharray="3 2"/>
+          <path d="M30 82 L60 94 L90 82 L60 70 Z" fill="rgba(0, 242, 254, 0.12)" stroke="#00F2FE" stroke-width="1.5"/>
+          <line x1="60" y1="70" x2="60" y2="60" stroke="#00F2FE" stroke-width="1.5"/>
+          <circle cx="22" cy="88" r="2" fill="#00E676"/><circle cx="98" cy="88" r="2" fill="#00E676"/>
+          <circle cx="60" cy="50" r="28" fill="url(#coinGrad)" stroke="#00F2FE" stroke-width="2" filter="url(#neonGlow)"/>
+          <circle cx="60" cy="50" r="24" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1"/>
+          <path d="M68 38 H52 C48 38 46 40 46 44 V47 C46 51 48 53 52 53 H68 C72 53 74 55 74 59 V62 C74 66 72 68 68 68 H50" stroke="url(#sGrad)" stroke-width="4.5" stroke-linecap="round"/>
+        </svg>
+        <span class="engine-title">COINSIFT</span>
+      </div>
+      <div class="glass-pill-badge">
+        <span class="sync-dot"></span>
+        <span class="sync-label" id="streamStatusLabel">120Hz Worker Core</span>
+      </div>
+    </header>
 
-      let peakX = 0;
-      let peakY = 0;
+    <!-- 120HZ INTERACTIVE CANVAS WITH TOUCH GESTURES -->
+    <section class="live-chart-module">
+      <div class="chart-header">
+        <div>
+          <div class="chart-caption">
+            <span class="live-indicator"></span>
+            <span>3D QUANT TELEMETRY RADAR (INTERACTIVE GESTURES)</span>
+          </div>
+          <div class="chart-asset-row">
+            <span class="chart-asset" id="chartSymbolTitle">XRP / USD</span>
+            <span class="live-price-hero" id="livePriceHero">Syncing...</span>
+            <span class="chart-change-pill" id="chartDeltaTag">+0.00%</span>
+          </div>
+        </div>
+        <div class="chart-badge-glow" id="chartScoreBadge">85 / 100</div>
+      </div>
 
-      candleData.forEach((c, i) => {
-        const x = i * slotW + (slotW / 2);
-        const isGreen = c.c >= c.o;
+      <!-- Crosshair Wick Inspector HUD -->
+      <div class="crosshair-hud" id="crosshairHud">
+        <span>O: <span class="hud-val" id="hudO">---</span></span>
+        <span>H: <span class="hud-val" id="hudH">---</span></span>
+        <span>L: <span class="hud-val" id="hudL">---</span></span>
+        <span>C: <span class="hud-val" id="hudC">---</span></span>
+        <span>VOL: <span class="hud-val" id="hudV">---</span></span>
+        <span>RSI: <span class="hud-val" id="hudRSI">---</span></span>
+      </div>
 
-        const yH = priceToY(c.h);
-        const yL = priceToY(c.l);
-        const yO = priceToY(c.o);
-        const yC = priceToY(c.c);
+      <div class="canvas-wrap">
+        <canvas id="chartCanvas"></canvas>
+      </div>
 
-        const top = Math.min(yO, yC);
-        const height = Math.max(3, Math.abs(yC - yO));
-        const color = isGreen ? '#00E676' : '#FF2A55';
-        const grad = isGreen ? 'url(#cGreen)' : 'url(#cRed)';
+      <div class="chart-telemetry">
+        <div class="tele-cell">
+          <span class="tele-label">RSI (14)</span>
+          <span class="tele-val highlight" id="teleRsiVal">54.2</span>
+        </div>
+        <div class="tele-cell">
+          <span class="tele-label">EMA (9/21)</span>
+          <span class="tele-val highlight" id="teleEmaVal">BULLISH ALIGN</span>
+        </div>
+        <div class="tele-cell">
+          <span class="tele-label">VOL DELTA PROXY</span>
+          <span class="tele-val highlight" id="teleVolDeltaVal">+14.2% (BUY)</span>
+        </div>
+        <div class="tele-cell">
+          <span class="tele-label">24H VOLUME</span>
+          <span class="tele-val" id="teleVolVal">---</span>
+        </div>
+      </div>
+    </section>
 
-        if (i === peakIdx) {
-          peakX = x;
-          peakY = yH;
-        }
+    <!-- SIGNALS TAB (100% READ-ONLY OBSERVATION NOMENCLATURE) -->
+    <div id="signalsTab" class="tab-content active">
+      <div class="section-eyebrow">CONFLUENCE RADAR & RECENT CANDIDATES</div>
+      <div id="cardsFeed">
+        <div class="liquid-card">
+          <div class="card-top">
+            <div class="pair-badge" id="cardPairTitle">#XRP/USD</div>
+            <div class="score-liquid-pill" id="cardScorePill">85/100</div>
+          </div>
+          <div class="liquid-grid">
+            <div class="liquid-cell">
+              <div class="cell-title">CONFLUENCE ZONE</div>
+              <div class="cell-value entry" id="cardEntryZone">Syncing...</div>
+            </div>
+            <div class="liquid-cell">
+              <div class="cell-title">MARKET SPOT</div>
+              <div class="cell-value" id="cardMarketPrice">---</div>
+            </div>
+            <div class="liquid-cell">
+              <div class="cell-title">KEY SUPPORT (INVALIDATION)</div>
+              <div class="cell-value stop" id="cardStopLoss">---</div>
+            </div>
+            <div class="liquid-cell">
+              <div class="cell-title">RESISTANCE CORRIDORS</div>
+              <div class="cell-value target" id="cardTargets">---</div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="liquid-btn" onclick="openTradingView()">TradingView</button>
+            <button class="liquid-btn secondary" onclick="switchTab('terminal')">Inspect Telemetry</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        svg += `<line x1="${x.toFixed(1)}" y1="${yH.toFixed(1)}" x2="${x.toFixed(1)}" y2="${yL.toFixed(1)}" stroke="${color}" stroke-width="1.5"/>`;
-        const isLast = (i === count - 1);
-        const filt = isLast ? 'filter="url(#glowGreen)"' : 'filter="url(#cShadow)"';
-        svg += `<rect x="${(x - candleW / 2).toFixed(1)}" y="${top.toFixed(1)}" width="${candleW.toFixed(1)}" height="${height.toFixed(1)}" rx="1" fill="${grad}" ${filt}/>`;
-      });
+    <!-- WATCHLIST TAB (8 ASSETS WITH INSTANT INDEXEDDB PERSISTENCE) -->
+    <div id="watchlistTab" class="tab-content">
+      <div class="section-eyebrow">MONITORED ASSET RADAR (8 HIGH-BETA PAIRS)</div>
+      <div id="watchlistContainer"></div>
+    </div>
 
-      const activeCandle = candleData[candleData.length - 1];
-      const liveY = priceToY(activeCandle.c);
-      svg += `
-        <line x1="0" y1="${liveY.toFixed(1)}" x2="${w}" y2="${liveY.toFixed(1)}" stroke="#00F2FE" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.85"/>
-        <circle cx="${w - 6}" cy="${liveY.toFixed(1)}" r="3.5" fill="#00E676" filter="url(#glowGreen)"/>
-      `;
+    <!-- TERMINAL TAB -->
+    <div id="terminalTab" class="tab-content">
+      <div class="section-eyebrow">QUANT ENGINE REALTIME TERMINAL</div>
+      <div class="terminal-console" id="termConsole">
+        <div class="term-line"><span class="term-dim">[SYSTEM]</span> COINSIFT QUANT ENGINE v2.0 ONLINE</div>
+        <div class="term-line"><span class="term-tag">[THREAD]</span> Web Worker pipeline active (off-thread math compute).</div>
+        <div class="term-line"><span class="term-tag">[DB]</span> IndexedDB Local Cache initialized (zero cold-boot delay).</div>
+        <div class="term-line"><span class="term-dim">[GESTURES]</span> Interactive Canvas: Pan, Pinch-Zoom & Crosshair active.</div>
+      </div>
+      <div class="term-controls">
+        <button class="term-btn" onclick="forceRehydrate()">⚡ Re-sync All Feeds</button>
+        <button class="term-btn" onclick="clearConsole()">🧹 Clear Console</button>
+      </div>
+    </div>
+  </div>
 
-      if (peakX > 0) {
-        const elbowY = Math.max(12, peakY - 14);
-        const endX = Math.min(w - 70, peakX + 24);
-        const peakFormatted = formatPrice(maxP, MarketStore[activePair].decimals);
+  <footer class="fixed-dock-container">
+    <div class="dock-tabs-cluster">
+      <button class="tab-trigger-btn active" id="btnTabSignals" onclick="switchTab('signals')">Signals</button>
+      <button class="tab-trigger-btn" id="btnTabWatchlist" onclick="switchTab('watchlist')">Watchlist</button>
+      <button class="tab-trigger-btn" id="btnTabTerminal" onclick="switchTab('terminal')">Terminal</button>
+    </div>
+    <div class="attribution-capsule-3d">
+      <div class="capsule-line-1">
+        <span class="brand-glow-tag">COINSIFT ENGINE</span>
+        <span class="credit-sub">ENGINEERED BY</span>
+      </div>
+      <div class="capsule-line-2">
+        <span class="author-name-metallic">DHIRENDRA PANDEY</span>
+        <span class="capsule-version">v1.0</span>
+      </div>
+    </div>
+  </footer>
 
-        svg += `
-          <g id="peakCalloutGroup">
-            <line x1="${peakX.toFixed(1)}" y1="${(peakY - 3).toFixed(1)}" x2="${peakX.toFixed(1)}" y2="${elbowY.toFixed(1)}" stroke="#94A3B8" stroke-width="1.2"/>
-            <line x1="${peakX.toFixed(1)}" y1="${elbowY.toFixed(1)}" x2="${endX.toFixed(1)}" y2="${elbowY.toFixed(1)}" stroke="#94A3B8" stroke-width="1.2"/>
-            <circle cx="${endX + 2}" cy="${elbowY.toFixed(1)}" r="2.5" fill="#FFFFFF"/>
-            <text x="${endX + 8}" y="${(elbowY + 4).toFixed(1)}" fill="#FFFFFF" font-family="'Space Grotesk', sans-serif" font-size="12" font-weight="700">${peakFormatted}</text>
-          </g>
-        `;
+  <!-- =========================================================================
+       INLINE WEB WORKER SCRIPT DEFINITION (OFF-THREAD COMPUTE)
+       ========================================================================= -->
+  <script id="workerScript" type="application/javascript">
+    const pairs = ['XRP-USD','SOL-USD','BTC-USD','ETH-USD','DOGE-USD','ADA-USD','AVAX-USD','LINK-USD'];
+    let candleStore = {};
+    let ws = null;
+
+    pairs.forEach(p => { candleStore[p] = []; });
+
+    function computeRSI(candles, period = 14) {
+      if (candles.length < period + 1) return 55.0;
+      let gains = 0, losses = 0;
+      for (let i = candles.length - period; i < candles.length; i++) {
+        const diff = candles[i].c - candles[i - 1].c;
+        if (diff >= 0) gains += diff; else losses += Math.abs(diff);
       }
+      return (100 - (100 / (1 + (gains / (losses || 1))))).toFixed(1);
+    }
 
-      svg += `</svg>`;
-      container.innerHTML = svg;
+    function computeEMA(candles, period) {
+      if (candles.length < period) return candles[candles.length - 1].c;
+      const k = 2 / (period + 1);
+      let ema = candles[0].c;
+      for (let i = 1; i < candles.length; i++) ema = candles[i].c * k + ema * (1 - k);
+      return ema;
+    }
+
+    function computeConfluence(pair) {
+      const c = candleStore[pair];
+      if (!c || c.length < 15) return 80;
+      const rsi = parseFloat(computeRSI(c, 14));
+      const ema9 = computeEMA(c, 9), ema21 = computeEMA(c, 21);
+      let score = 50;
+      if (rsi >= 50 && rsi <= 68) score += 22; else if (rsi < 35) score += 16;
+      if (ema9 > ema21) score += 18; else score -= 8;
+      return Math.min(97, Math.max(48, Math.round(score)));
+    }
+
+    function initSocket() {
+      try {
+        ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
+        ws.onopen = () => {
+          ws.send(JSON.stringify({ type: 'subscribe', product_ids: pairs, channels: ['ticker'] }));
+        };
+        ws.onmessage = (e) => {
+          const msg = JSON.parse(e.data);
+          if (msg.type === 'ticker' && msg.product_id && msg.price) {
+            const p = msg.product_id;
+            const price = parseFloat(msg.price);
+            const nowMinute = Math.floor(Date.now() / 60000) * 60000;
+            let list = candleStore[p];
+
+            if (list.length > 0) {
+              let cur = list[list.length - 1];
+              if (cur.t >= nowMinute) {
+                cur.c = price;
+                if (price > cur.h) cur.h = price;
+                if (price < cur.l) cur.l = price;
+                cur.v = (cur.v || 0) + 1;
+              } else {
+                list.shift();
+                list.push({ t: nowMinute, o: cur.c, h: Math.max(cur.c, price), l: Math.min(cur.c, price), c: price, v: 1 });
+              }
+            }
+
+            const rsi = computeRSI(list);
+            const ema9 = computeEMA(list, 9);
+            const ema21 = computeEMA(list, 21);
+            const confluence = computeConfluence(p);
+
+            self.postMessage({
+              type: 'TICK',
+              pair: p,
+              price: price,
+              open24h: parseFloat(msg.open_24h || 0),
+              volume24h: msg.volume_24h,
+              candles: list,
+              rsi: rsi,
+              emaBullish: ema9 >= ema21,
+              score: confluence
+            });
+          }
+        };
+        ws.onclose = () => setTimeout(initSocket, 2000);
+      } catch (err) {}
+    }
+
+    self.onmessage = (e) => {
+      if (e.data.type === 'LOAD_CANDLES') {
+        candleStore[e.data.pair] = e.data.candles;
+      }
+    };
+
+    initSocket();
+  </script>
+
+  <!-- =========================================================================
+       MAIN UI ENGINE (INDEXEDDB, 120HZ CANVAS, GYROSCOPE & HAPTICS)
+       ========================================================================= -->
+  <script>
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+    function triggerHaptic(type = 'light') {
+      if ('vibrate' in navigator) {
+        try {
+          if (type === 'light') navigator.vibrate(12);
+          else if (type === 'medium') navigator.vibrate([18, 40, 18]);
+          else if (type === 'success') navigator.vibrate([25, 60, 35]);
+        } catch (e) {}
+      }
+    }
+
+    // Gyroscope Parallax
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', (e) => {
+        if (e.beta !== null && e.gamma !== null) {
+          const tiltX = Math.max(-12, Math.min(12, e.beta - 45)) * 0.35;
+          const tiltY = Math.max(-12, Math.min(12, e.gamma)) * 0.35;
+          document.documentElement.style.setProperty('--tilt-x', `${tiltX}deg`);
+          document.documentElement.style.setProperty('--tilt-y', `${tiltY}deg`);
+        }
+      }, { passive: true });
+    }
+
+    const MarketStore = {
+      'XRP-USD':  { name: 'XRP / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 85, decimals: 4 },
+      'SOL-USD':  { name: 'SOL / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 79, decimals: 2 },
+      'BTC-USD':  { name: 'BTC / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 82, decimals: 2 },
+      'ETH-USD':  { name: 'ETH / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 68, decimals: 2 },
+      'DOGE-USD': { name: 'DOGE / USD', price: 0, open24h: 0, delta: 0, vol: '---', score: 88, decimals: 5 },
+      'ADA-USD':  { name: 'ADA / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 74, decimals: 4 },
+      'AVAX-USD': { name: 'AVAX / USD', price: 0, open24h: 0, delta: 0, vol: '---', score: 81, decimals: 2 },
+      'LINK-USD': { name: 'LINK / USD', price: 0, open24h: 0, delta: 0, vol: '---', score: 76, decimals: 2 }
+    };
+
+    let activePair = 'XRP-USD';
+    let candleData = [];
+
+    // Canvas Interactive State
+    let canvas, ctx;
+    let viewOffset = 0; // Panning
+    let candleZoom = 1.0; // Pinch-to-zoom
+    let crosshairIndex = -1;
+    let isTouching = false;
+    let touchStartX = 0;
+    let initialPinchDist = 0;
+
+    function formatPrice(val, decimals = 4) {
+      if (!val || val === 0) return '---';
+      if (val >= 1000) return val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return val.toFixed(decimals);
     }
 
     // =========================================================================
-    // USER CONTROLS
+    // INDEXEDDB LOCAL STORAGE ENGINE
     // =========================================================================
+    let db;
+    function initIndexedDB() {
+      const req = indexedDB.open('CoinSiftDB', 1);
+      req.onupgradeneeded = (e) => {
+        const d = e.target.result;
+        if (!d.objectStoreNames.contains('candles')) {
+          d.createObjectStore('candles', { keyPath: 'pair' });
+        }
+      };
+      req.onsuccess = (e) => {
+        db = e.target.result;
+        loadCachedCandles(activePair);
+      };
+    }
+
+    function saveCandlesToDB(pair, candles) {
+      if (!db || !candles || candles.length === 0) return;
+      const tx = db.transaction('candles', 'readwrite');
+      tx.objectStore('candles').put({ pair, candles });
+    }
+
+    function loadCachedCandles(pair) {
+      if (!db) return;
+      const tx = db.transaction('candles', 'readonly');
+      const getReq = tx.objectStore('candles').get(pair);
+      getReq.onsuccess = (e) => {
+        if (e.target.result && e.target.result.candles.length > 0) {
+          candleData = e.target.result.candles;
+          renderCanvas120Hz();
+          if (worker) worker.postMessage({ type: 'LOAD_CANDLES', pair, candles: candleData });
+        }
+      };
+    }
+
+    // =========================================================================
+    // INITIALIZE WEB WORKER THREAD
+    // =========================================================================
+    let worker;
+    function initWorker() {
+      const blob = new Blob([document.getElementById('workerScript').textContent], { type: 'application/javascript' });
+      worker = new Worker(URL.createObjectURL(blob));
+
+      worker.onmessage = (e) => {
+        if (e.data.type === 'TICK') {
+          const { pair, price, open24h, volume24h, candles, rsi, emaBullish, score } = e.data;
+          const store = MarketStore[pair];
+          if (!store) return;
+
+          store.price = price;
+          if (open24h) store.open24h = open24h;
+          if (volume24h) store.vol = `$${(parseFloat(volume24h) / 1e6).toFixed(1)}M`;
+          store.score = score;
+
+          updateWatchlistDOM(pair);
+
+          if (pair === activePair) {
+            candleData = candles;
+            document.getElementById('livePriceHero').innerText = '$' + formatPrice(price, store.decimals);
+            document.getElementById('cardMarketPrice').innerText = '$' + formatPrice(price, store.decimals);
+            document.getElementById('chartScoreBadge').innerText = `${score} / 100`;
+            document.getElementById('cardScorePill').innerText = `${score}/100`;
+            document.getElementById('teleRsiVal').innerText = rsi;
+            document.getElementById('teleEmaVal').innerText = emaBullish ? 'BULLISH ALIGN' : 'BEARISH ALIGN';
+            document.getElementById('teleEmaVal').className = 'tele-val ' + (emaBullish ? 'highlight' : '');
+
+            // Confluence calculations
+            const sl = price * 0.985, t1 = price * 1.025, t2 = price * 1.050;
+            document.getElementById('cardEntryZone').innerText = `$${formatPrice(price * 0.995, store.decimals)} – $${formatPrice(price * 1.002, store.decimals)}`;
+            document.getElementById('cardStopLoss').innerText = `$${formatPrice(sl, store.decimals)}`;
+            document.getElementById('cardTargets').innerText = `$${formatPrice(t1, store.decimals)} / $${formatPrice(t2, store.decimals)}`;
+
+            renderCanvas120Hz();
+            saveCandlesToDB(pair, candles);
+          }
+        }
+      };
+    }
+
+    // =========================================================================
+    // 120HZ INTERACTIVE CANVAS RENDERER & TOUCH GESTURES
+    // =========================================================================
+    function setupCanvas() {
+      canvas = document.getElementById('chartCanvas');
+      ctx = canvas.getContext('2d');
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      // Touch Gestures: Panning, Pinch-Zoom, Crosshair Drag
+      canvas.addEventListener('touchstart', (e) => {
+        isTouching = true;
+        if (e.touches.length === 1) {
+          touchStartX = e.touches[0].clientX;
+          updateCrosshair(e.touches[0].clientX);
+        } else if (e.touches.length === 2) {
+          crosshairIndex = -1;
+          initialPinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        }
+      }, { passive: false });
+
+      canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (e.touches.length === 1) {
+          const deltaX = e.touches[0].clientX - touchStartX;
+          touchStartX = e.touches[0].clientX;
+          viewOffset = Math.max(-15, Math.min(15, viewOffset + deltaX * 0.15));
+          updateCrosshair(e.touches[0].clientX);
+          renderCanvas120Hz();
+        } else if (e.touches.length === 2) {
+          const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+          candleZoom = Math.max(0.6, Math.min(2.5, candleZoom * (dist / initialPinchDist)));
+          initialPinchDist = dist;
+          renderCanvas120Hz();
+        }
+      }, { passive: false });
+
+      canvas.addEventListener('touchend', () => {
+        isTouching = false;
+        crosshairIndex = -1;
+        resetHud();
+        renderCanvas120Hz();
+      });
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 2;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+      renderCanvas120Hz();
+    }
+
+    function updateCrosshair(touchX) {
+      const rect = canvas.getBoundingClientRect();
+      const x = touchX - rect.left;
+      const count = candleData.length;
+      if (count === 0) return;
+      const slotW = (rect.width / count) * candleZoom;
+      const idx = Math.floor((x - viewOffset) / slotW);
+      if (idx >= 0 && idx < count) {
+        crosshairIndex = idx;
+        const c = candleData[idx];
+        const dec = MarketStore[activePair].decimals;
+        document.getElementById('hudO').innerText = formatPrice(c.o, dec);
+        document.getElementById('hudH').innerText = formatPrice(c.h, dec);
+        document.getElementById('hudL').innerText = formatPrice(c.l, dec);
+        document.getElementById('hudC').innerText = formatPrice(c.c, dec);
+        document.getElementById('hudC').className = 'hud-val ' + (c.c >= c.o ? 'up' : 'down');
+        document.getElementById('hudV').innerText = c.v || 1;
+        document.getElementById('hudRSI').innerText = document.getElementById('teleRsiVal').innerText;
+      }
+    }
+
+    function resetHud() {
+      document.getElementById('hudO').innerText = '---';
+      document.getElementById('hudH').innerText = '---';
+      document.getElementById('hudL').innerText = '---';
+      document.getElementById('hudC').innerText = '---';
+      document.getElementById('hudC').className = 'hud-val';
+      document.getElementById('hudV').innerText = '---';
+      document.getElementById('hudRSI').innerText = '---';
+    }
+
+    function renderCanvas120Hz() {
+      if (!ctx || !candleData || candleData.length === 0) return;
+      const rect = canvas.getBoundingClientRect();
+      const w = rect.width, h = rect.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Gridlines
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      ctx.lineWidth = 1;
+      [40, 90, 140].forEach(y => {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      });
+
+      const count = candleData.length;
+      let minP = Infinity, maxP = -Infinity, peakIdx = 0;
+      candleData.forEach((c, idx) => {
+        if (c.l < minP) minP = c.l;
+        if (c.h > maxP) { maxP = c.h; peakIdx = idx; }
+      });
+
+      const pad = (maxP - minP || 1) * 0.12;
+      const vMin = minP - pad, vMax = maxP + pad, vRange = vMax - vMin;
+      function getY(p) { return h - ((p - vMin) / vRange) * (h * 0.85) - 12; }
+
+      const slotW = (w / count) * candleZoom;
+      const candleW = Math.max(4.5, slotW * 0.62);
+
+      let peakX = 0, peakY = 0;
+      candleData.forEach((c, i) => {
+        const x = i * slotW + (slotW / 2) + viewOffset;
+        if (x < -20 || x > w + 20) return;
+
+        const isGreen = c.c >= c.o;
+        const yH = getY(c.h), yL = getY(c.l), yO = getY(c.o), yC = getY(c.c);
+
+        if (i === peakIdx) { peakX = x; peakY = yH; }
+
+        // Wick
+        ctx.beginPath();
+        ctx.strokeStyle = isGreen ? '#00E676' : '#FF2A55';
+        ctx.lineWidth = 1.5;
+        ctx.moveTo(x, yH); ctx.lineTo(x, yL); ctx.stroke();
+
+        // 3D Body
+        const top = Math.min(yO, yC);
+        const bHeight = Math.max(3, Math.abs(yC - yO));
+        const grad = ctx.createLinearGradient(x, top, x, top + bHeight);
+        if (isGreen) { grad.addColorStop(0, '#55FFAA'); grad.addColorStop(1, '#009944'); }
+        else { grad.addColorStop(0, '#FF6B8B'); grad.addColorStop(1, '#991530'); }
+
+        ctx.fillStyle = grad;
+        ctx.fillRect(x - candleW / 2, top, candleW, bHeight);
+      });
+
+      // Active Spot Pulse Line
+      const last = candleData[candleData.length - 1];
+      const liveY = getY(last.c);
+      ctx.setLineDash([4, 3]);
+      ctx.strokeStyle = '#00F2FE';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(0, liveY); ctx.lineTo(w, liveY); ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Spot beacon
+      ctx.beginPath();
+      ctx.arc(w - 6, liveY, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#00E676';
+      ctx.shadowColor = '#00E676';
+      ctx.shadowBlur = 10;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Peak Label Callout
+      if (peakX > 0 && peakX < w) {
+        ctx.font = '700 12px "Space Grotesk", sans-serif';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText(formatPrice(maxP, MarketStore[activePair].decimals), Math.min(w - 65, peakX + 10), Math.max(16, peakY - 8));
+      }
+
+      // Crosshair HUD Line
+      if (crosshairIndex >= 0 && crosshairIndex < count) {
+        const cX = crosshairIndex * slotW + (slotW / 2) + viewOffset;
+        const cY = getY(candleData[crosshairIndex].c);
+
+        ctx.setLineDash([2, 2]);
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(cX, 0); ctx.lineTo(cX, h); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, cY); ctx.lineTo(w, cY); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+
+    // =========================================================================
+    // WATCHLIST & USER INTERACTION
+    // =========================================================================
+    function renderWatchlistMarkup() {
+      const c = document.getElementById('watchlistContainer');
+      c.innerHTML = Object.keys(MarketStore).map(pair => `
+        <div class="watchlist-item" onclick="selectPair('${pair}')">
+          <div class="watch-left">
+            <span class="watch-pair">${MarketStore[pair].name}</span>
+            <span class="watch-vol" id="watchVol-${pair}">Vol ---</span>
+          </div>
+          <div class="watch-right">
+            <div class="watch-price-box">
+              <div class="watch-price" id="watchPrice-${pair}">Syncing...</div>
+              <div class="watch-delta" id="watchDelta-${pair}">0.00%</div>
+            </div>
+            <span class="watch-confluence ${MarketStore[pair].score >= 80 ? 'pass' : ''}" id="watchScore-${pair}">${MarketStore[pair].score}/100</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateWatchlistDOM(pair) {
+      const s = MarketStore[pair];
+      const pEl = document.getElementById(`watchPrice-${pair}`);
+      const dEl = document.getElementById(`watchDelta-${pair}`);
+      const vEl = document.getElementById(`watchVol-${pair}`);
+      const sEl = document.getElementById(`watchScore-${pair}`);
+
+      if (pEl && s.price > 0) pEl.innerText = '$' + formatPrice(s.price, s.decimals);
+      if (dEl && s.open24h > 0) {
+        const delta = ((s.price - s.open24h) / s.open24h) * 100;
+        s.delta = delta;
+        dEl.innerText = (delta >= 0 ? '+' : '') + delta.toFixed(2) + '%';
+        dEl.className = 'watch-delta ' + (delta >= 0 ? 'up' : 'down');
+      }
+      if (vEl && s.vol !== '---') vEl.innerText = `Vol ${s.vol}`;
+      if (sEl) {
+        sEl.innerText = `${s.score}/100`;
+        sEl.className = 'watch-confluence ' + (s.score >= 80 ? 'pass' : '');
+      }
+    }
+
     async function selectPair(pair) {
       triggerHaptic('light');
       activePair = pair;
-      updateSignalsCardFast(true);
+      document.getElementById('chartSymbolTitle').innerText = MarketStore[pair].name;
+      document.getElementById('cardPairTitle').innerText = '#' + MarketStore[pair].name.replace(' / ', '/');
+      viewOffset = 0;
       switchTab('signals');
+      loadCachedCandles(pair);
       await fetchRealCandles(pair);
+    }
+
+    async function fetchRealCandles(pair) {
+      try {
+        const res = await fetch(`[https://api.exchange.coinbase.com/products/$](https://api.exchange.coinbase.com/products/$){pair}/candles?granularity=60`);
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          candleData = data.slice(0, 30).reverse().map(c => ({
+            t: c[0] * 1000, l: parseFloat(c[1]), h: parseFloat(c[2]), o: parseFloat(c[3]), c: parseFloat(c[4]), v: parseFloat(c[5])
+          }));
+          renderCanvas120Hz();
+          saveCandlesToDB(pair, candleData);
+          if (worker) worker.postMessage({ type: 'LOAD_CANDLES', pair, candles: candleData });
+        }
+      } catch (e) {}
     }
 
     function switchTab(target) {
       triggerHaptic('light');
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.querySelectorAll('.tab-trigger-btn').forEach(b => b.classList.remove('active'));
-
-      if (target === 'signals') {
-        document.getElementById('signalsTab').classList.add('active');
-        document.getElementById('btnTabSignals').classList.add('active');
-      } else if (target === 'watchlist') {
-        document.getElementById('watchlistTab').classList.add('active');
-        document.getElementById('btnTabWatchlist').classList.add('active');
-      } else if (target === 'terminal') {
-        document.getElementById('terminalTab').classList.add('active');
-        document.getElementById('btnTabTerminal').classList.add('active');
-      }
+      document.getElementById(target + 'Tab').classList.add('active');
+      document.getElementById('btnTab' + target.charAt(0).toUpperCase() + target.slice(1)).classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function logTerminal(msg, tag = 'term-tag') {
-      const c = document.getElementById('termConsole');
-      if (!c) return;
-      const time = new Date().toLocaleTimeString();
-      const div = document.createElement('div');
-      div.className = 'term-line';
-      div.innerHTML = `<span class="${tag}">[${time}]</span> ${msg}`;
-      c.appendChild(div);
-      if (c.childNodes.length > 70) c.removeChild(c.firstChild);
-      c.scrollTop = c.scrollHeight;
-    }
+    function clearConsole() { triggerHaptic('light'); document.getElementById('termConsole').innerHTML = '<div class="term-line"><span class="term-dim">[SYSTEM]</span> Buffer cleared.</div>'; }
+    function forceRehydrate() { triggerHaptic('medium'); fetchRealCandles(activePair); }
+    function openTradingView() { triggerHaptic('light'); window.open(`[https://www.tradingview.com/chart/?symbol=COINBASE:$](https://www.tradingview.com/chart/?symbol=COINBASE:$){activePair.replace('-', '')}`); }
 
-    function clearConsole() {
-      triggerHaptic('light');
-      document.getElementById('termConsole').innerHTML = `<div class="term-line"><span class="term-dim">[SYSTEM]</span> Terminal buffer cleared. Stream active.</div>`;
-    }
-
-    function forceRehydrate() {
-      triggerHaptic('medium');
-      hydrateAllPairsFast();
-      fetchRealCandles(activePair);
-      connectCoinbaseWebSocket();
-    }
-
-    function openTradingView() {
-      triggerHaptic('light');
-      const sym = activePair.replace('-', '');
-      window.open(`https://www.tradingview.com/chart/?symbol=COINBASE:${sym}`);
-    }
-
-    function copyTradeDetails() {
-      triggerHaptic('success');
-      const data = MarketStore[activePair];
-      const text = `COINSIFT ALERT: ${data.name} | Price: $${formatPrice(data.price, data.decimals)} | SL: ${document.getElementById('cardStopLoss').innerText} | Target: ${document.getElementById('cardTargets').innerText}`;
-      navigator.clipboard.writeText(text);
-      alert('Live trade signal copied!');
-    }
-
-    // Launch
-    start120HzLoop();
-    hydrateAllPairsFast();
+    // Bootstrap
+    renderWatchlistMarkup();
+    setupCanvas();
+    initIndexedDB();
+    initWorker();
     fetchRealCandles(activePair);
-    connectCoinbaseWebSocket();
   </script>
 </body>
 </html>
