@@ -5,10 +5,8 @@ import requests
 import pandas as pd
 
 DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
-
-if not DISCORD_WEBHOOK_URL:
-    print("Error: DISCORD_WEBHOOK_URL environment variable is missing.")
-    sys.exit(1)
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
@@ -23,8 +21,8 @@ def get_fear_and_greed():
         if res.status_code == 200:
             data = res.json()
             return int(data["data"][0]["value"]), data["data"][0]["value_classification"]
-    except Exception as e:
-        print(f"F&G fallback: {e}")
+    except Exception:
+        pass
     return 55, "Neutral"
 
 def fetch_candles(product_id):
@@ -44,8 +42,7 @@ def fetch_candles(product_id):
         df["low"] = df["low"].astype(float)
         df["volume"] = df["volume"].astype(float)
         return df
-    except Exception as e:
-        print(f"Error fetching {product_id}: {e}")
+    except Exception:
         return None
 
 def compute_indicators(df):
@@ -99,7 +96,6 @@ def evaluate_setup(symbol, ind):
         score += 15
 
     atr = ind["atr"]
-    support = ind["support"]
     entry_mid = price
     risk = max(atr * 0.8, price * 0.012)
     stop_loss = entry_mid - risk
@@ -122,7 +118,9 @@ def evaluate_setup(symbol, ind):
         "rsi": f"{ind['rsi']:.1f}"
     }
 
-def send_discord_shortlist(shortlist, fg_val, fg_class):
+def send_discord(shortlist, fg_val, fg_class):
+    if not DISCORD_WEBHOOK_URL:
+        return
     embeds = []
     header_text = f"CoinSift Intelligence | Market Bias: {fg_class} ({fg_val}/100)"
 
@@ -151,12 +149,42 @@ def send_discord_shortlist(shortlist, fg_val, fg_class):
         "content": f"🚨 **{header_text}**\nActive high-confluence candidates:",
         "embeds": embeds[:3]
     }
-
     try:
         res = requests.post(DISCORD_WEBHOOK_URL, json=payload, headers=HEADERS, timeout=10)
         print(f"Discord Response: {res.status_code}")
     except Exception as e:
-        print(f"Discord send error: {e}")
+        print(f"Discord error: {e}")
+
+def send_telegram(shortlist, fg_val, fg_class):
+    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+        print("Telegram secrets missing. Skipping.")
+        return
+
+    text = f"🚨 <b>CoinSift Market Intelligence</b>\nMarket Bias: <b>{fg_class} ({fg_val}/100)</b>\n\n"
+    for item in shortlist:
+        tv_link = f"https://www.tradingview.com/chart/?symbol=BINANCE:{item['raw_symbol']}.P"
+        text += (
+            f"🔹 <b>#{item['symbol']} / USD</b> (Score: <code>{item['score']}/100</code>)\n"
+            f"• Price: <code>${item['price']:.2f}</code>\n"
+            f"• TP 1: <code>{item['tp1']}</code> | TP 2: <code>{item['tp2']}</code>\n"
+            f"• Stop: <code>{item['stop']}</code> (R:R <code>{item['rr_ratio']}</code>)\n"
+            f"• RSI: <code>{item['rsi']}</code> | RVOL: <code>{item['rvol']}</code>\n"
+            f"• <a href=\"{tv_link}\">Open TradingView Chart</a>\n\n"
+        )
+    text += "<i>CoinSift Automated Engine • @CoinSift_bot</i>"
+
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    payload = {
+        "chat_id": TELEGRAM_CHAT_ID,
+        "text": text,
+        "parse_mode": "HTML",
+        "disable_web_page_preview": True
+    }
+    try:
+        res = requests.post(url, json=payload, timeout=10)
+        print(f"Telegram Response: {res.status_code}")
+    except Exception as e:
+        print(f"Telegram error: {e}")
 
 def main():
     print("Initiating CoinSift Market Scan...")
@@ -177,24 +205,10 @@ def main():
             print(f"Skipping {pair}: {e}")
         time.sleep(0.1)
 
-    if not evaluated:
-        print("No pairs evaluated, sending fallback system check...")
-        evaluated.append({
-            "symbol": "BTC",
-            "raw_symbol": "BTCUSDT",
-            "score": 75,
-            "price": 68000.0,
-            "entry_range": "$67800 – $68200",
-            "stop": "$66500",
-            "tp1": "$70200",
-            "tp2": "$72500",
-            "rr_ratio": "1 : 2.2",
-            "rvol": "1.45x",
-            "rsi": "52.4"
-        })
-
     shortlist = sorted(evaluated, key=lambda x: x["score"], reverse=True)[:3]
-    send_discord_shortlist(shortlist, fg_val, fg_class)
+    if shortlist:
+        send_discord(shortlist, fg_val, fg_class)
+        send_telegram(shortlist, fg_val, fg_class)
     print("Scan cycle completed successfully.")
 
 if __name__ == "__main__":
