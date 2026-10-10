@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>CoinSift Engine</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-viewport">
+    <!-- Top-Left Header with Fixed Logo -->
+    <header class="top-header">
+      <div class="brand-cluster">
+        <img src="assets/icons/coinsift-core-logo.png" alt="CoinSift Logo" class="core-logo" />
+        <span class="engine-title">COINSIFT ENGINE</span>
+      </div>
+      <div class="sync-badge" id="syncStatus">
+        <span class="sync-dot"></span>
+        <span class="sync-label">System Synced</span>
+      </div>
+    </header>
+
+    <!-- Main Dynamic Feed Container -->
+    <main class="dashboard-content">
+      <!-- 3D Sentiment Gauge -->
+      <section class="gauge-card-3d" id="biasWidget">
+        <div class="gauge-label">MARKET BIAS</div>
+        <div class="gauge-dial-container">
+          <div class="gauge-meter-glow" id="meterGlow"></div>
+          <div class="gauge-text" id="biasText">CALIBRATING...</div>
+        </div>
+      </section>
+
+      <!-- Active Signals Feed / Zero State Host -->
+      <div class="section-title">TOP CONFLUENCE CANDIDATES</div>
+      <div id="cardsFeed" class="cards-deck"></div>
+    </main>
+
+    <!-- Fixed Bottom Controls & Attribution -->
+    <footer class="bottom-dock">
+      <nav class="nav-cluster">
+        <button class="nav-btn active">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+          <span>Signals</span>
+        </button>
+        <button class="nav-btn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM7 10h2v7H7v-7zm4-3h2v10h-2V7zm4 6h2v4h-2v-4z"/></svg>
+          <span>Watchlist</span>
+        </button>
+        <button class="nav-btn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          <span>Setup</span>
+        </button>
+      </nav>
+
+      <!-- Attribution Dock -->
+      <div class="attribution-pill-3d">
+        <span class="attr-bolt">⚡</span>
+        <span class="attr-brand">COINSIFT ENGINE</span>
+        <span class="attr-dot">•</span>
+        <span class="attr-credit">ENGINEERED BY <strong class="attr-name">DHIRENDRA PANDEY</strong></span>
+        <span class="attr-dot">•</span>
+        <span class="attr-ver">v1.0</span>
+        <span class="attr-beacon">●</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
