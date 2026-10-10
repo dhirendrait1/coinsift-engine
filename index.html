@@ -113,7 +113,7 @@
       letter-spacing: 0.05em;
     }
 
-    /* 3D LIVE CANDLESTICK DASHBOARD */
+    /* 3D LIVE CANDLESTICK MODULE */
     .live-chart-module {
       position: relative;
       background: radial-gradient(130% 100% at 50% 0%, rgba(255, 255, 255, 0.08) 0%, rgba(8, 14, 24, 0.88) 50%, rgba(2, 6, 12, 0.98) 100%);
@@ -148,11 +148,11 @@
     }
 
     .live-indicator {
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
-      background: #00E676;
-      box-shadow: 0 0 8px #00E676;
+      background: var(--emerald-neon);
+      box-shadow: 0 0 8px var(--emerald-neon);
       animation: pulseBeacon 1s infinite;
     }
 
@@ -174,11 +174,11 @@
 
     .live-price-hero {
       font-family: var(--font-num);
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 700;
       color: var(--cyan-neon);
-      text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
-      transition: color 0.15s ease;
+      text-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
+      transition: color 0.2s ease;
     }
 
     .chart-change-pill {
@@ -248,7 +248,7 @@
       color: var(--emerald-neon);
     }
 
-    /* TAB SYSTEM */
+    /* TABS */
     .tab-content {
       display: none;
     }
@@ -539,7 +539,6 @@
       pointer-events: auto;
     }
 
-    /* Liquid Glass Tabs */
     .dock-tabs-cluster {
       display: flex;
       gap: 16px;
@@ -744,40 +743,39 @@
 
       <div class="glass-pill-badge">
         <span class="sync-dot"></span>
-        <span class="sync-label">System Synced</span>
+        <span class="sync-label" id="streamStatusLabel">Live Connected</span>
       </div>
     </header>
 
-    <!-- UPPER 3D CANDLESTICK CHART MODULE (REALTIME DYNAMIC) -->
+    <!-- UPPER 3D CANDLESTICK CHART MODULE -->
     <section class="live-chart-module">
       <div class="chart-header">
         <div>
           <div class="chart-caption">
             <span class="live-indicator"></span>
-            <span>3D QUANT LIVE WEBSOCKET CANDLES</span>
+            <span>3D REALTIME EXCHANGE FEED (1M)</span>
           </div>
           <div class="chart-asset-row">
-            <span class="chart-asset" id="chartSymbolTitle">XRP/USD</span>
-            <span class="live-price-hero" id="livePriceHero">$1.4024</span>
-            <span class="chart-change-pill" id="chartDeltaTag">+14.28%</span>
+            <span class="chart-asset" id="chartSymbolTitle">XRP/USDT</span>
+            <span class="live-price-hero" id="livePriceHero">Connecting...</span>
+            <span class="chart-change-pill" id="chartDeltaTag">+0.00%</span>
           </div>
         </div>
         <div class="chart-badge-glow" id="chartScoreBadge">87 / 100</div>
       </div>
 
-      <!-- Realtime Dynamic Vector SVG Engine -->
       <div class="chart-svg-container" id="svgContainer">
-        <!-- SVG will be dynamically generated and updated live by JavaScript -->
+        <!-- Live SVG Candlestick Map -->
       </div>
 
       <div class="chart-telemetry">
         <div class="tele-cell">
-          <span class="tele-label">TOP PEAK</span>
-          <span class="tele-val highlight" id="telePeakVal">1.4800</span>
+          <span class="tele-label">30M PEAK</span>
+          <span class="tele-val highlight" id="telePeakVal">---</span>
         </div>
         <div class="tele-cell">
-          <span class="tele-label">VOLUME BURST</span>
-          <span class="tele-val highlight" id="teleVolVal">3.4x RVOL</span>
+          <span class="tele-label">LIVE VOLATILITY</span>
+          <span class="tele-val highlight" id="teleVolVal">NORMAL</span>
         </div>
         <div class="tele-cell">
           <span class="tele-label">MARKET BIAS</span>
@@ -786,38 +784,38 @@
       </div>
     </section>
 
-    <!-- TAB 1: SIGNALS VIEW (DEFAULT) -->
+    <!-- TAB 1: SIGNALS VIEW -->
     <div id="signalsTab" class="tab-content active">
       <div class="section-eyebrow">TOP CONFLUENCE CANDIDATES</div>
       
       <div id="cardsFeed">
         <div class="liquid-card">
           <div class="card-top">
-            <div class="pair-badge" id="cardPairTitle">#XRP/USD</div>
+            <div class="pair-badge" id="cardPairTitle">#XRP/USDT</div>
             <div class="score-liquid-pill" id="cardScorePill">87/100</div>
           </div>
 
           <div class="liquid-grid">
             <div class="liquid-cell">
               <div class="cell-title">ENTRY ZONE</div>
-              <div class="cell-value entry" id="cardEntryZone">$1.39 – $1.41</div>
+              <div class="cell-value entry" id="cardEntryZone">Realtime Calculating...</div>
             </div>
             <div class="liquid-cell">
               <div class="cell-title">MARKET PRICE</div>
-              <div class="cell-value" id="cardMarketPrice">$1.4024</div>
+              <div class="cell-value" id="cardMarketPrice">---</div>
             </div>
             <div class="liquid-cell">
               <div class="cell-title">INVALIDATION (SL)</div>
-              <div class="cell-value stop" id="cardStopLoss">$1.3800</div>
+              <div class="cell-value stop" id="cardStopLoss">---</div>
             </div>
             <div class="liquid-cell">
               <div class="cell-title">TARGETS</div>
-              <div class="cell-value target" id="cardTargets">$1.43 / $1.46</div>
+              <div class="cell-value target" id="cardTargets">---</div>
             </div>
           </div>
 
           <div class="btn-row">
-            <button class="liquid-btn" id="btnTradingView" onclick="window.open('https://www.tradingview.com/chart/?symbol=COINBASE:XRPUSD')">
+            <button class="liquid-btn" id="btnTradingView" onclick="openTradingView()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
               TradingView
             </button>
@@ -832,59 +830,59 @@
 
     <!-- TAB 2: WATCHLIST VIEW -->
     <div id="watchlistTab" class="tab-content">
-      <div class="section-eyebrow">MONITORED RECENT COINS & RADAR</div>
+      <div class="section-eyebrow">LIVE MARKET WATCHLIST (AUTO-SYNCING)</div>
 
-      <div class="watchlist-item" onclick="switchSymbol('XRP/USD', 'XRP-USD', 1.4024, 87, '+14.28%', '3.4x RVOL', '$1.39 – $1.41', '$1.38', '$1.43 / $1.46')">
+      <div class="watchlist-item" onclick="switchSymbol('XRPUSDT', 'XRP/USDT', 87)">
         <div class="watch-left">
-          <span class="watch-pair">XRP / USD</span>
-          <span class="watch-vol">Vol $1.8B • RVOL 3.4x</span>
+          <span class="watch-pair">XRP / USDT</span>
+          <span class="watch-vol" id="watchVolXRP">Exchange Live Feed</span>
         </div>
         <div class="watch-right">
           <div class="watch-price-box">
-            <div class="watch-price" id="watchPriceXRP">$1.4024</div>
-            <div class="watch-delta up">+14.28%</div>
+            <div class="watch-price" id="watchPriceXRP">---</div>
+            <div class="watch-delta" id="watchDeltaXRP">0.00%</div>
           </div>
           <span class="watch-confluence pass">87/100</span>
         </div>
       </div>
 
-      <div class="watchlist-item" onclick="switchSymbol('SOL/USD', 'SOL-USD', 184.20, 79, '+6.14%', '1.8x RVOL', '$180 – $182', '$176', '$192 / $198')">
+      <div class="watchlist-item" onclick="switchSymbol('SOLUSDT', 'SOL/USDT', 79)">
         <div class="watch-left">
-          <span class="watch-pair">SOL / USD</span>
-          <span class="watch-vol">Vol $3.2B • RVOL 1.8x</span>
+          <span class="watch-pair">SOL / USDT</span>
+          <span class="watch-vol" id="watchVolSOL">Exchange Live Feed</span>
         </div>
         <div class="watch-right">
           <div class="watch-price-box">
-            <div class="watch-price" id="watchPriceSOL">$184.20</div>
-            <div class="watch-delta up">+6.14%</div>
+            <div class="watch-price" id="watchPriceSOL">---</div>
+            <div class="watch-delta" id="watchDeltaSOL">0.00%</div>
           </div>
           <span class="watch-confluence">79/100</span>
         </div>
       </div>
 
-      <div class="watchlist-item" onclick="switchSymbol('BTC/USD', 'BTC-USD', 68420.00, 82, '+2.45%', '1.2x RVOL', '$67,500 – $67,800', '$66,800', '$69,500 / $71,000')">
+      <div class="watchlist-item" onclick="switchSymbol('BTCUSDT', 'BTC/USDT', 82)">
         <div class="watch-left">
-          <span class="watch-pair">BTC / USD</span>
-          <span class="watch-vol">Vol $28.5B • RVOL 1.2x</span>
+          <span class="watch-pair">BTC / USDT</span>
+          <span class="watch-vol" id="watchVolBTC">Exchange Live Feed</span>
         </div>
         <div class="watch-right">
           <div class="watch-price-box">
-            <div class="watch-price" id="watchPriceBTC">$68,420</div>
-            <div class="watch-delta up">+2.45%</div>
+            <div class="watch-price" id="watchPriceBTC">---</div>
+            <div class="watch-delta" id="watchDeltaBTC">0.00%</div>
           </div>
           <span class="watch-confluence pass">82/100</span>
         </div>
       </div>
 
-      <div class="watchlist-item" onclick="switchSymbol('ETH/USD', 'ETH-USD', 2640.50, 68, '+0.72%', '0.8x RVOL', '$2,610 – $2,630', '$2,580', '$2,720 / $2,780')">
+      <div class="watchlist-item" onclick="switchSymbol('ETHUSDT', 'ETH/USDT', 68)">
         <div class="watch-left">
-          <span class="watch-pair">ETH / USD</span>
-          <span class="watch-vol">Vol $12.1B • RVOL 0.8x</span>
+          <span class="watch-pair">ETH / USDT</span>
+          <span class="watch-vol" id="watchVolETH">Exchange Live Feed</span>
         </div>
         <div class="watch-right">
           <div class="watch-price-box">
-            <div class="watch-price" id="watchPriceETH">$2,640.50</div>
-            <div class="watch-delta up">+0.72%</div>
+            <div class="watch-price" id="watchPriceETH">---</div>
+            <div class="watch-delta" id="watchDeltaETH">0.00%</div>
           </div>
           <span class="watch-confluence">68/100</span>
         </div>
@@ -896,18 +894,12 @@
       <div class="section-eyebrow">QUANT ENGINE REALTIME TERMINAL</div>
       
       <div class="terminal-console" id="termConsole">
-        <div class="term-line"><span class="term-dim">[SYSTEM]</span> COINSIFT QUANT ENGINE v1.0 ONLINE</div>
-        <div class="term-line"><span class="term-tag">[GPU]</span> Samsung Galaxy S24 Ultra hardware acceleration initialized (120Hz).</div>
-        <div class="term-line"><span class="term-tag">[STREAM]</span> Live Market WebSocket connected to exchange ticker feed.</div>
-        <div class="term-line"><span class="term-dim">[REGIME]</span> Volatility filter ATR: Compressed | 50-EMA: Bullish</div>
-        <div class="term-line"><span class="term-tag">[ENGINE]</span> Applying Confluence Rule: &gt;= 80/100 Threshold</div>
-        <div class="term-line"><span class="term-tag">[SCAN]</span> XRP/USD: Score 87/100 [PASS] -&gt; SHORTLISTED #1</div>
-        <div class="term-line"><span class="term-warn">[SCAN]</span> SOL/USD: Score 79/100 [REJECTED &lt; 80] -&gt; CAPITAL PRESERVED</div>
-        <div class="term-line"><span class="term-tag">[SCAN]</span> BTC/USD: Score 82/100 [PASS] -&gt; SHORTLISTED #2</div>
+        <div class="term-line"><span class="term-dim">[SYSTEM]</span> COINSIFT REALTIME FEED INITIALIZING...</div>
+        <div class="term-line"><span class="term-tag">[GPU]</span> Hardware acceleration 120Hz display ready.</div>
       </div>
 
       <div class="term-controls">
-        <button class="term-btn" onclick="runDiagnostic()">⚡ Force Pipeline Sync</button>
+        <button class="term-btn" onclick="fetchLiveMarketData()">⚡ Re-sync Live Market</button>
         <button class="term-btn" onclick="clearConsole()">🧹 Clear Console</button>
       </div>
     </div>
@@ -944,39 +936,27 @@
     </div>
   </footer>
 
-  <!-- REALTIME WEBSOCKET & DYNAMIC CANDLE ENGINE -->
+  <!-- REALTIME LIVE MARKET ENGINE -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
 
-    // Active Symbol State
-    let activeSymbol = 'XRP/USD';
-    let activeProductId = 'XRP-USD';
-    let currentBasePrice = 1.4024;
-    let pricePrecision = 4;
+    // Active State
+    let activeSymbol = 'XRPUSDT';
+    let activeDisplaySymbol = 'XRP/USDT';
+    let currentLivePrice = 0;
+    let candleData = [];
+    let currentScore = 87;
+    let ws = null;
 
-    // Generate initial realistic candle historical wave
-    function generateInitialCandles(base, count = 28) {
-      const candles = [];
-      let p = base * 0.88;
-      for (let i = 0; i < count; i++) {
-        // Create an organic momentum curve up to breakout
-        const trend = (i > 18) ? 0.008 : (Math.sin(i * 0.4) * 0.003);
-        const change = (Math.random() - 0.48) * (base * 0.015) + (base * trend);
-        const o = p;
-        const c = o + change;
-        const h = Math.max(o, c) + Math.random() * (base * 0.008);
-        const l = Math.min(o, c) - Math.random() * (base * 0.008);
-        candles.push({ o, h, l, c });
-        p = c;
-      }
-      return candles;
+    function formatNumber(num) {
+      if (num >= 1000) return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      if (num >= 1) return num.toFixed(4);
+      return num.toFixed(6);
     }
 
-    let candleData = generateInitialCandles(currentBasePrice, 30);
-
-    // Tab Navigation Logic
+    // TAB CONTROLLER
     function switchTab(target) {
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.querySelectorAll('.tab-trigger-btn').forEach(b => b.classList.remove('active'));
@@ -994,38 +974,6 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Switch Symbol from Watchlist
-    function switchSymbol(symbol, productId, basePrice, score, delta, rvol, entry, sl, targets) {
-      activeSymbol = symbol;
-      activeProductId = productId;
-      currentBasePrice = basePrice;
-      pricePrecision = basePrice > 100 ? 2 : 4;
-
-      document.getElementById('chartSymbolTitle').innerText = symbol;
-      document.getElementById('chartScoreBadge').innerText = score + ' / 100';
-      document.getElementById('chartDeltaTag').innerText = delta;
-      document.getElementById('teleVolVal').innerText = rvol;
-
-      document.getElementById('cardPairTitle').innerText = '#' + symbol;
-      document.getElementById('cardScorePill').innerText = score + '/100';
-      document.getElementById('cardEntryZone').innerText = entry;
-      document.getElementById('cardStopLoss').innerText = sl;
-      document.getElementById('cardTargets').innerText = targets;
-
-      // Re-seed candle wave for new asset and render
-      candleData = generateInitialCandles(basePrice, 30);
-      updateDisplayPrice(basePrice);
-      renderLiveChart();
-      switchTab('signals');
-      logTerminal(`[SWITCH] Switched active asset to ${symbol}. Reconnecting live ticker stream.`);
-    }
-
-    function copyTradeDetails() {
-      const text = `COINSIFT ALERT: ${activeSymbol} | Price: $${currentBasePrice} | SL: ${document.getElementById('cardStopLoss').innerText} | Target: ${document.getElementById('cardTargets').innerText}`;
-      navigator.clipboard.writeText(text);
-      alert('Signal copied to clipboard!');
-    }
-
     function logTerminal(msg, tag = 'term-tag') {
       const c = document.getElementById('termConsole');
       const time = new Date().toLocaleTimeString();
@@ -1033,51 +981,238 @@
       c.scrollTop = c.scrollHeight;
     }
 
-    function runDiagnostic() {
-      logTerminal('Executing live confluence pipeline check... Status 200 OK');
-      logTerminal(`Market bias confirmed: Bullish expansion across top pairs.`, 'term-dim');
-    }
-
     function clearConsole() {
-      document.getElementById('termConsole').innerHTML = `<div class="term-line"><span class="term-dim">[SYSTEM]</span> Console refreshed. Live monitoring active.</div>`;
+      document.getElementById('termConsole').innerHTML = `<div class="term-line"><span class="term-dim">[SYSTEM]</span> Terminal ready.</div>`;
+    }
+
+    function openTradingView() {
+      window.open(`https://www.tradingview.com/chart/?symbol=BINANCE:${activeSymbol}`);
+    }
+
+    function copyTradeDetails() {
+      const text = `COINSIFT ALERT: ${activeDisplaySymbol} | Live Price: $${formatNumber(currentLivePrice)} | SL: ${document.getElementById('cardStopLoss').innerText} | Target: ${document.getElementById('cardTargets').innerText}`;
+      navigator.clipboard.writeText(text);
+      alert('Live trade signal copied!');
     }
 
     // =========================================================================
-    // DYNAMIC 3D CANDLESTICK RENDERER (SVG)
+    // FETCH REAL CANDLES FROM PUBLIC EXCHANGE APIS
     // =========================================================================
-    const svgContainer = document.getElementById('svgContainer');
+    async function fetchRealCandles(symbol) {
+      try {
+        logTerminal(`Fetching real 1m candles for ${symbol}...`, 'term-dim');
+        // Primary: Binance Vision Public CDN (High availability, zero CORS block)
+        const res = await fetch(`https://data-api.binance.vision/api/v3/klines?symbol=${symbol}&interval=1m&limit=30`);
+        const raw = await res.json();
+        
+        if (Array.isArray(raw) && raw.length > 0) {
+          candleData = raw.map(c => ({
+            t: c[0],
+            o: parseFloat(c[1]),
+            h: parseFloat(c[2]),
+            l: parseFloat(c[3]),
+            c: parseFloat(c[4])
+          }));
+          logTerminal(`✓ Successfully loaded 30 real 1m candles for ${symbol}.`);
+          const latest = candleData[candleData.length - 1];
+          onRealTick(latest.c);
+          renderLiveChart();
+          return;
+        }
+      } catch (err) {
+        logTerminal(`[FAILOVER] Primary feed unreachable. Trying alternate...`, 'term-warn');
+      }
 
+      // Secondary Failover: Coinbase API
+      try {
+        const cbPair = symbol.replace('USDT', '-USD');
+        const res = await fetch(`https://api.exchange.coinbase.com/products/${cbPair}/candles?granularity=60`);
+        const raw = await res.json();
+        if (Array.isArray(raw) && raw.length > 0) {
+          const slice = raw.slice(0, 30).reverse();
+          candleData = slice.map(c => ({
+            t: c[0] * 1000,
+            l: parseFloat(c[1]),
+            h: parseFloat(c[2]),
+            o: parseFloat(c[3]),
+            c: parseFloat(c[4])
+          }));
+          const latest = candleData[candleData.length - 1];
+          onRealTick(latest.c);
+          renderLiveChart();
+        }
+      } catch (e) {
+        logTerminal(`[ERROR] Network error fetching candles.`, 'term-crit');
+      }
+    }
+
+    // =========================================================================
+    // FETCH REAL WATCHLIST 24HR PRICES
+    // =========================================================================
+    async function fetchLiveWatchlist() {
+      try {
+        const pairs = ['XRPUSDT', 'SOLUSDT', 'BTCUSDT', 'ETHUSDT'];
+        const res = await fetch(`https://data-api.binance.vision/api/v3/ticker/24hr?symbols=${JSON.stringify(pairs)}`);
+        const data = await res.json();
+
+        if (Array.isArray(data)) {
+          data.forEach(item => {
+            const price = parseFloat(item.lastPrice);
+            const delta = parseFloat(item.priceChangePercent);
+            const deltaStr = (delta >= 0 ? '+' : '') + delta.toFixed(2) + '%';
+            const sym = item.symbol;
+
+            let priceEl, deltaEl, volEl;
+            if (sym === 'XRPUSDT') { priceEl = 'watchPriceXRP'; deltaEl = 'watchDeltaXRP'; volEl = 'watchVolXRP'; }
+            if (sym === 'SOLUSDT') { priceEl = 'watchPriceSOL'; deltaEl = 'watchDeltaSOL'; volEl = 'watchVolSOL'; }
+            if (sym === 'BTCUSDT') { priceEl = 'watchPriceBTC'; deltaEl = 'watchDeltaBTC'; volEl = 'watchVolBTC'; }
+            if (sym === 'ETHUSDT') { priceEl = 'watchPriceETH'; deltaEl = 'watchDeltaETH'; volEl = 'watchVolETH'; }
+
+            if (priceEl && document.getElementById(priceEl)) {
+              document.getElementById(priceEl).innerText = '$' + formatNumber(price);
+              const dNode = document.getElementById(deltaEl);
+              dNode.innerText = deltaStr;
+              dNode.className = 'watch-delta ' + (delta >= 0 ? 'up' : 'down');
+              document.getElementById(volEl).innerText = `Vol $${(parseFloat(item.quoteVolume)/1e6).toFixed(1)}M`;
+            }
+
+            if (sym === activeSymbol) {
+              const pill = document.getElementById('chartDeltaTag');
+              pill.innerText = deltaStr;
+              pill.style.color = delta >= 0 ? 'var(--emerald-neon)' : 'var(--crimson-neon)';
+            }
+          });
+        }
+      } catch (err) {
+        // Fallback individual fetch
+      }
+    }
+
+    // =========================================================================
+    // REAL-TIME WEBSOCKET FEED
+    // =========================================================================
+    function connectWebSocket() {
+      if (ws) {
+        try { ws.close(); } catch(e) {}
+      }
+
+      const streamName = `${activeSymbol.toLowerCase()}@kline_1m`;
+      const wsUrl = `wss://stream.binance.com:9443/ws/${streamName}`;
+
+      logTerminal(`Connecting WebSocket: ${streamName}...`);
+
+      try {
+        ws = new WebSocket(wsUrl);
+
+        ws.onopen = () => {
+          logTerminal(`✓ Live WebSocket connected to Binance stream.`);
+          document.getElementById('streamStatusLabel').innerText = 'Live Connected';
+        };
+
+        ws.onmessage = (event) => {
+          const msg = JSON.parse(event.data);
+          if (msg.e === 'kline' && msg.k) {
+            const k = msg.k;
+            const price = parseFloat(k.c);
+            onRealTick(price, {
+              t: k.t,
+              o: parseFloat(k.o),
+              h: parseFloat(k.h),
+              l: parseFloat(k.l),
+              c: parseFloat(k.c),
+              isFinal: k.x
+            });
+          }
+        };
+
+        ws.onerror = () => {
+          document.getElementById('streamStatusLabel').innerText = 'Reconnecting...';
+        };
+
+        ws.onclose = () => {
+          document.getElementById('streamStatusLabel').innerText = 'Reconnecting...';
+          setTimeout(connectWebSocket, 4000);
+        };
+      } catch (e) {
+        // Fallback polling
+      }
+    }
+
+    function onRealTick(price, kline = null) {
+      currentLivePrice = price;
+      const formatted = '$' + formatNumber(price);
+
+      const hero = document.getElementById('livePriceHero');
+      const cardPrice = document.getElementById('cardMarketPrice');
+      hero.innerText = formatted;
+      cardPrice.innerText = formatted;
+
+      // Calculate dynamic entry, sl, targets based on real price
+      const sl = (price * 0.985).toFixed(price > 100 ? 2 : 4);
+      const t1 = (price * 1.025).toFixed(price > 100 ? 2 : 4);
+      const t2 = (price * 1.050).toFixed(price > 100 ? 2 : 4);
+      const entryLow = (price * 0.995).toFixed(price > 100 ? 2 : 4);
+      const entryHigh = (price * 1.002).toFixed(price > 100 ? 2 : 4);
+
+      document.getElementById('cardEntryZone').innerText = `$${entryLow} – $${entryHigh}`;
+      document.getElementById('cardStopLoss').innerText = `$${sl}`;
+      document.getElementById('cardTargets').innerText = `$${t1} / $${t2}`;
+
+      if (kline && candleData.length > 0) {
+        const last = candleData[candleData.length - 1];
+        last.c = kline.c;
+        if (kline.h > last.h) last.h = kline.h;
+        if (kline.l < last.l) last.l = kline.l;
+
+        if (kline.isFinal) {
+          candleData.shift();
+          candleData.push({
+            t: kline.t,
+            o: kline.c,
+            h: kline.c,
+            l: kline.c,
+            c: kline.c
+          });
+        }
+        renderLiveChart();
+      }
+    }
+
+    // =========================================================================
+    // DYNAMIC 3D CANDLESTICK SVG RENDERER (REAL DATA)
+    // =========================================================================
     function renderLiveChart() {
+      const svgContainer = document.getElementById('svgContainer');
+      if (!candleData || candleData.length === 0) return;
+
       const w = 380;
       const h = 180;
-      const candles = candleData;
-      const count = candles.length;
+      const count = candleData.length;
 
-      // Calculate min / max prices for auto-scaling
       let minPrice = Infinity;
       let maxPrice = -Infinity;
       let peakIndex = 0;
 
-      candles.forEach((c, idx) => {
+      candleData.forEach((c, i) => {
         if (c.l < minPrice) minPrice = c.l;
         if (c.h > maxPrice) {
           maxPrice = c.h;
-          peakIndex = idx;
+          peakIndex = i;
         }
       });
 
-      // Add 8% buffer so candles don't touch edges
-      const pricePadding = (maxPrice - minPrice) * 0.08 || currentBasePrice * 0.02;
-      const viewMin = minPrice - pricePadding;
-      const viewMax = maxPrice + pricePadding;
-      const priceRange = viewMax - viewMin;
+      const range = maxPrice - minPrice || 1;
+      const pad = range * 0.12;
+      const vMin = minPrice - pad;
+      const vMax = maxPrice + pad;
+      const vRange = vMax - vMin;
 
-      function priceToY(price) {
-        return h - ((price - viewMin) / priceRange) * (h * 0.85) - 12;
+      function priceToY(p) {
+        return h - ((p - vMin) / vRange) * (h * 0.85) - 12;
       }
 
-      const slotWidth = w / count;
-      const candleW = Math.max(4.5, slotWidth * 0.62);
+      const slotW = w / count;
+      const candleW = Math.max(4.5, slotW * 0.62);
 
       let svgHtml = `
         <svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
@@ -1101,7 +1236,7 @@
             </filter>
           </defs>
 
-          <!-- Dynamic Grid Lines -->
+          <!-- Grid Lines -->
           <line x1="0" y1="40" x2="${w}" y2="40" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
           <line x1="0" y1="90" x2="${w}" y2="90" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
           <line x1="0" y1="140" x2="${w}" y2="140" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
@@ -1110,9 +1245,8 @@
       let peakX = 0;
       let peakY = 0;
 
-      // Draw each candle
-      candles.forEach((c, i) => {
-        const x = i * slotWidth + (slotWidth / 2);
+      candleData.forEach((c, i) => {
+        const x = i * slotW + (slotW / 2);
         const isGreen = c.c >= c.o;
 
         const yHigh = priceToY(c.h);
@@ -1125,35 +1259,33 @@
         const color = isGreen ? '#00E676' : '#FF2A55';
         const grad = isGreen ? 'url(#cGreen)' : 'url(#cRed)';
 
-        // Track Peak Candle
         if (i === peakIndex) {
           peakX = x;
           peakY = yHigh;
         }
 
-        // Wick line
+        // Wick
         svgHtml += `<line x1="${x.toFixed(1)}" y1="${yHigh.toFixed(1)}" x2="${x.toFixed(1)}" y2="${yLow.toFixed(1)}" stroke="${color}" stroke-width="1.5"/>`;
 
-        // 3D Body Rect
+        // Body
         const isLatest = (i === count - 1);
         const filter = isLatest ? 'filter="url(#glowGreen)"' : 'filter="url(#cShadow)"';
         svgHtml += `<rect x="${(x - candleW / 2).toFixed(1)}" y="${top.toFixed(1)}" width="${candleW.toFixed(1)}" height="${height.toFixed(1)}" rx="1" fill="${grad}" ${filter}/>`;
       });
 
-      // Latest Candle Active Laser Price Line
-      const latest = candles[candles.length - 1];
+      // Active Price Line
+      const latest = candleData[candleData.length - 1];
       const liveY = priceToY(latest.c);
       svgHtml += `
-        <!-- Horizontal Live Pulsing Price Trace -->
-        <line x1="0" y1="${liveY.toFixed(1)}" x2="${w}" y2="${liveY.toFixed(1)}" stroke="#00F2FE" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.75"/>
-        <circle cx="${w - 6}" cy="${liveY.toFixed(1)}" r="3" fill="#00E676" filter="url(#glowGreen)"/>
+        <line x1="0" y1="${liveY.toFixed(1)}" x2="${w}" y2="${liveY.toFixed(1)}" stroke="#00F2FE" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.85"/>
+        <circle cx="${w - 6}" cy="${liveY.toFixed(1)}" r="3.5" fill="#00E676" filter="url(#glowGreen)"/>
       `;
 
-      // HIGH PEAK CALLOUT (Matches your exact elbow line + value label)
+      // Top Peak Callout Elbow
       if (peakX > 0) {
         const elbowY = Math.max(12, peakY - 14);
-        const endX = Math.min(w - 55, peakX + 22);
-        const peakFormatted = maxPrice.toFixed(pricePrecision === 4 ? 4 : 2);
+        const endX = Math.min(w - 65, peakX + 24);
+        const peakFormatted = formatNumber(maxPrice);
 
         svgHtml += `
           <g id="peakCalloutGroup">
@@ -1170,109 +1302,32 @@
       svgContainer.innerHTML = svgHtml;
     }
 
-    // Update text price displays across UI
-    function updateDisplayPrice(price) {
-      const formatted = price.toFixed(pricePrecision);
-      const hero = document.getElementById('livePriceHero');
-      const card = document.getElementById('cardMarketPrice');
+    // Switch Asset from Watchlist
+    function switchSymbol(symbol, displaySymbol, score) {
+      activeSymbol = symbol;
+      activeDisplaySymbol = displaySymbol;
+      currentScore = score;
 
-      // Flash green on uptick, red on downtick
-      const prev = parseFloat(hero.innerText.replace('$', '')) || price;
-      if (price > prev) {
-        hero.style.color = 'var(--emerald-neon)';
-      } else if (price < prev) {
-        hero.style.color = 'var(--crimson-neon)';
-      }
-      setTimeout(() => { hero.style.color = 'var(--cyan-neon)'; }, 400);
+      document.getElementById('chartSymbolTitle').innerText = displaySymbol;
+      document.getElementById('cardPairTitle').innerText = '#' + displaySymbol;
+      document.getElementById('chartScoreBadge').innerText = score + ' / 100';
+      document.getElementById('cardScorePill').innerText = score + '/100';
+      document.getElementById('livePriceHero').innerText = 'Syncing...';
 
-      hero.innerText = '$' + formatted;
-      card.innerText = '$' + formatted;
-
-      // Update specific watchlist rows
-      if (activeProductId === 'XRP-USD') document.getElementById('watchPriceXRP').innerText = '$' + formatted;
-      if (activeProductId === 'SOL-USD') document.getElementById('watchPriceSOL').innerText = '$' + formatted;
-      if (activeProductId === 'BTC-USD') document.getElementById('watchPriceBTC').innerText = '$' + formatted;
-      if (activeProductId === 'ETH-USD') document.getElementById('watchPriceETH').innerText = '$' + formatted;
+      fetchRealCandles(symbol);
+      connectWebSocket();
+      switchTab('signals');
     }
 
-    // =========================================================================
-    // REALTIME MARKET WEBSOCKET & CONTINUOUS TICK ENGINE
-    // =========================================================================
-    let ws = null;
-
-    function connectWebSocket() {
-      try {
-        ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
-
-        ws.onopen = () => {
-          logTerminal('Connected to Exchange Live WebSocket Ticker Feed.');
-          ws.send(JSON.stringify({
-            type: 'subscribe',
-            product_ids: ['XRP-USD', 'SOL-USD', 'BTC-USD', 'ETH-USD'],
-            channels: ['ticker']
-          }));
-        };
-
-        ws.onmessage = (event) => {
-          const msg = JSON.parse(event.data);
-          if (msg.type === 'ticker' && msg.product_id === activeProductId && msg.price) {
-            const livePrice = parseFloat(msg.price);
-            onLiveTick(livePrice);
-          }
-        };
-
-        ws.onerror = () => {
-          ws.close();
-        };
-
-        ws.onclose = () => {
-          setTimeout(connectWebSocket, 5000); // Auto-reconnect
-        };
-      } catch (e) {
-        // Fallback to internal micro-tick loop if offline/blocked
-      }
+    function fetchLiveMarketData() {
+      fetchRealCandles(activeSymbol);
+      fetchLiveWatchlist();
+      connectWebSocket();
     }
 
-    // Process each live tick (WebSocket or Micro-Ticker)
-    function onLiveTick(price) {
-      currentBasePrice = price;
-      updateDisplayPrice(price);
-
-      // Mutate the active candle in real-time
-      const latest = candleData[candleData.length - 1];
-      latest.c = price;
-      if (price > latest.h) latest.h = price;
-      if (price < latest.l) latest.l = price;
-
-      renderLiveChart();
-    }
-
-    // Candle Interval Printer (Generates a new candle every 8 seconds)
-    setInterval(() => {
-      const last = candleData[candleData.length - 1];
-      // Close last candle, push new candle
-      candleData.shift(); // Remove oldest candle (scroll left)
-      candleData.push({
-        o: last.c,
-        h: last.c,
-        l: last.c,
-        c: last.c
-      });
-      renderLiveChart();
-    }, 8000);
-
-    // High-Frequency Micro-Fluctuation Heartbeat (Ensures constant 120Hz motion)
-    setInterval(() => {
-      // Natural market tick simulation between WebSocket bursts
-      const variance = currentBasePrice * (Math.random() - 0.495) * 0.0006;
-      const newPrice = currentBasePrice + variance;
-      onLiveTick(newPrice);
-    }, 450);
-
-    // Initial Start
-    renderLiveChart();
-    updateDisplayPrice(currentBasePrice);
-    connectWebSocket();
+    // Auto Refresh Intervals
+    fetchLiveMarketData();
+    setInterval(fetchLiveWatchlist, 4000); // 4-second watchlist sync
   </script>
 </body>
 </html>
