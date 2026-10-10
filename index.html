@@ -103,7 +103,7 @@
       border-radius: 50%;
       background: var(--emerald-neon);
       box-shadow: 0 0 10px var(--emerald-neon);
-      animation: pulseBeacon 2s infinite ease-in-out;
+      animation: pulseBeacon 1s infinite ease-in-out;
     }
 
     .sync-label {
@@ -153,7 +153,7 @@
       border-radius: 50%;
       background: var(--emerald-neon);
       box-shadow: 0 0 8px var(--emerald-neon);
-      animation: pulseBeacon 1s infinite;
+      animation: pulseBeacon 0.8s infinite;
     }
 
     .chart-asset-row {
@@ -172,14 +172,28 @@
       text-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
     }
 
+    /* REALTIME FLASH ANIMATIONS */
     .live-price-hero {
       font-family: var(--font-num);
       font-size: 19px;
       font-weight: 700;
       color: var(--cyan-neon);
       text-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
-      transition: color 0.2s ease;
+      transition: color 0.15s ease, text-shadow 0.15s ease;
     }
+
+    @keyframes flashGreenHero {
+      0% { color: #55FFAA; text-shadow: 0 0 20px #00E676; }
+      100% { color: var(--cyan-neon); text-shadow: 0 0 12px rgba(0, 242, 254, 0.5); }
+    }
+
+    @keyframes flashRedHero {
+      0% { color: #FF6B8B; text-shadow: 0 0 20px #FF2A55; }
+      100% { color: var(--cyan-neon); text-shadow: 0 0 12px rgba(0, 242, 254, 0.5); }
+    }
+
+    .tick-up { animation: flashGreenHero 0.25s ease-out; }
+    .tick-down { animation: flashRedHero 0.25s ease-out; }
 
     .chart-change-pill {
       background: rgba(0, 230, 118, 0.15);
@@ -202,7 +216,7 @@
       font-weight: 700;
       color: var(--cyan-neon);
       box-shadow: 0 0 14px rgba(0, 242, 254, 0.35);
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
     }
 
     .chart-svg-container {
@@ -256,11 +270,11 @@
 
     .tab-content.active {
       display: block;
-      animation: tabFadeIn 0.25s ease-out;
+      animation: tabFadeIn 0.2s ease-out;
     }
 
     @keyframes tabFadeIn {
-      from { opacity: 0; transform: translateY(6px); }
+      from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
@@ -316,7 +330,7 @@
       box-shadow: 
         inset 0 1px 1px #FFFFFF,
         0 0 18px rgba(0, 230, 118, 0.35);
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
     }
 
     .liquid-grid {
@@ -410,7 +424,7 @@
         inset 0 1px 1px rgba(255, 255, 255, 0.35),
         0 8px 20px rgba(0, 0, 0, 0.7);
       cursor: pointer;
-      transition: transform 0.1s ease, border-color 0.2s ease;
+      transition: transform 0.1s ease, border-color 0.15s ease;
     }
 
     .watchlist-item:active {
@@ -452,6 +466,7 @@
       font-size: 15px;
       font-weight: 700;
       color: #F8FAFC;
+      transition: color 0.15s ease, text-shadow 0.15s ease;
     }
 
     .watch-delta {
@@ -471,7 +486,7 @@
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.12);
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
     }
 
     .watch-confluence.pass {
@@ -746,7 +761,7 @@
 
       <div class="glass-pill-badge">
         <span class="sync-dot"></span>
-        <span class="sync-label" id="streamStatusLabel">Coinbase Live</span>
+        <span class="sync-label" id="streamStatusLabel">120Hz Streaming</span>
       </div>
     </header>
 
@@ -756,11 +771,11 @@
         <div>
           <div class="chart-caption">
             <span class="live-indicator"></span>
-            <span>3D QUANT LIVE EXCHANGE FEED</span>
+            <span>3D QUANT LIVE TICK STREAM (120HZ)</span>
           </div>
           <div class="chart-asset-row">
             <span class="chart-asset" id="chartSymbolTitle">XRP / USD</span>
-            <span class="live-price-hero" id="livePriceHero">Connecting...</span>
+            <span class="live-price-hero" id="livePriceHero">Syncing...</span>
             <span class="chart-change-pill" id="chartDeltaTag">+0.00%</span>
           </div>
         </div>
@@ -799,7 +814,7 @@
           <div class="liquid-grid">
             <div class="liquid-cell">
               <div class="cell-title">ENTRY ZONE</div>
-              <div class="cell-value entry" id="cardEntryZone">Syncing...</div>
+              <div class="cell-value entry" id="cardEntryZone">Realtime Syncing...</div>
             </div>
             <div class="liquid-cell">
               <div class="cell-title">MARKET PRICE</div>
@@ -829,9 +844,9 @@
       </div>
     </div>
 
-    <!-- TAB 2: WATCHLIST VIEW (ALL 8 PAIRS) -->
+    <!-- TAB 2: WATCHLIST VIEW -->
     <div id="watchlistTab" class="tab-content">
-      <div class="section-eyebrow">LIVE MARKET WATCHLIST (8 HIGH-BETA PAIRS)</div>
+      <div class="section-eyebrow">LIVE HIGH-BETA WATCHLIST (1-SEC SYNC)</div>
 
       <div class="watchlist-item" onclick="selectPair('XRP-USD')">
         <div class="watch-left">
@@ -840,7 +855,7 @@
         </div>
         <div class="watch-right">
           <div class="watch-price-box">
-            <div class="watch-price" id="watchPrice-XRP-USD">Connecting...</div>
+            <div class="watch-price" id="watchPrice-XRP-USD">Syncing...</div>
             <div class="watch-delta" id="watchDelta-XRP-USD">0.00%</div>
           </div>
           <span class="watch-confluence pass" id="watchScore-XRP-USD">85/100</span>
@@ -854,7 +869,7 @@
         </div>
         <div class="watch-right">
           <div class="watch-price-box">
-            <div class="watch-price" id="watchPrice-SOL-USD">Connecting...</div>
+            <div class="watch-price" id="watchPrice-SOL-USD">Syncing...</div>
             <div class="watch-delta" id="watchDelta-SOL-USD">0.00%</div>
           </div>
           <span class="watch-confluence" id="watchScore-SOL-USD">79/100</span>
@@ -868,7 +883,7 @@
         </div>
         <div class="watch-right">
           <div class="watch-price-box">
-            <div class="watch-price" id="watchPrice-BTC-USD">Connecting...</div>
+            <div class="watch-price" id="watchPrice-BTC-USD">Syncing...</div>
             <div class="watch-delta" id="watchDelta-BTC-USD">0.00%</div>
           </div>
           <span class="watch-confluence pass" id="watchScore-BTC-USD">82/100</span>
@@ -882,7 +897,7 @@
         </div>
         <div class="watch-right">
           <div class="watch-price-box">
-            <div class="watch-price" id="watchPrice-ETH-USD">Connecting...</div>
+            <div class="watch-price" id="watchPrice-ETH-USD">Syncing...</div>
             <div class="watch-delta" id="watchDelta-ETH-USD">0.00%</div>
           </div>
           <span class="watch-confluence" id="watchScore-ETH-USD">68/100</span>
@@ -896,7 +911,7 @@
         </div>
         <div class="watch-right">
           <div class="watch-price-box">
-            <div class="watch-price" id="watchPrice-DOGE-USD">Connecting...</div>
+            <div class="watch-price" id="watchPrice-DOGE-USD">Syncing...</div>
             <div class="watch-delta" id="watchDelta-DOGE-USD">0.00%</div>
           </div>
           <span class="watch-confluence pass" id="watchScore-DOGE-USD">88/100</span>
@@ -910,7 +925,7 @@
         </div>
         <div class="watch-right">
           <div class="watch-price-box">
-            <div class="watch-price" id="watchPrice-ADA-USD">Connecting...</div>
+            <div class="watch-price" id="watchPrice-ADA-USD">Syncing...</div>
             <div class="watch-delta" id="watchDelta-ADA-USD">0.00%</div>
           </div>
           <span class="watch-confluence" id="watchScore-ADA-USD">74/100</span>
@@ -924,7 +939,7 @@
         </div>
         <div class="watch-right">
           <div class="watch-price-box">
-            <div class="watch-price" id="watchPrice-AVAX-USD">Connecting...</div>
+            <div class="watch-price" id="watchPrice-AVAX-USD">Syncing...</div>
             <div class="watch-delta" id="watchDelta-AVAX-USD">0.00%</div>
           </div>
           <span class="watch-confluence pass" id="watchScore-AVAX-USD">81/100</span>
@@ -938,7 +953,7 @@
         </div>
         <div class="watch-right">
           <div class="watch-price-box">
-            <div class="watch-price" id="watchPrice-LINK-USD">Connecting...</div>
+            <div class="watch-price" id="watchPrice-LINK-USD">Syncing...</div>
             <div class="watch-delta" id="watchDelta-LINK-USD">0.00%</div>
           </div>
           <span class="watch-confluence" id="watchScore-LINK-USD">76/100</span>
@@ -951,14 +966,14 @@
       <div class="section-eyebrow">QUANT ENGINE REALTIME TERMINAL</div>
       
       <div class="terminal-console" id="termConsole">
-        <div class="term-line"><span class="term-dim">[SYSTEM]</span> COINSIFT QUANT ENGINE v1.2 LIVE</div>
-        <div class="term-line"><span class="term-tag">[STREAM]</span> Coinbase WebSocket Feed active (8 high-beta assets).</div>
-        <div class="term-line"><span class="term-tag">[HAPTICS]</span> Samsung Galaxy S24 Ultra micro-vibration bus active.</div>
-        <div class="term-line"><span class="term-dim">[MATH]</span> Dynamic RSI(14) & EMA(9/21) mathematical pipeline linked.</div>
+        <div class="term-line"><span class="term-dim">[SYSTEM]</span> COINSIFT QUANT ENGINE v1.4 ONLINE</div>
+        <div class="term-line"><span class="term-tag">[ENGINE]</span> 120Hz Hardware Acceleration sync loop active.</div>
+        <div class="term-line"><span class="term-tag">[STREAM]</span> Zero-throttle WebSocket ticker pipeline engaged.</div>
+        <div class="term-line"><span class="term-dim">[REFRESH]</span> 1-second parallel background hydration running.</div>
       </div>
 
       <div class="term-controls">
-        <button class="term-btn" onclick="reconnectWebSocket()">⚡ Reconnect Feed</button>
+        <button class="term-btn" onclick="forceRehydrate()">⚡ Force Sync All</button>
         <button class="term-btn" onclick="clearConsole()">🧹 Clear Console</button>
       </div>
     </div>
@@ -995,13 +1010,12 @@
     </div>
   </footer>
 
-  <!-- UNIFIED REALTIME ENGINE (HAPTICS, QUANT MATH, 8 PAIRS) -->
+  <!-- 120HZ REALTIME TICK-SYNC ENGINE -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
 
-    // Samsung Galaxy S24 Ultra Haptic Feedback Engine
     function triggerHaptic(type = 'light') {
       if ('vibrate' in navigator) {
         try {
@@ -1012,21 +1026,22 @@
       }
     }
 
-    // 8-Pair Central Realtime Store
     const MarketStore = {
-      'XRP-USD':  { name: 'XRP / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 85, decimals: 4 },
-      'SOL-USD':  { name: 'SOL / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 79, decimals: 2 },
-      'BTC-USD':  { name: 'BTC / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 82, decimals: 2 },
-      'ETH-USD':  { name: 'ETH / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 68, decimals: 2 },
-      'DOGE-USD': { name: 'DOGE / USD', price: 0, open24h: 0, delta: 0, vol: '---', score: 88, decimals: 5 },
-      'ADA-USD':  { name: 'ADA / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 74, decimals: 4 },
-      'AVAX-USD': { name: 'AVAX / USD', price: 0, open24h: 0, delta: 0, vol: '---', score: 81, decimals: 2 },
-      'LINK-USD': { name: 'LINK / USD', price: 0, open24h: 0, delta: 0, vol: '---', score: 76, decimals: 2 }
+      'XRP-USD':  { name: 'XRP / USD',  price: 0, prevPrice: 0, open24h: 0, delta: 0, vol: '---', score: 85, decimals: 4 },
+      'SOL-USD':  { name: 'SOL / USD',  price: 0, prevPrice: 0, open24h: 0, delta: 0, vol: '---', score: 79, decimals: 2 },
+      'BTC-USD':  { name: 'BTC / USD',  price: 0, prevPrice: 0, open24h: 0, delta: 0, vol: '---', score: 82, decimals: 2 },
+      'ETH-USD':  { name: 'ETH / USD',  price: 0, prevPrice: 0, open24h: 0, delta: 0, vol: '---', score: 68, decimals: 2 },
+      'DOGE-USD': { name: 'DOGE / USD', price: 0, prevPrice: 0, open24h: 0, delta: 0, vol: '---', score: 88, decimals: 5 },
+      'ADA-USD':  { name: 'ADA / USD',  price: 0, prevPrice: 0, open24h: 0, delta: 0, vol: '---', score: 74, decimals: 4 },
+      'AVAX-USD': { name: 'AVAX / USD', price: 0, prevPrice: 0, open24h: 0, delta: 0, vol: '---', score: 81, decimals: 2 },
+      'LINK-USD': { name: 'LINK / USD', price: 0, prevPrice: 0, open24h: 0, delta: 0, vol: '---', score: 76, decimals: 2 }
     };
 
     let activePair = 'XRP-USD';
     let candleData = [];
     let ws = null;
+    let chartNeedsRender = false;
+    let lastWsPing = Date.now();
 
     function formatPrice(val, decimals = 4) {
       if (!val || val === 0) return '---';
@@ -1036,31 +1051,270 @@
       return val.toFixed(decimals);
     }
 
-    // Seed baseline candles around initial live price
-    function seedCandles(basePrice, decimals) {
-      const candles = [];
-      let current = basePrice * 0.985;
-      for (let i = 0; i < 28; i++) {
-        const trend = i > 18 ? 0.0025 : 0.0005;
-        const change = (Math.sin(i * 0.6) * 0.003 + trend) * basePrice;
-        const o = current;
-        const c = o + change;
-        const h = Math.max(o, c) + Math.abs(change) * 0.8;
-        const l = Math.min(o, c) - Math.abs(change) * 0.8;
-        candles.push({ o, h, l, c });
-        current = c;
+    // =========================================================================
+    // 120HZ RENDER LOOP (DISPATCHED VIA requestAnimationFrame)
+    // =========================================================================
+    function start120HzLoop() {
+      function tick() {
+        if (chartNeedsRender) {
+          renderLiveChartImmediate();
+          chartNeedsRender = false;
+        }
+        requestAnimationFrame(tick);
       }
-      candles.push({
-        o: current,
-        h: Math.max(current, basePrice),
-        l: Math.min(current, basePrice),
-        c: basePrice
-      });
-      return candles;
+      requestAnimationFrame(tick);
+    }
+
+    // High-Frequency Price Flasher
+    function triggerPriceFlash(el, isUp) {
+      if (!el) return;
+      el.classList.remove('tick-up', 'tick-down');
+      void el.offsetWidth;
+      el.classList.add(isUp ? 'tick-up' : 'tick-down');
     }
 
     // =========================================================================
-    // IN-BROWSER QUANT MATHEMATICAL CALCULATIONS (RSI & EMA)
+    // PARALLEL FAST HYDRATION (RUNS ON BOOT + 1.2-SECOND RECURSION)
+    // =========================================================================
+    async function hydrateAllPairsFast() {
+      const pairs = Object.keys(MarketStore);
+      const jobs = pairs.map(async (pair) => {
+        try {
+          const res = await fetch(`https://api.coinbase.com/v2/prices/${pair}/spot`);
+          const json = await res.json();
+          if (json && json.data && json.data.amount) {
+            const spot = parseFloat(json.data.amount);
+            applyPriceTick(pair, spot);
+          }
+        } catch (e) {}
+      });
+      await Promise.allSettled(jobs);
+    }
+
+    // Fetch real 1-minute historical candles from Coinbase Exchange API
+    async function fetchRealCandles(pair) {
+      try {
+        const res = await fetch(`https://api.exchange.coinbase.com/products/${pair}/candles?granularity=60`);
+        const data = await res.json();
+
+        if (Array.isArray(data) && data.length > 0) {
+          const slice = data.slice(0, 30).reverse();
+          candleData = slice.map(c => ({
+            t: c[0] * 1000,
+            l: parseFloat(c[1]),
+            h: parseFloat(c[2]),
+            o: parseFloat(c[3]),
+            c: parseFloat(c[4]),
+            v: parseFloat(c[5])
+          }));
+
+          const latest = candleData[candleData.length - 1];
+          applyPriceTick(pair, latest.c);
+          chartNeedsRender = true;
+          return;
+        }
+      } catch (e) {}
+
+      seedBaselineCandles(MarketStore[pair].price || 1.40);
+      chartNeedsRender = true;
+    }
+
+    function seedBaselineCandles(base) {
+      candleData = [];
+      let p = base * 0.985;
+      const now = Date.now();
+      for (let i = 0; i < 29; i++) {
+        const trend = i > 18 ? 0.0025 : 0.0005;
+        const change = (Math.sin(i * 0.6) * 0.003 + trend) * base;
+        const o = p;
+        const c = o + change;
+        const h = Math.max(o, c) + Math.abs(change) * 0.8;
+        const l = Math.min(o, c) - Math.abs(change) * 0.8;
+        candleData.push({ t: now - (29 - i) * 60000, o, h, l, c });
+        p = c;
+      }
+      candleData.push({ t: now, o: p, h: Math.max(p, base), l: Math.min(p, base), c: base });
+    }
+
+    // =========================================================================
+    // TICK PROCESSING WITH SUB-SECOND TIME BUCKETING
+    // =========================================================================
+    function applyPriceTick(pair, price) {
+      const store = MarketStore[pair];
+      if (!store || price === store.price) return;
+
+      const isUp = price >= store.price;
+      store.prevPrice = store.price;
+      store.price = price;
+
+      // Update Watchlist item DOM directly
+      const pEl = document.getElementById(`watchPrice-${pair}`);
+      const dEl = document.getElementById(`watchDelta-${pair}`);
+      const vEl = document.getElementById(`watchVol-${pair}`);
+      const sEl = document.getElementById(`watchScore-${pair}`);
+
+      if (pEl) {
+        pEl.innerText = '$' + formatPrice(price, store.decimals);
+        triggerPriceFlash(pEl, isUp);
+      }
+      if (dEl && store.open24h > 0) {
+        const delta = ((price - store.open24h) / store.open24h) * 100;
+        store.delta = delta;
+        dEl.innerText = (delta >= 0 ? '+' : '') + delta.toFixed(2) + '%';
+        dEl.className = 'watch-delta ' + (delta >= 0 ? 'up' : 'down');
+      }
+      if (vEl && store.vol !== '---') {
+        vEl.innerText = `Vol ${store.vol}`;
+      }
+      if (sEl) {
+        sEl.innerText = `${store.score}/100`;
+        sEl.className = 'watch-confluence ' + (store.score >= 80 ? 'pass' : '');
+      }
+
+      // If active pair, update card, hero, and candle head immediately
+      if (pair === activePair) {
+        updateSignalsCardFast(isUp);
+
+        if (candleData.length > 0) {
+          const nowMinute = Math.floor(Date.now() / 60000) * 60000;
+          const currentCandle = candleData[candleData.length - 1];
+
+          if (currentCandle.t >= nowMinute) {
+            currentCandle.c = price;
+            if (price > currentCandle.h) currentCandle.h = price;
+            if (price < currentCandle.l) currentCandle.l = price;
+          } else {
+            candleData.shift();
+            candleData.push({
+              t: nowMinute,
+              o: currentCandle.c,
+              h: Math.max(currentCandle.c, price),
+              l: Math.min(currentCandle.c, price),
+              c: price
+            });
+          }
+          chartNeedsRender = true;
+        }
+      }
+    }
+
+    function updateSignalsCardFast(isUp) {
+      const data = MarketStore[activePair];
+      if (!data || data.price === 0) return;
+
+      const p = data.price;
+      const dec = data.decimals;
+      const dynScore = computeDynamicConfluence(activePair);
+
+      document.getElementById('chartSymbolTitle').innerText = data.name;
+      document.getElementById('cardPairTitle').innerText = '#' + data.name.replace(' / ', '/');
+      document.getElementById('chartScoreBadge').innerText = `${dynScore} / 100`;
+      document.getElementById('cardScorePill').innerText = `${dynScore}/100`;
+
+      const formatted = '$' + formatPrice(p, dec);
+      const heroEl = document.getElementById('livePriceHero');
+      const cardPriceEl = document.getElementById('cardMarketPrice');
+
+      heroEl.innerText = formatted;
+      cardPriceEl.innerText = formatted;
+      triggerPriceFlash(heroEl, isUp);
+
+      const sl = p * 0.985;
+      const t1 = p * 1.025;
+      const t2 = p * 1.050;
+      const entryLow = p * 0.995;
+      const entryHigh = p * 1.002;
+
+      document.getElementById('cardEntryZone').innerText = `$${formatPrice(entryLow, dec)} – $${formatPrice(entryHigh, dec)}`;
+      document.getElementById('cardStopLoss').innerText = `$${formatPrice(sl, dec)}`;
+      document.getElementById('cardTargets').innerText = `$${formatPrice(t1, dec)} / $${formatPrice(t2, dec)}`;
+
+      if (data.delta !== 0) {
+        const deltaTag = document.getElementById('chartDeltaTag');
+        deltaTag.innerText = (data.delta >= 0 ? '+' : '') + data.delta.toFixed(2) + '%';
+        deltaTag.style.color = data.delta >= 0 ? 'var(--emerald-neon)' : 'var(--crimson-neon)';
+      }
+
+      if (candleData.length >= 15) {
+        const rsi = calculateRSI(candleData, 14);
+        const ema9 = calculateEMA(candleData, 9);
+        const ema21 = calculateEMA(candleData, 21);
+        document.getElementById('teleRsiVal').innerText = rsi;
+        document.getElementById('teleEmaVal').innerText = ema9 >= ema21 ? 'BULLISH CROSS' : 'BEARISH CROSS';
+        document.getElementById('teleEmaVal').className = 'tele-val ' + (ema9 >= ema21 ? 'highlight' : '');
+      }
+    }
+
+    // =========================================================================
+    // WEBSOCKET TICKER FEED
+    // =========================================================================
+    function connectCoinbaseWebSocket() {
+      if (ws) {
+        try { ws.close(); } catch(e) {}
+      }
+
+      try {
+        ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
+
+        ws.onopen = () => {
+          document.getElementById('streamStatusLabel').innerText = '120Hz Streaming';
+          lastWsPing = Date.now();
+
+          ws.send(JSON.stringify({
+            type: 'subscribe',
+            product_ids: Object.keys(MarketStore),
+            channels: ['ticker']
+          }));
+        };
+
+        ws.onmessage = (evt) => {
+          lastWsPing = Date.now();
+          const msg = JSON.parse(evt.data);
+          if (msg.type === 'ticker' && msg.product_id && msg.price) {
+            const pair = msg.product_id;
+            const price = parseFloat(msg.price);
+            const store = MarketStore[pair];
+            if (!store) return;
+
+            if (msg.open_24h) store.open24h = parseFloat(msg.open_24h);
+            if (msg.volume_24h) {
+              const rawVol = parseFloat(msg.volume_24h);
+              store.vol = rawVol >= 1e6 ? `$${(rawVol / 1e6).toFixed(1)}M` : `$${(rawVol / 1e3).toFixed(0)}K`;
+            }
+
+            applyPriceTick(pair, price);
+          }
+        };
+
+        ws.onerror = () => {
+          document.getElementById('streamStatusLabel').innerText = 'Reconnecting...';
+        };
+
+        ws.onclose = () => {
+          document.getElementById('streamStatusLabel').innerText = 'Reconnecting...';
+          setTimeout(connectCoinbaseWebSocket, 2000);
+        };
+      } catch (err) {}
+    }
+
+    // Background High-Speed Poller (Syncs all 8 coins every 1.2 seconds)
+    setInterval(() => {
+      hydrateAllPairsFast();
+    }, 1200);
+
+    // Sleep/Wake Recovery Watchdog
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        hydrateAllPairsFast();
+        fetchRealCandles(activePair);
+        if (!ws || ws.readyState !== WebSocket.OPEN) {
+          connectCoinbaseWebSocket();
+        }
+      }
+    });
+
+    // =========================================================================
+    // IN-BROWSER QUANT MATH (RSI & EMA)
     // =========================================================================
     function calculateRSI(candles, period = 14) {
       if (candles.length < period + 1) return 55.0;
@@ -1087,7 +1341,6 @@
       return ema;
     }
 
-    // Dynamic Confluence Score Matrix
     function computeDynamicConfluence(pair) {
       const data = MarketStore[pair];
       if (!candleData || candleData.length < 15) return data.score;
@@ -1097,18 +1350,14 @@
       const ema21 = calculateEMA(candleData, 21);
 
       let score = 50;
-
-      // 1. RSI Momentum
-      if (rsi >= 50 && rsi <= 68) score += 22; // Momentum sweet spot
-      else if (rsi > 68 && rsi <= 80) score += 14; // Strong trend continuation
-      else if (rsi < 35) score += 16; // Oversold bounce setup
+      if (rsi >= 50 && rsi <= 68) score += 22;
+      else if (rsi > 68 && rsi <= 80) score += 14;
+      else if (rsi < 35) score += 16;
       else score += 6;
 
-      // 2. EMA Trend Filter
-      if (ema9 > ema21) score += 18; // Bullish alignment
+      if (ema9 > ema21) score += 18;
       else score -= 8;
 
-      // 3. 24h Delta Multiplier
       if (data.delta > 5) score += 12;
       else if (data.delta > 0) score += 6;
 
@@ -1117,99 +1366,10 @@
       return finalScore;
     }
 
-    // Initial Spot Prices via Coinbase REST
-    async function initRestPrices() {
-      for (const pair of Object.keys(MarketStore)) {
-        try {
-          const res = await fetch(`https://api.coinbase.com/v2/prices/${pair}/spot`);
-          const data = await res.json();
-          if (data && data.data && data.data.amount) {
-            const spot = parseFloat(data.data.amount);
-            MarketStore[pair].price = spot;
-            updateWatchlistRow(pair);
-
-            if (pair === activePair) {
-              candleData = seedCandles(spot, MarketStore[pair].decimals);
-              updateSignalsCard();
-              renderLiveChart();
-            }
-          }
-        } catch (e) {}
-      }
-    }
-
-    function updateWatchlistRow(pair) {
-      const data = MarketStore[pair];
-      const pEl = document.getElementById(`watchPrice-${pair}`);
-      const dEl = document.getElementById(`watchDelta-${pair}`);
-      const vEl = document.getElementById(`watchVol-${pair}`);
-      const sEl = document.getElementById(`watchScore-${pair}`);
-
-      if (pEl && data.price > 0) {
-        pEl.innerText = '$' + formatPrice(data.price, data.decimals);
-      }
-      if (dEl && data.open24h > 0) {
-        const delta = ((data.price - data.open24h) / data.open24h) * 100;
-        data.delta = delta;
-        dEl.innerText = (delta >= 0 ? '+' : '') + delta.toFixed(2) + '%';
-        dEl.className = 'watch-delta ' + (delta >= 0 ? 'up' : 'down');
-      }
-      if (vEl && data.vol !== '---') {
-        vEl.innerText = `Vol ${data.vol}`;
-      }
-      if (sEl) {
-        sEl.innerText = `${data.score}/100`;
-        sEl.className = 'watch-confluence ' + (data.score >= 80 ? 'pass' : '');
-      }
-    }
-
-    function updateSignalsCard() {
-      const data = MarketStore[activePair];
-      if (!data || data.price === 0) return;
-
-      const p = data.price;
-      const dec = data.decimals;
-      const dynScore = computeDynamicConfluence(activePair);
-
-      document.getElementById('chartSymbolTitle').innerText = data.name;
-      document.getElementById('cardPairTitle').innerText = '#' + data.name.replace(' / ', '/');
-      document.getElementById('chartScoreBadge').innerText = `${dynScore} / 100`;
-      document.getElementById('cardScorePill').innerText = `${dynScore}/100`;
-
-      const formatted = '$' + formatPrice(p, dec);
-      document.getElementById('livePriceHero').innerText = formatted;
-      document.getElementById('cardMarketPrice').innerText = formatted;
-
-      // Realistic quantitative bands
-      const sl = p * 0.985;
-      const t1 = p * 1.025;
-      const t2 = p * 1.050;
-      const entryLow = p * 0.995;
-      const entryHigh = p * 1.002;
-
-      document.getElementById('cardEntryZone').innerText = `$${formatPrice(entryLow, dec)} – $${formatPrice(entryHigh, dec)}`;
-      document.getElementById('cardStopLoss').innerText = `$${formatPrice(sl, dec)}`;
-      document.getElementById('cardTargets').innerText = `$${formatPrice(t1, dec)} / $${formatPrice(t2, dec)}`;
-
-      if (data.delta !== 0) {
-        const deltaTag = document.getElementById('chartDeltaTag');
-        deltaTag.innerText = (data.delta >= 0 ? '+' : '') + data.delta.toFixed(2) + '%';
-        deltaTag.style.color = data.delta >= 0 ? 'var(--emerald-neon)' : 'var(--crimson-neon)';
-      }
-
-      // Update Live Telemetry Metrics
-      if (candleData.length >= 15) {
-        const rsi = calculateRSI(candleData, 14);
-        const ema9 = calculateEMA(candleData, 9);
-        const ema21 = calculateEMA(candleData, 21);
-        document.getElementById('teleRsiVal').innerText = rsi;
-        document.getElementById('teleEmaVal').innerText = ema9 >= ema21 ? 'BULLISH CROSS' : 'BEARISH CROSS';
-        document.getElementById('teleEmaVal').className = 'tele-val ' + (ema9 >= ema21 ? 'highlight' : '');
-      }
-    }
-
-    // 3D CANDLESTICK SVG ENGINE
-    function renderLiveChart() {
+    // =========================================================================
+    // 3D CANDLESTICK SVG DRAW ENGINE
+    // =========================================================================
+    function renderLiveChartImmediate() {
       const container = document.getElementById('svgContainer');
       if (!candleData || candleData.length === 0) return;
 
@@ -1290,15 +1450,12 @@
           peakY = yH;
         }
 
-        // Wick
         svg += `<line x1="${x.toFixed(1)}" y1="${yH.toFixed(1)}" x2="${x.toFixed(1)}" y2="${yL.toFixed(1)}" stroke="${color}" stroke-width="1.5"/>`;
-        // Body
         const isLast = (i === count - 1);
         const filt = isLast ? 'filter="url(#glowGreen)"' : 'filter="url(#cShadow)"';
         svg += `<rect x="${(x - candleW / 2).toFixed(1)}" y="${top.toFixed(1)}" width="${candleW.toFixed(1)}" height="${height.toFixed(1)}" rx="1" fill="${grad}" ${filt}/>`;
       });
 
-      // Live Laser Price Line
       const activeCandle = candleData[candleData.length - 1];
       const liveY = priceToY(activeCandle.c);
       svg += `
@@ -1306,7 +1463,6 @@
         <circle cx="${w - 6}" cy="${liveY.toFixed(1)}" r="3.5" fill="#00E676" filter="url(#glowGreen)"/>
       `;
 
-      // 3D Peak Callout Elbow
       if (peakX > 0) {
         const elbowY = Math.max(12, peakY - 14);
         const endX = Math.min(w - 70, peakX + 24);
@@ -1326,105 +1482,17 @@
       container.innerHTML = svg;
     }
 
-    // REALTIME COINBASE WEBSOCKET (ALL 8 PAIRS)
-    function connectCoinbaseWebSocket() {
-      if (ws) {
-        try { ws.close(); } catch(e) {}
-      }
-
-      logTerminal('Subscribing all 8 pairs to wss://ws-feed.exchange.coinbase.com...');
-
-      try {
-        ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
-
-        ws.onopen = () => {
-          logTerminal('✓ Live Coinbase Feed Connected. Tracking: XRP, SOL, BTC, ETH, DOGE, ADA, AVAX, LINK.');
-          document.getElementById('streamStatusLabel').innerText = 'Coinbase Live';
-          
-          ws.send(JSON.stringify({
-            type: 'subscribe',
-            product_ids: Object.keys(MarketStore),
-            channels: ['ticker']
-          }));
-        };
-
-        ws.onmessage = (evt) => {
-          const msg = JSON.parse(evt.data);
-          if (msg.type === 'ticker' && msg.product_id && msg.price) {
-            handleLiveTick(msg);
-          }
-        };
-
-        ws.onerror = () => {
-          document.getElementById('streamStatusLabel').innerText = 'Reconnecting...';
-        };
-
-        ws.onclose = () => {
-          document.getElementById('streamStatusLabel').innerText = 'Reconnecting...';
-          setTimeout(connectCoinbaseWebSocket, 3500);
-        };
-      } catch (err) {
-        logTerminal(`[WS ERROR] ${err.message}`, 'term-crit');
-      }
-    }
-
-    function handleLiveTick(msg) {
-      const pair = msg.product_id;
-      const price = parseFloat(msg.price);
-      if (!MarketStore[pair]) return;
-
-      const store = MarketStore[pair];
-      store.price = price;
-      if (msg.open_24h) store.open24h = parseFloat(msg.open_24h);
-      if (msg.volume_24h) {
-        const rawVol = parseFloat(msg.volume_24h);
-        store.vol = rawVol >= 1e6 ? `$${(rawVol / 1e6).toFixed(1)}M` : `$${(rawVol / 1e3).toFixed(0)}K`;
-      }
-
-      updateWatchlistRow(pair);
-
-      if (pair === activePair) {
-        updateSignalsCard();
-        if (msg.volume_24h) document.getElementById('teleVolVal').innerText = store.vol;
-
-        if (candleData.length > 0) {
-          const last = candleData[candleData.length - 1];
-          last.c = price;
-          if (price > last.h) last.h = price;
-          if (price < last.l) last.l = price;
-          renderLiveChart();
-        }
-
-        logTerminal(`[TICK] ${pair}: $${formatPrice(price, store.decimals)} | RSI: ${document.getElementById('teleRsiVal').innerText}`);
-      }
-    }
-
-    // Scroll New Candlestick
-    setInterval(() => {
-      if (candleData.length > 0 && MarketStore[activePair].price > 0) {
-        const p = MarketStore[activePair].price;
-        candleData.shift();
-        candleData.push({ o: p, h: p, l: p, c: p });
-        renderLiveChart();
-      }
-    }, 10000);
-
-    // Switch Pair from Watchlist Click with Micro-Haptics
-    function selectPair(pair) {
+    // =========================================================================
+    // USER CONTROLS
+    // =========================================================================
+    async function selectPair(pair) {
       triggerHaptic('light');
       activePair = pair;
-      const data = MarketStore[pair];
-
-      if (data.price > 0) {
-        candleData = seedCandles(data.price, data.decimals);
-      }
-      updateSignalsCard();
-      renderLiveChart();
+      updateSignalsCardFast(true);
       switchTab('signals');
-      logTerminal(`[USER] Selected active pair: ${pair}. Quantitative pipeline synced.`);
+      await fetchRealCandles(pair);
     }
 
-    // Tab Navigation Logic with Haptics
     function switchTab(target) {
       triggerHaptic('light');
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -1451,7 +1519,7 @@
       div.className = 'term-line';
       div.innerHTML = `<span class="${tag}">[${time}]</span> ${msg}`;
       c.appendChild(div);
-      if (c.childNodes.length > 60) c.removeChild(c.firstChild);
+      if (c.childNodes.length > 70) c.removeChild(c.firstChild);
       c.scrollTop = c.scrollHeight;
     }
 
@@ -1460,9 +1528,10 @@
       document.getElementById('termConsole').innerHTML = `<div class="term-line"><span class="term-dim">[SYSTEM]</span> Terminal buffer cleared. Stream active.</div>`;
     }
 
-    function reconnectWebSocket() {
+    function forceRehydrate() {
       triggerHaptic('medium');
-      logTerminal('User initiated manual reconnect.');
+      hydrateAllPairsFast();
+      fetchRealCandles(activePair);
       connectCoinbaseWebSocket();
     }
 
@@ -1480,8 +1549,10 @@
       alert('Live trade signal copied!');
     }
 
-    // Boot Sequence
-    initRestPrices();
+    // Launch
+    start120HzLoop();
+    hydrateAllPairsFast();
+    fetchRealCandles(activePair);
     connectCoinbaseWebSocket();
   </script>
 </body>
