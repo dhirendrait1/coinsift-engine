@@ -6,19 +6,24 @@
   <title>CoinSift Engine</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#000000">
+  
+  <!-- High-Tech Cyber & Monospace Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --bg-oled: #000000;
-      --panel-bg: rgba(14, 20, 28, 0.75);
-      --cyan-accent: #00F2FE;
-      --emerald-accent: #00E676;
-      --crimson-accent: #FF2A55;
-      --glass-border: rgba(255, 255, 255, 0.12);
-      --font-cyber: 'Rajdhani', sans-serif;
-      --font-mono: 'Space Grotesk', monospace;
+      --cyan-neon: #00F2FE;
+      --emerald-neon: #00E676;
+      --crimson-neon: #FF2A55;
+      --glass-surface: rgba(10, 16, 26, 0.72);
+      --glass-specular: rgba(255, 255, 255, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.16);
+      --font-brand: 'Orbitron', sans-serif;
+      --font-body: 'Rajdhani', sans-serif;
+      --font-num: 'Space Grotesk', monospace;
     }
 
     * {
@@ -32,25 +37,29 @@
     body {
       background-color: var(--bg-oled);
       color: #FFFFFF;
-      font-family: var(--font-cyber);
-      overflow-x: hidden;
+      font-family: var(--font-body);
       min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.12) 0%, transparent 55%),
+        radial-gradient(circle at 80% 60%, rgba(0, 230, 118, 0.05) 0%, transparent 50%);
     }
 
     .app-viewport {
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      padding: env(safe-area-inset-top, 16px) 16px env(safe-area-inset-bottom, 16px) 16px;
-      background: radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.08) 0%, transparent 60%);
+      padding: env(safe-area-inset-top, 14px) 14px 140px 14px;
     }
 
-    /* Top-Left Header with Fixed Logo */
+    /* ==========================================================================
+       TOP HEADER WITH FIXED 3D LOGO
+       ========================================================================== */
     .top-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 0 14px 0;
+      padding: 6px 4px 14px 4px;
     }
 
     .brand-cluster {
@@ -60,246 +69,494 @@
     }
 
     .core-logo {
-      width: 40px;
-      height: 40px;
-      filter: drop-shadow(0 0 12px rgba(0, 242, 254, 0.45));
+      width: 44px;
+      height: 44px;
+      filter: drop-shadow(0 0 16px rgba(0, 242, 254, 0.5));
     }
 
     .engine-title {
-      font-size: 20px;
-      font-weight: 700;
+      font-family: var(--font-brand);
+      font-size: 19px;
+      font-weight: 800;
       letter-spacing: 0.08em;
-      color: var(--cyan-accent);
-      text-shadow: 0 0 14px rgba(0, 242, 254, 0.35);
+      background: linear-gradient(180deg, #FFFFFF 0%, #B0E9FF 60%, var(--cyan-neon) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
     }
 
-    .sync-badge {
+    /* Liquid Glass Pill Badge */
+    .glass-pill-badge {
       display: flex;
       align-items: center;
       gap: 6px;
-      padding: 5px 12px;
-      background: rgba(0, 230, 118, 0.08);
-      border: 1px solid rgba(0, 230, 118, 0.25);
+      padding: 6px 14px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(0, 230, 118, 0.08) 100%);
+      border: 1px solid rgba(0, 230, 118, 0.4);
       border-radius: 999px;
+      backdrop-filter: blur(16px);
+      box-shadow: 
+        inset 0 1px 1px var(--glass-specular),
+        0 4px 14px rgba(0, 230, 118, 0.25);
     }
 
     .sync-dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background-color: var(--emerald-accent);
-      box-shadow: 0 0 8px var(--emerald-accent);
+      background: var(--emerald-neon);
+      box-shadow: 0 0 10px var(--emerald-neon);
+      animation: pulseBeacon 2s infinite ease-in-out;
     }
 
     .sync-label {
       font-size: 11px;
-      font-weight: 600;
-      color: var(--emerald-accent);
-    }
-
-    /* Main Dynamic Content */
-    .dashboard-content {
-      flex: 1;
-      overflow-y: auto;
-      padding-bottom: 120px;
-    }
-
-    /* 3D Sentiment Gauge */
-    .gauge-card-3d {
-      background: var(--panel-bg);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      padding: 16px;
-      margin-bottom: 16px;
-      text-align: center;
-      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.18);
-    }
-
-    .gauge-label {
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      color: #94A3B8;
-      margin-bottom: 6px;
-    }
-
-    .gauge-text {
-      font-size: 22px;
       font-weight: 700;
-      color: #FFF;
+      color: #A7F3D0;
       letter-spacing: 0.05em;
     }
 
-    .section-title {
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      color: #64748B;
-      margin-bottom: 12px;
-    }
-
-    /* 3D Confluence Card */
-    .card-3d {
-      background: var(--panel-bg);
-      backdrop-filter: blur(24px);
+    /* ==========================================================================
+       UPPER-SIDE: LIVE 3D LIQUID GRAPH DASHBOARD
+       ========================================================================== */
+    .live-graph-module {
+      position: relative;
+      background: radial-gradient(130% 100% at 50% 0%, rgba(255, 255, 255, 0.08) 0%, rgba(8, 14, 24, 0.85) 50%, rgba(2, 6, 12, 0.95) 100%);
       border: 1px solid var(--glass-border);
-      border-radius: 22px;
-      padding: 18px;
-      margin-bottom: 14px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.18);
-      transition: transform 0.15s ease-out;
+      border-radius: 26px;
+      padding: 16px;
+      margin-bottom: 18px;
+      backdrop-filter: blur(30px);
+      box-shadow: 
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.4),
+        inset 0 -2px 6px rgba(0, 242, 254, 0.2),
+        0 20px 40px rgba(0, 0, 0, 0.8),
+        0 4px 20px rgba(0, 242, 254, 0.12);
+      overflow: hidden;
     }
 
-    .card-header {
+    .graph-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .graph-caption {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      color: #94A3B8;
+      font-weight: 600;
+    }
+
+    .regime-status {
+      font-family: var(--font-brand);
+      font-size: 18px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+      text-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
+    }
+
+    .graph-badge-glow {
+      background: rgba(0, 242, 254, 0.12);
+      border: 1px solid var(--cyan-neon);
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-family: var(--font-num);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--cyan-neon);
+      box-shadow: 0 0 14px rgba(0, 242, 254, 0.35);
+    }
+
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      height: 120px;
+      margin: 6px 0;
+    }
+
+    canvas#marketCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .graph-telemetry {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 10px;
+      margin-top: 4px;
+    }
+
+    .tele-cell {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tele-label {
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: #64748B;
+      font-weight: 600;
+    }
+
+    .tele-val {
+      font-family: var(--font-num);
+      font-size: 12px;
+      font-weight: 700;
+      color: #E2E8F0;
+    }
+
+    .tele-val.highlight {
+      color: var(--emerald-neon);
+    }
+
+    /* ==========================================================================
+       CONFLUENCE SIGNALS FEED & LIQUID CARDS
+       ========================================================================== */
+    .section-eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: #64748B;
+      margin: 8px 4px 12px 4px;
+    }
+
+    .liquid-card {
+      position: relative;
+      background: radial-gradient(120% 120% at 50% 0%, rgba(255, 255, 255, 0.08) 0%, rgba(12, 18, 28, 0.8) 50%, rgba(3, 7, 14, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 28px;
+      padding: 18px;
+      margin-bottom: 16px;
+      backdrop-filter: blur(30px);
+      box-shadow: 
+        inset 0 1.5px 1px var(--glass-specular),
+        inset 0 -2px 8px rgba(0, 242, 254, 0.18),
+        0 24px 48px rgba(0, 0, 0, 0.85),
+        0 8px 24px -4px rgba(0, 230, 118, 0.15);
+    }
+
+    .card-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 14px;
     }
 
-    .coin-id {
-      font-size: 22px;
-      font-weight: 700;
+    .pair-badge {
+      font-family: var(--font-brand);
+      font-size: 20px;
+      font-weight: 800;
       letter-spacing: 0.04em;
+      color: #FFFFFF;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
     }
 
-    .score-chip {
-      background: rgba(0, 230, 118, 0.15);
-      border: 1px solid var(--emerald-accent);
-      color: var(--emerald-accent);
-      padding: 5px 14px;
+    .score-liquid-pill {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, rgba(0, 230, 118, 0.2) 100%);
+      border: 1.5px solid var(--emerald-neon);
+      color: var(--emerald-neon);
+      padding: 4px 14px;
       border-radius: 999px;
+      font-family: var(--font-num);
       font-size: 13px;
       font-weight: 700;
-      box-shadow: 0 0 12px rgba(0, 230, 118, 0.25);
+      box-shadow: 
+        inset 0 1px 1px #FFFFFF,
+        0 0 18px rgba(0, 230, 118, 0.35);
     }
 
-    .data-grid {
+    .liquid-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
-    .data-cell {
-      background: rgba(0, 0, 0, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 12px;
-      padding: 10px;
+    .liquid-cell {
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 10px 12px;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
     }
 
     .cell-title {
       font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
       color: #94A3B8;
       margin-bottom: 4px;
     }
 
-    .cell-val {
-      font-family: var(--font-mono);
+    .cell-value {
+      font-family: var(--font-num);
       font-size: 15px;
-      font-weight: 600;
-    }
-
-    .cell-val.entry { color: var(--cyan-accent); }
-    .cell-val.stop { color: var(--crimson-accent); }
-    .cell-val.target { color: var(--emerald-accent); }
-
-    .card-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    .action-btn {
-      flex: 1;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--glass-border);
-      color: #FFF;
-      padding: 12px;
-      border-radius: 12px;
-      font-family: var(--font-cyber);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    /* Capital Preservation Shield */
-    .preservation-shield {
-      background: rgba(10, 15, 22, 0.85);
-      border: 1px solid rgba(0, 242, 254, 0.2);
-      border-radius: 22px;
-      padding: 36px 16px;
-      text-align: center;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9);
-    }
-
-    .shield-icon {
-      font-size: 48px;
-      margin-bottom: 12px;
-    }
-
-    .shield-title {
-      font-size: 19px;
       font-weight: 700;
-      letter-spacing: 0.06em;
-      margin-bottom: 8px;
+      color: #FFFFFF;
     }
 
-    .shield-desc {
-      font-size: 12px;
-      color: #94A3B8;
-      line-height: 1.6;
-    }
+    .cell-value.entry { color: var(--cyan-neon); text-shadow: 0 0 10px rgba(0, 242, 254, 0.4); }
+    .cell-value.stop { color: var(--crimson-neon); }
+    .cell-value.target { color: var(--emerald-neon); text-shadow: 0 0 10px rgba(0, 230, 118, 0.4); }
 
-    /* Fixed Bottom Dock & Attribution Pill */
-    .bottom-dock {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 8px 16px 20px 16px;
-      background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.95) 40%, #000 100%);
+    /* ==========================================================================
+       LIQUID GLASS BUTTONS (Directly matching UI kit showcase)
+       ========================================================================== */
+    .btn-row {
       display: flex;
-      flex-direction: column;
       gap: 10px;
-      align-items: center;
     }
 
-    .attribution-pill-3d {
+    .liquid-btn {
+      flex: 1;
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      white-space: nowrap;
-      background: rgba(10, 15, 24, 0.85);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 13px 16px;
       border-radius: 999px;
-      padding: 8px 18px;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.8), 0 0 14px rgba(0, 242, 254, 0.12);
-      font-size: 10px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: radial-gradient(100% 120% at 50% 0%, rgba(255, 255, 255, 0.28) 0%, rgba(12, 22, 38, 0.85) 60%, rgba(3, 7, 16, 0.95) 100%);
+      color: #FFFFFF;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      backdrop-filter: blur(20px);
+      box-shadow: 
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.7),
+        inset 0 -2px 6px rgba(0, 242, 254, 0.3),
+        0 8px 20px rgba(0, 0, 0, 0.7),
+        0 4px 14px rgba(0, 242, 254, 0.25);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
     }
 
-    .attr-bolt { color: var(--cyan-accent); }
-    .attr-brand { color: var(--cyan-accent); font-weight: 700; }
-    .attr-dot { color: rgba(255, 255, 255, 0.25); }
-    .attr-credit { color: #94A3B8; }
-    .attr-name { color: #F8FAFC; text-shadow: 0 0 8px rgba(0, 242, 254, 0.4); }
-    .attr-ver { color: #64748B; }
-    .attr-beacon { color: var(--emerald-accent); font-size: 6px; }
+    .liquid-btn:active {
+      transform: scale(0.97);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    .liquid-btn.secondary {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.5),
+        0 8px 20px rgba(0, 0, 0, 0.7);
+    }
+
+    /* ==========================================================================
+       BOTTOM BAR: SIGNALS NAV & EXACT 2-LINE 3D GLASS DOCK
+       ========================================================================== */
+    .fixed-dock-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 6px 14px env(safe-area-inset-bottom, 14px) 14px;
+      background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.92) 35%, #000000 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .interactive-wrap {
+      pointer-events: auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Nav cluster with active cyan indicator */
+    .sub-nav {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .nav-link {
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #64748B;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .nav-link.active {
+      color: var(--cyan-neon);
+      text-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
+    }
+
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 22px;
+      height: 2.5px;
+      border-radius: 999px;
+      background: var(--cyan-neon);
+      box-shadow: 0 0 8px var(--cyan-neon);
+    }
+
+    /* ==========================================================================
+       EXACT 3D LIQUID GLASS CAPSULE (MATCHING YOUR SCREENSHOT)
+       ========================================================================== */
+    .attribution-capsule-3d {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      
+      /* Thick curved glass casing */
+      background: radial-gradient(140% 120% at 50% 0%, 
+        rgba(255, 255, 255, 0.22) 0%, 
+        rgba(10, 18, 30, 0.88) 55%, 
+        rgba(2, 6, 14, 0.98) 100%);
+      
+      border: 1.5px solid rgba(255, 255, 255, 0.38);
+      backdrop-filter: blur(32px);
+
+      /* Dual-tone intense caustic underglow (Cyan -> Emerald) */
+      box-shadow: 
+        inset 0 2px 2px rgba(255, 255, 255, 0.85),
+        inset 0 -3px 12px rgba(0, 230, 118, 0.45),
+        0 14px 34px -4px rgba(0, 0, 0, 0.95),
+        0 10px 28px -2px rgba(0, 230, 118, 0.45),
+        0 0 24px rgba(0, 242, 254, 0.35);
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Ambient chromatic lens rim */
+    .attribution-capsule-3d::before {
+      content: '';
+      position: absolute;
+      inset: 1px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, transparent 60%) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* Tech decorative symbols inside the glass lens */
+    .capsule-tech-mark {
+      position: absolute;
+      color: rgba(255, 255, 255, 0.35);
+      font-size: 9px;
+      font-family: var(--font-num);
+      pointer-events: none;
+    }
+    .mark-tl { top: 9px; left: 18px; }
+    .mark-tr { top: 9px; right: 18px; }
+    .mark-bl { bottom: 9px; left: 24px; }
+    .mark-dots-r { right: 16px; top: 48%; transform: translateY(-50%); font-size: 11px; letter-spacing: -2px; }
+
+    /* LINE 1 */
+    .capsule-line-1 {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--font-brand);
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .brand-glow-tag {
+      color: var(--cyan-neon);
+      text-shadow: 0 0 10px rgba(0, 242, 254, 0.7);
+    }
+
+    .engine-beacon {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--cyan-neon);
+      box-shadow: 0 0 8px var(--cyan-neon);
+    }
+
+    .credit-sub {
+      color: #94A3B8;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+    }
+
+    /* LINE 2: MASSIVE 3D METALLIC CHROME NAME */
+    .capsule-line-2 {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .author-name-metallic {
+      font-family: var(--font-brand);
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      
+      /* Extruded Metallic Chrome gradient */
+      background: linear-gradient(180deg, #FFFFFF 0%, #E2E8F0 40%, #94A3B8 52%, #F8FAFC 85%, #CBD5E1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.25));
+    }
+
+    .capsule-version {
+      font-family: var(--font-brand);
+      font-size: 9px;
+      font-weight: 700;
+      color: #64748B;
+      letter-spacing: 0.06em;
+    }
+
+    @keyframes pulseBeacon {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
   </style>
 </head>
+
 <body>
   <div class="app-viewport">
-    <!-- Top-Left Header with Locked 3D Cybernetic Logo -->
+
+    <!-- Top-Left Header with Fixed 3D Logo -->
     <header class="top-header">
       <div class="brand-cluster">
         <svg class="core-logo" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="chassisBorder" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#00F2FE" stop-opacity="0.8"/>
-              <stop offset="50%" stop-color="#00E676" stop-opacity="0.3"/>
-              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
+              <stop offset="0%" stop-color="#00F2FE" stop-opacity="0.9"/>
+              <stop offset="50%" stop-color="#00E676" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.1"/>
             </linearGradient>
             <linearGradient id="coinGrad" x1="30" y1="20" x2="90" y2="85" gradientUnits="userSpaceOnUse">
               <stop offset="0%" stop-color="#1E293B"/>
@@ -325,112 +582,281 @@
           <circle cx="60" cy="50" r="24" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1"/>
           <path d="M68 38 H52 C48 38 46 40 46 44 V47 C46 51 48 53 52 53 H68 C72 53 74 55 74 59 V62 C74 66 72 68 68 68 H50 M46 41 H48 M72 65 H74" stroke="url(#sGrad)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span class="engine-title">COINSIFT ENGINE</span>
+        <span class="engine-title">COINSIFT</span>
       </div>
-      <div class="sync-badge">
+
+      <div class="glass-pill-badge">
         <span class="sync-dot"></span>
         <span class="sync-label">System Synced</span>
       </div>
     </header>
 
-    <main class="dashboard-content">
-      <section class="gauge-card-3d">
-        <div class="gauge-label">MARKET BIAS</div>
-        <div class="gauge-text" id="biasText">MOMENTUM (64/100)</div>
-      </section>
+    <!-- Upper Side Live Dynamic Graph Dashboard -->
+    <section class="live-graph-module">
+      <div class="graph-header">
+        <div>
+          <div class="graph-caption">MARKET REGIME & CONFLUENCE PULSE</div>
+          <div class="regime-status" id="biasHeading">MOMENTUM CONVERGENCE</div>
+        </div>
+        <div class="graph-badge-glow" id="biasScoreBadge">64 / 100</div>
+      </div>
 
-      <div class="section-title">TOP CONFLUENCE CANDIDATES</div>
-      <div id="cardsFeed">
-        <!-- Default State: Pre-loaded Card -->
-        <div class="card-3d">
-          <div class="card-header">
-            <div class="coin-id">#XRP/USD</div>
-            <div class="score-chip">87/100</div>
-          </div>
-          <div class="data-grid">
-            <div class="data-cell">
-              <div class="cell-title">ENTRY ZONE</div>
-              <div class="cell-val entry">$1.39 – $1.41</div>
-            </div>
-            <div class="data-cell">
-              <div class="cell-title">MARKET PRICE</div>
-              <div class="cell-val">$1.40</div>
-            </div>
-            <div class="data-cell">
-              <div class="cell-title">INVALIDATION (SL)</div>
-              <div class="cell-val stop">$1.38</div>
-            </div>
-            <div class="data-cell">
-              <div class="cell-title">TARGETS</div>
-              <div class="cell-val target">$1.43 / $1.46</div>
-            </div>
-          </div>
-          <div class="card-actions">
-            <button class="action-btn" onclick="window.open('https://www.tradingview.com/chart/?symbol=COINBASE:XRPUSD')">📈 TradingView</button>
-            <button class="action-btn" onclick="navigator.clipboard.writeText('COINSIFT: XRP/USD Entry: 1.40 SL: 1.38 TP: 1.43'); alert('Copied!')">📋 Copy Trade</button>
-          </div>
+      <!-- Realtime Hardware-Accelerated 120Hz Canvas Wave -->
+      <div class="canvas-container">
+        <canvas id="marketCanvas"></canvas>
+      </div>
+
+      <div class="graph-telemetry">
+        <div class="tele-cell">
+          <span class="tele-label">BTC 50-EMA</span>
+          <span class="tele-val highlight">BULLISH (+1.8%)</span>
+        </div>
+        <div class="tele-cell">
+          <span class="tele-label">VOLATILITY (ATR)</span>
+          <span class="tele-val">COMPRESSED</span>
+        </div>
+        <div class="tele-cell">
+          <span class="tele-label">RVOL THRESHOLD</span>
+          <span class="tele-val highlight">≥ 1.40x PASS</span>
         </div>
       </div>
-    </main>
+    </section>
 
-    <!-- Locked Attribution Single-Line 3D Pill -->
-    <footer class="bottom-dock">
-      <div class="attribution-pill-3d">
-        <span class="attr-bolt">⚡</span>
-        <span class="attr-brand">COINSIFT ENGINE</span>
-        <span class="attr-dot">•</span>
-        <span class="attr-credit">ENGINEERED BY <strong class="attr-name">DHIRENDRA PANDEY</strong></span>
-        <span class="attr-dot">•</span>
-        <span class="attr-ver">v1.0</span>
-        <span class="attr-beacon">●</span>
+    <!-- Confluence Signals Feed -->
+    <div class="section-eyebrow">TOP CONFLUENCE CANDIDATES</div>
+    
+    <div id="cardsFeed">
+      <!-- Default Preloaded High-Confluence Liquid Card -->
+      <div class="liquid-card">
+        <div class="card-top">
+          <div class="pair-badge">#XRP/USD</div>
+          <div class="score-liquid-pill">87/100</div>
+        </div>
+
+        <div class="liquid-grid">
+          <div class="liquid-cell">
+            <div class="cell-title">ENTRY ZONE</div>
+            <div class="cell-value entry">$1.39 – $1.41</div>
+          </div>
+          <div class="liquid-cell">
+            <div class="cell-title">MARKET PRICE</div>
+            <div class="cell-value">$1.40</div>
+          </div>
+          <div class="liquid-cell">
+            <div class="cell-title">INVALIDATION (SL)</div>
+            <div class="cell-value stop">$1.38</div>
+          </div>
+          <div class="liquid-cell">
+            <div class="cell-title">TARGETS</div>
+            <div class="cell-value target">$1.43 / $1.46</div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="liquid-btn" onclick="window.open('https://www.tradingview.com/chart/?symbol=COINBASE:XRPUSD')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+            TradingView
+          </button>
+          <button class="liquid-btn secondary" onclick="navigator.clipboard.writeText('COINSIFT: XRP/USD Entry: 1.40 SL: 1.38 TP: 1.43'); alert('Signal Copied!')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            Copy Trade
+          </button>
+        </div>
       </div>
-    </footer>
+    </div>
+
   </div>
 
+  <!-- Bottom Dock: Sub Navigation + Exact 2-Line 3D Glass Pill Capsule -->
+  <footer class="fixed-dock-container">
+    <div class="interactive-wrap">
+      
+      <!-- Sub Navigation -->
+      <nav class="sub-nav">
+        <span class="nav-link active">Signals</span>
+        <span class="nav-link">Watchlist</span>
+        <span class="nav-link">Terminal</span>
+      </nav>
+
+      <!-- Exact 2-Line 3D Liquid Glass Attribution Dock (From Screenshot) -->
+      <div class="attribution-capsule-3d">
+        <!-- Lens Tech Accents -->
+        <span class="capsule-tech-mark mark-tl">+</span>
+        <span class="capsule-tech-mark mark-tr">+</span>
+        <span class="capsule-tech-mark mark-bl">+</span>
+        <span class="capsule-tech-mark mark-dots-r">⋮⋮</span>
+
+        <!-- Line 1: Brand & Credits -->
+        <div class="capsule-line-1">
+          <span class="brand-glow-tag">COINSIFT ENGINE</span>
+          <span class="engine-beacon"></span>
+          <span class="credit-sub">ENGINEERED BY</span>
+        </div>
+
+        <!-- Line 2: Metallic Chrome 3D Extruded Name -->
+        <div class="capsule-line-2">
+          <span class="author-name-metallic">DHIRENDRA PANDEY</span>
+          <span class="capsule-version">v1.0</span>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Realtime Graph & Data Integration Engine -->
   <script>
-    // Live database reader
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+
+    // Dynamic Live Waveform Canvas Generator (120Hz optimized)
+    const canvas = document.getElementById('marketCanvas');
+    const ctx = canvas.getContext('2d');
+    let points = [];
+    let step = 0;
+
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 2;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+      
+      const width = rect.width;
+      const height = rect.height;
+      points = [];
+      const count = 18;
+      for (let i = 0; i <= count; i++) {
+        points.push({
+          x: (width / count) * i,
+          y: height * 0.45 + Math.sin(i * 0.7) * 22
+        });
+      }
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function renderGraph() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
+
+      ctx.clearRect(0, 0, w, h);
+      step += 0.035;
+
+      // Draw subtle grid lines
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      ctx.lineWidth = 1;
+      for (let y = 20; y < h; y += 30) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      // Dynamic waveform points with organic oscillation
+      const animatedPoints = points.map((p, idx) => ({
+        x: p.x,
+        y: p.y + Math.sin(step + idx * 0.6) * 12 + Math.cos(step * 0.8 + idx) * 6
+      }));
+
+      // Draw Area Gradient Fill
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, 'rgba(0, 242, 254, 0.28)');
+      grad.addColorStop(0.6, 'rgba(0, 230, 118, 0.08)');
+      grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+      ctx.beginPath();
+      ctx.moveTo(0, h);
+      ctx.lineTo(animatedPoints[0].x, animatedPoints[0].y);
+      for (let i = 0; i < animatedPoints.length - 1; i++) {
+        const xc = (animatedPoints[i].x + animatedPoints[i + 1].x) / 2;
+        const yc = (animatedPoints[i].y + animatedPoints[i + 1].y) / 2;
+        ctx.quadraticCurveTo(animatedPoints[i].x, animatedPoints[i].y, xc, yc);
+      }
+      ctx.lineTo(w, h);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Glowing Neon Primary Trace Line
+      ctx.beginPath();
+      ctx.moveTo(animatedPoints[0].x, animatedPoints[0].y);
+      for (let i = 0; i < animatedPoints.length - 1; i++) {
+        const xc = (animatedPoints[i].x + animatedPoints[i + 1].x) / 2;
+        const yc = (animatedPoints[i].y + animatedPoints[i + 1].y) / 2;
+        ctx.quadraticCurveTo(animatedPoints[i].x, animatedPoints[i].y, xc, yc);
+      }
+      ctx.strokeStyle = '#00F2FE';
+      ctx.lineWidth = 2.5;
+      ctx.shadowColor = '#00F2FE';
+      ctx.shadowBlur = 12;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Pulse Head Node at leading edge
+      const lead = animatedPoints[animatedPoints.length - 1];
+      ctx.beginPath();
+      ctx.arc(lead.x - 2, lead.y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#00E676';
+      ctx.shadowColor = '#00E676';
+      ctx.shadowBlur = 14;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      requestAnimationFrame(renderGraph);
+    }
+    requestAnimationFrame(renderGraph);
+
+    // Live Database Synchronization
     fetch('data/signals.json?t=' + Date.now())
-      .then(r => r.json())
+      .then(res => res.json())
       .then(d => {
         if (d.market_regime) {
-          const score = d.market_regime.fear_greed_score || 50;
-          document.getElementById('biasText').innerText = `${d.market_regime.bias.toUpperCase()} (${score}/100)`;
+          const score = d.market_regime.fear_greed_score || 64;
+          document.getElementById('biasHeading').innerText = `${d.market_regime.bias.toUpperCase()} CONVERGENCE`;
+          document.getElementById('biasScoreBadge').innerText = `${score} / 100`;
         }
         if (d.shortlist_count === 0 || !d.setups || !d.setups.length) {
           document.getElementById('cardsFeed').innerHTML = `
-            <div class="preservation-shield">
-              <div class="shield-icon">🛡️</div>
-              <div class="shield-title">CAPITAL PRESERVED</div>
-              <p class="shield-desc">No market candidates crossed the ≥ 80/100 confluence barrier.<br>Market conditions present unfavorable risk-to-reward metrics.<br><strong>Cash is an active position.</strong></p>
+            <div class="liquid-card" style="text-align: center; padding: 36px 16px;">
+              <div style="font-size: 46px; margin-bottom: 12px; filter: drop-shadow(0 0 16px var(--cyan-neon));">🛡️</div>
+              <div style="font-family: var(--font-brand); font-size: 19px; font-weight: 800; letter-spacing: 0.06em; margin-bottom: 8px;">CAPITAL PRESERVED</div>
+              <p style="font-size: 13px; color: #94A3B8; line-height: 1.6;">No market setups breached the ≥ 80/100 confluence barrier.<br><strong style="color: var(--cyan-neon);">Cash is an active position.</strong></p>
             </div>`;
         } else if (d.setups && d.setups.length > 0) {
           const cardsHtml = d.setups.map(coin => `
-            <div class="card-3d">
-              <div class="card-header">
-                <div class="coin-id">#${coin.pair}</div>
-                <div class="score-chip">${coin.confluence_score}/100</div>
+            <div class="liquid-card">
+              <div class="card-top">
+                <div class="pair-badge">#${coin.pair}</div>
+                <div class="score-liquid-pill">${coin.confluence_score}/100</div>
               </div>
-              <div class="data-grid">
-                <div class="data-cell">
+              <div class="liquid-grid">
+                <div class="liquid-cell">
                   <div class="cell-title">ENTRY ZONE</div>
-                  <div class="cell-val entry">$${coin.entry_zone[0]} – $${coin.entry_zone[1]}</div>
+                  <div class="cell-value entry">$${coin.entry_zone[0]} – $${coin.entry_zone[1]}</div>
                 </div>
-                <div class="data-cell">
+                <div class="liquid-cell">
                   <div class="cell-title">MARKET PRICE</div>
-                  <div class="cell-val">$${coin.market_price}</div>
+                  <div class="cell-value">$${coin.market_price}</div>
                 </div>
-                <div class="data-cell">
+                <div class="liquid-cell">
                   <div class="cell-title">INVALIDATION (SL)</div>
-                  <div class="cell-val stop">$${coin.invalidation}</div>
+                  <div class="cell-value stop">$${coin.invalidation}</div>
                 </div>
-                <div class="data-cell">
+                <div class="liquid-cell">
                   <div class="cell-title">TARGETS</div>
-                  <div class="cell-val target">$${coin.target_1} / $${coin.target_2}</div>
+                  <div class="cell-value target">$${coin.target_1} / $${coin.target_2}</div>
                 </div>
               </div>
-              <div class="card-actions">
-                <button class="action-btn" onclick="window.open('https://www.tradingview.com/chart/?symbol=COINBASE:${coin.symbol}USD')">📈 TradingView</button>
-                <button class="action-btn" onclick="navigator.clipboard.writeText('COINSIFT: ${coin.pair} Entry: ${coin.market_price} SL: ${coin.invalidation} TP: ${coin.target_1}'); alert('Signal copied!')">📋 Copy Trade</button>
+              <div class="btn-row">
+                <button class="liquid-btn" onclick="window.open('https://www.tradingview.com/chart/?symbol=COINBASE:${coin.symbol}USD')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                  TradingView
+                </button>
+                <button class="liquid-btn secondary" onclick="navigator.clipboard.writeText('COINSIFT: ${coin.pair} Entry: ${coin.market_price} SL: ${coin.invalidation} TP: ${coin.target_1}'); alert('Signal Copied!')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  Copy Trade
+                </button>
               </div>
             </div>
           `).join('');
