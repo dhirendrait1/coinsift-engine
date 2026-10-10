@@ -132,16 +132,17 @@ def send_discord(shortlist, fg_val, fg_class):
             "description": f"**Confluence Score: `{item['score']}/100`**\nSetup: **Bullish Continuation & Momentum**",
             "color": 3066993,
             "fields": [
-                {"name": "📍 Current Price", "value": f"`${item['price']:.2f}`", "inline": True},
+                {"name": "📍 Entry Zone", "value": f"`{item['entry_range']}`", "inline": True},
+                {"name": "💵 Current Price", "value": f"`${item['price']:.2f}`", "inline": True},
+                {"name": "🛑 Invalidation", "value": f"`{item['stop']}`", "inline": True},
                 {"name": "🎯 TP 1", "value": f"`{item['tp1']}`", "inline": True},
                 {"name": "🎯 TP 2", "value": f"`{item['tp2']}`", "inline": True},
-                {"name": "🛑 Invalidation", "value": f"`{item['stop']}`", "inline": True},
                 {"name": "⚖️ Risk/Reward", "value": f"`{item['rr_ratio']}`", "inline": True},
                 {"name": "📊 24h RVOL", "value": f"`{item['rvol']}`", "inline": True},
                 {"name": "📈 1H RSI", "value": f"`{item['rsi']}`", "inline": True},
                 {"name": "🔗 TradingView", "value": f"[Open Chart]({tv_link})", "inline": True}
             ],
-            "footer": {"text": "CoinSift Automated Scanner"}
+            "footer": {"text": "CoinSift Automated Engine"}
         }
         embeds.append(embed)
 
@@ -157,7 +158,7 @@ def send_discord(shortlist, fg_val, fg_class):
 
 def send_telegram(shortlist, fg_val, fg_class):
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
-        print("Telegram secrets missing. Skipping.")
+        print("Telegram credentials missing. Skipping.")
         return
 
     text = f"🚨 <b>CoinSift Market Intelligence</b>\nMarket Bias: <b>{fg_class} ({fg_val}/100)</b>\n\n"
@@ -165,7 +166,8 @@ def send_telegram(shortlist, fg_val, fg_class):
         tv_link = f"https://www.tradingview.com/chart/?symbol=BINANCE:{item['raw_symbol']}.P"
         text += (
             f"🔹 <b>#{item['symbol']} / USD</b> (Score: <code>{item['score']}/100</code>)\n"
-            f"• Price: <code>${item['price']:.2f}</code>\n"
+            f"• <b>Entry Zone:</b> <code>{item['entry_range']}</code>\n"
+            f"• Current Price: <code>${item['price']:.2f}</code>\n"
             f"• TP 1: <code>{item['tp1']}</code> | TP 2: <code>{item['tp2']}</code>\n"
             f"• Stop: <code>{item['stop']}</code> (R:R <code>{item['rr_ratio']}</code>)\n"
             f"• RSI: <code>{item['rsi']}</code> | RVOL: <code>{item['rvol']}</code>\n"
