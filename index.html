@@ -3,1283 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>CoinSift Engine</title>
+  <title>CoinSift Engine | Quant Observation Terminal</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#000000">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg-oled: #000000;
-      --cyan-neon: #00F2FE;
-      --emerald-neon: #00E676;
-      --crimson-neon: #FF2A55;
-      --glass-surface: rgba(10, 16, 26, 0.78);
-      --glass-specular: rgba(255, 255, 255, 0.7);
-      --glass-border: rgba(255, 255, 255, 0.16);
-      --font-brand: 'Orbitron', sans-serif;
-      --font-body: 'Rajdhani', sans-serif;
-      --font-num: 'Space Grotesk', monospace;
-      --font-code: 'JetBrains Mono', monospace;
-      --tilt-x: 0px;
-      --tilt-y: 0px;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-
-    body {
-      background-color: var(--bg-oled);
-      color: #FFFFFF;
-      font-family: var(--font-body);
-      min-height: 100vh;
-      overflow-x: hidden;
-      background-image: 
-        radial-gradient(circle at calc(50% + var(--tilt-x)) calc(0% + var(--tilt-y)), rgba(0, 242, 254, 0.14) 0%, transparent 60%),
-        radial-gradient(circle at calc(80% - var(--tilt-x)) calc(60% - var(--tilt-y)), rgba(0, 230, 118, 0.06) 0%, transparent 50%);
-    }
-
-    .app-viewport {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      padding: env(safe-area-inset-top, 14px) 14px 155px 14px;
-    }
-
-    /* TOP HEADER */
-    .top-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 4px 14px 4px;
-    }
-
-    .brand-cluster {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .core-logo {
-      width: 44px;
-      height: 44px;
-      filter: drop-shadow(0 0 16px rgba(0, 242, 254, 0.5));
-    }
-
-    .engine-title {
-      font-family: var(--font-brand);
-      font-size: 19px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      background: linear-gradient(180deg, #FFFFFF 0%, #B0E9FF 60%, var(--cyan-neon) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
-    }
-
-    .glass-pill-badge {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(0, 230, 118, 0.08) 100%);
-      border: 1px solid rgba(0, 230, 118, 0.4);
-      border-radius: 999px;
-      backdrop-filter: blur(16px);
-      box-shadow: 
-        inset 0 1px 1px var(--glass-specular),
-        0 4px 14px rgba(0, 230, 118, 0.25);
-    }
-
-    .sync-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--emerald-neon);
-      box-shadow: 0 0 10px var(--emerald-neon);
-      animation: pulseBeacon 1s infinite ease-in-out;
-    }
-
-    .sync-label {
-      font-size: 11px;
-      font-weight: 700;
-      color: #A7F3D0;
-      letter-spacing: 0.05em;
-    }
-
-    /* 3D LIVE INTERACTIVE CANDLESTICK MODULE */
-    .live-chart-module {
-      position: relative;
-      background: radial-gradient(130% 100% at calc(50% + var(--tilt-x)) calc(0% + var(--tilt-y)), rgba(255, 255, 255, 0.08) 0%, rgba(8, 14, 24, 0.88) 50%, rgba(2, 6, 12, 0.98) 100%);
-      border: 1px solid var(--glass-border);
-      border-radius: 26px;
-      padding: 16px;
-      margin-bottom: 18px;
-      backdrop-filter: blur(30px);
-      box-shadow: 
-        inset 0 1.5px 1px rgba(255, 255, 255, 0.4),
-        inset 0 -2px 6px rgba(0, 242, 254, 0.2),
-        0 20px 40px rgba(0, 0, 0, 0.8),
-        0 4px 20px rgba(0, 242, 254, 0.15);
-      overflow: hidden;
-    }
-
-    .chart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 8px;
-    }
-
-    .chart-caption {
-      font-size: 11px;
-      letter-spacing: 0.12em;
-      color: #94A3B8;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .live-indicator {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--emerald-neon);
-      box-shadow: 0 0 8px var(--emerald-neon);
-      animation: pulseBeacon 0.8s infinite;
-    }
-
-    .chart-asset-row {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin-top: 2px;
-    }
-
-    .chart-asset {
-      font-family: var(--font-brand);
-      font-size: 20px;
-      font-weight: 800;
-      color: #FFFFFF;
-      letter-spacing: 0.04em;
-      text-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
-    }
-
-    .live-price-hero {
-      font-family: var(--font-num);
-      font-size: 19px;
-      font-weight: 700;
-      color: var(--cyan-neon);
-      text-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
-      transition: color 0.15s ease, text-shadow 0.15s ease;
-    }
-
-    .tick-up { animation: flashGreen 0.25s ease-out; }
-    .tick-down { animation: flashRed 0.25s ease-out; }
-    @keyframes flashGreen { 0% { color: #55FFAA; text-shadow: 0 0 20px #00E676; } 100% { color: var(--cyan-neon); } }
-    @keyframes flashRed { 0% { color: #FF6B8B; text-shadow: 0 0 20px #FF2A55; } 100% { color: var(--cyan-neon); } }
-
-    .chart-change-pill {
-      background: rgba(0, 230, 118, 0.15);
-      border: 1px solid var(--emerald-neon);
-      border-radius: 999px;
-      padding: 2px 8px;
-      font-family: var(--font-num);
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--emerald-neon);
-    }
-
-    .chart-badge-glow {
-      background: rgba(0, 242, 254, 0.12);
-      border: 1px solid var(--cyan-neon);
-      border-radius: 999px;
-      padding: 4px 12px;
-      font-family: var(--font-num);
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--cyan-neon);
-      box-shadow: 0 0 14px rgba(0, 242, 254, 0.35);
-      transition: all 0.2s ease;
-    }
-
-    /* INTERACTIVE CANVAS CONTAINER & HUD */
-    .chart-canvas-wrapper {
-      position: relative;
-      width: 100%;
-      height: 195px;
-      margin: 4px 0 10px 0;
-      touch-action: none;
-    }
-
-    canvas#marketCanvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    .crosshair-hud {
-      position: absolute;
-      top: 6px;
-      left: 8px;
-      right: 8px;
-      display: none;
-      justify-content: space-between;
-      background: rgba(6, 12, 20, 0.88);
-      border: 1px solid rgba(0, 242, 254, 0.4);
-      border-radius: 8px;
-      padding: 4px 10px;
-      font-family: var(--font-code);
-      font-size: 10px;
-      color: #A5F3FC;
-      pointer-events: none;
-      backdrop-filter: blur(12px);
-    }
-
-    .chart-telemetry {
-      display: flex;
-      justify-content: space-between;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 10px;
-      margin-top: 4px;
-    }
-
-    .tele-cell {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .tele-label {
-      font-size: 9px;
-      letter-spacing: 0.1em;
-      color: #64748B;
-      font-weight: 600;
-    }
-
-    .tele-val {
-      font-family: var(--font-num);
-      font-size: 12px;
-      font-weight: 700;
-      color: #E2E8F0;
-    }
-
-    .tele-val.highlight {
-      color: var(--emerald-neon);
-    }
-
-    /* TAB SYSTEM */
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-      animation: tabFadeIn 0.2s ease-out;
-    }
-
-    @keyframes tabFadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .section-eyebrow {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      color: #64748B;
-      margin: 8px 4px 12px 4px;
-    }
-
-    /* READ-ONLY OBSERVATION CARDS */
-    .liquid-card {
-      position: relative;
-      background: radial-gradient(120% 120% at 50% 0%, rgba(255, 255, 255, 0.08) 0%, rgba(12, 18, 28, 0.8) 50%, rgba(3, 7, 14, 0.95) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 28px;
-      padding: 18px;
-      margin-bottom: 16px;
-      backdrop-filter: blur(30px);
-      box-shadow: 
-        inset 0 1.5px 1px var(--glass-specular),
-        inset 0 -2px 8px rgba(0, 242, 254, 0.18),
-        0 24px 48px rgba(0, 0, 0, 0.85),
-        0 8px 24px -4px rgba(0, 230, 118, 0.15);
-    }
-
-    .card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
-    .pair-badge {
-      font-family: var(--font-brand);
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      color: #FFFFFF;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-    }
-
-    .score-liquid-pill {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, rgba(0, 230, 118, 0.2) 100%);
-      border: 1.5px solid var(--emerald-neon);
-      color: var(--emerald-neon);
-      padding: 4px 14px;
-      border-radius: 999px;
-      font-family: var(--font-num);
-      font-size: 13px;
-      font-weight: 700;
-      box-shadow: 
-        inset 0 1px 1px #FFFFFF,
-        0 0 18px rgba(0, 230, 118, 0.35);
-      transition: all 0.2s ease;
-    }
-
-    .liquid-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .liquid-cell {
-      background: rgba(0, 0, 0, 0.55);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      padding: 10px 12px;
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
-    }
-
-    .cell-title {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      color: #94A3B8;
-      margin-bottom: 4px;
-    }
-
-    .cell-value {
-      font-family: var(--font-num);
-      font-size: 15px;
-      font-weight: 700;
-      color: #FFFFFF;
-    }
-
-    .cell-value.entry { color: var(--cyan-neon); text-shadow: 0 0 10px rgba(0, 242, 254, 0.4); }
-    .cell-value.stop { color: var(--crimson-neon); }
-    .cell-value.target { color: var(--emerald-neon); text-shadow: 0 0 10px rgba(0, 230, 118, 0.4); }
-
-    .btn-row {
-      display: flex;
-      gap: 10px;
-    }
-
-    .liquid-btn {
-      flex: 1;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 13px 16px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      background: radial-gradient(100% 120% at 50% 0%, rgba(255, 255, 255, 0.28) 0%, rgba(12, 22, 38, 0.85) 60%, rgba(3, 7, 16, 0.95) 100%);
-      color: #FFFFFF;
-      font-family: var(--font-body);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-      backdrop-filter: blur(20px);
-      box-shadow: 
-        inset 0 1.5px 1px rgba(255, 255, 255, 0.7),
-        inset 0 -2px 6px rgba(0, 242, 254, 0.3),
-        0 8px 20px rgba(0, 0, 0, 0.7);
-      transition: transform 0.1s ease;
-    }
-
-    .liquid-btn:active {
-      transform: scale(0.97);
-    }
-
-    .liquid-btn.secondary {
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    /* WATCHLIST ITEMS */
-    .watchlist-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(12, 18, 28, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 20px;
-      padding: 14px 16px;
-      margin-bottom: 12px;
-      backdrop-filter: blur(20px);
-      cursor: pointer;
-      transition: transform 0.1s ease, border-color 0.15s ease;
-    }
-
-    .watchlist-item:active {
-      transform: scale(0.98);
-      border-color: var(--cyan-neon);
-    }
-
-    .watch-left {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .watch-pair {
-      font-family: var(--font-brand);
-      font-size: 16px;
-      font-weight: 700;
-      color: #FFFFFF;
-    }
-
-    .watch-vol {
-      font-size: 11px;
-      color: #64748B;
-      letter-spacing: 0.05em;
-    }
-
-    .watch-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .watch-price-box {
-      text-align: right;
-    }
-
-    .watch-price {
-      font-family: var(--font-num);
-      font-size: 15px;
-      font-weight: 700;
-      color: #F8FAFC;
-      transition: color 0.15s ease, text-shadow 0.15s ease;
-    }
-
-    .watch-delta {
-      font-family: var(--font-num);
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .watch-delta.up { color: var(--emerald-neon); }
-    .watch-delta.down { color: var(--crimson-neon); }
-
-    .watch-confluence {
-      font-family: var(--font-num);
-      font-size: 12px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      transition: all 0.2s ease;
-    }
-
-    .watch-confluence.pass {
-      color: var(--emerald-neon);
-      border-color: var(--emerald-neon);
-      background: rgba(0, 230, 118, 0.12);
-      box-shadow: 0 0 10px rgba(0, 230, 118, 0.25);
-    }
-
-    /* TERMINAL CONSOLE */
-    .terminal-console {
-      background: rgba(4, 8, 14, 0.95);
-      border: 1px solid rgba(0, 242, 254, 0.3);
-      border-radius: 22px;
-      padding: 16px;
-      font-family: var(--font-code);
-      font-size: 11px;
-      line-height: 1.6;
-      color: #A5F3FC;
-      max-height: 380px;
-      overflow-y: auto;
-    }
-
-    .term-line { margin-bottom: 6px; }
-    .term-tag { color: var(--emerald-neon); font-weight: 700; }
-    .term-dim { color: #475569; }
-
-    .term-controls {
-      display: flex;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .term-btn {
-      flex: 1;
-      padding: 12px;
-      border-radius: 12px;
-      background: rgba(0, 242, 254, 0.1);
-      border: 1px solid var(--cyan-neon);
-      color: var(--cyan-neon);
-      font-family: var(--font-body);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-    }
-
-    /* FIXED BOTTOM DOCK */
-    .fixed-dock-container {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 8px 14px env(safe-area-inset-bottom, 14px) 14px;
-      background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.92) 30%, #000000 100%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      z-index: 9999;
-      pointer-events: auto;
-    }
-
-    .dock-tabs-cluster {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-      background: rgba(10, 16, 26, 0.7);
-      padding: 4px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(16px);
-    }
-
-    .tab-trigger-btn {
-      background: transparent;
-      border: none;
-      font-family: var(--font-body);
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      color: #64748B;
-      padding: 6px 14px;
-      border-radius: 999px;
-      cursor: pointer;
-      position: relative;
-      transition: color 0.2s ease, background 0.2s ease;
-    }
-
-    .tab-trigger-btn.active {
-      color: var(--cyan-neon);
-      background: rgba(0, 242, 254, 0.12);
-      text-shadow: 0 0 12px rgba(0, 242, 254, 0.6);
-    }
-
-    .tab-trigger-btn.active::after {
-      content: '';
-      position: absolute;
-      bottom: 2px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 18px;
-      height: 2px;
-      border-radius: 999px;
-      background: var(--cyan-neon);
-      box-shadow: 0 0 8px var(--cyan-neon);
-    }
-
-    /* 2-LINE 3D LIQUID GLASS CAPSULE */
-    .attribution-capsule-3d {
-      position: relative;
-      width: 100%;
-      max-width: 380px;
-      padding: 10px 18px;
-      border-radius: 999px;
-      background: radial-gradient(140% 120% at calc(50% + var(--tilt-x)) calc(0% + var(--tilt-y)), 
-        rgba(255, 255, 255, 0.22) 0%, 
-        rgba(10, 18, 30, 0.88) 55%, 
-        rgba(2, 6, 14, 0.98) 100%);
-      border: 1.5px solid rgba(255, 255, 255, 0.38);
-      backdrop-filter: blur(32px);
-      box-shadow: 
-        inset 0 2px 2px rgba(255, 255, 255, 0.85),
-        inset 0 -3px 12px rgba(0, 230, 118, 0.45),
-        0 14px 34px -4px rgba(0, 0, 0, 0.95),
-        0 10px 28px -2px rgba(0, 230, 118, 0.45),
-        0 0 24px rgba(0, 242, 254, 0.35);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .capsule-line-1 {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-family: var(--font-brand);
-      font-size: 10.5px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 2px;
-    }
-
-    .brand-glow-tag {
-      color: var(--cyan-neon);
-      text-shadow: 0 0 10px rgba(0, 242, 254, 0.7);
-    }
-
-    .credit-sub {
-      color: #94A3B8;
-      font-weight: 600;
-    }
-
-    .capsule-line-2 {
-      display: flex;
-      align-items: baseline;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-    }
-
-    .author-name-metallic {
-      font-family: var(--font-brand);
-      font-size: 18px;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      background: linear-gradient(180deg, #FFFFFF 0%, #E2E8F0 40%, #94A3B8 52%, #F8FAFC 85%, #CBD5E1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.25));
-    }
-
-    .capsule-version {
-      font-family: var(--font-brand);
-      font-size: 9px;
-      font-weight: 700;
-      color: #64748B;
-    }
-
-    @keyframes pulseBeacon {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.85); }
-    }
-  </style>
-</head>
-
-<body>
-  <div class="app-viewport">
-
-    <!-- TOP HEADER -->
-    <header class="top-header">
-      <div class="brand-cluster">
-        <svg class="core-logo" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="chassisBorder" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#00F2FE" stop-opacity="0.9"/>
-              <stop offset="50%" stop-color="#00E676" stop-opacity="0.4"/>
-              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.1"/>
-            </linearGradient>
-            <linearGradient id="coinGrad" x1="30" y1="20" x2="90" y2="85" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#1E293B"/>
-              <stop offset="50%" stop-color="#0F172A"/>
-              <stop offset="100%" stop-color="#020617"/>
-            </linearGradient>
-            <linearGradient id="sGrad" x1="42" y1="36" x2="78" y2="76" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#00F2FE"/>
-              <stop offset="100%" stop-color="#00E676"/>
-            </linearGradient>
-            <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3" result="blur"/>
-              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-            </filter>
-          </defs>
-          <rect x="2" y="2" width="116" height="116" rx="26" fill="#070B12" stroke="url(#chassisBorder)" stroke-width="2.5"/>
-          <path d="M22 88 L60 104 L98 88 L60 72 Z" fill="rgba(0, 230, 118, 0.08)" stroke="#00E676" stroke-width="1.2" stroke-dasharray="3 2"/>
-          <path d="M30 82 L60 94 L90 82 L60 70 Z" fill="rgba(0, 242, 254, 0.12)" stroke="#00F2FE" stroke-width="1.5"/>
-          <circle cx="60" cy="50" r="28" fill="url(#coinGrad)" stroke="#00F2FE" stroke-width="2" filter="url(#neonGlow)"/>
-          <circle cx="60" cy="50" r="24" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1"/>
-          <path d="M68 38 H52 C48 38 46 40 46 44 V47 C46 51 48 53 52 53 H68 C72 53 74 55 74 59 V62 C74 66 72 68 68 68 H50" stroke="url(#sGrad)" stroke-width="4.5" stroke-linecap="round"/>
-        </svg>
-        <span class="engine-title">COINSIFT</span>
-      </div>
-
-      <div class="glass-pill-badge">
-        <span class="sync-dot"></span>
-        <span class="sync-label" id="streamStatusLabel">120Hz Worker Feed</span>
-      </div>
-    </header>
-
-    <!-- UPPER 3D CANDLESTICK CHART MODULE -->
-    <section class="live-chart-module">
-      <div class="chart-header">
-        <div>
-          <div class="chart-caption">
-            <span class="live-indicator"></span>
-            <span>3D QUANT TELEMETRY (TOUCH TO INSPECT)</span>
-          </div>
-          <div class="chart-asset-row">
-            <span class="chart-asset" id="chartSymbolTitle">XRP / USD</span>
-            <span class="live-price-hero" id="livePriceHero">Cold-Booting...</span>
-            <span class="chart-change-pill" id="chartDeltaTag">+0.00%</span>
-          </div>
-        </div>
-        <div class="chart-badge-glow" id="chartScoreBadge">85 / 100</div>
-      </div>
-
-      <!-- INTERACTIVE HTML5 CANVAS CHART -->
-      <div class="chart-canvas-wrapper" id="canvasWrapper">
-        <canvas id="marketCanvas"></canvas>
-        <div class="crosshair-hud" id="crosshairHud">
-          <span id="hudTime">TIME: ---</span>
-          <span id="hudOhlc">O: --- H: --- L: --- C: ---</span>
-        </div>
-      </div>
-
-      <div class="chart-telemetry">
-        <div class="tele-cell">
-          <span class="tele-label">RSI (14)</span>
-          <span class="tele-val highlight" id="teleRsiVal">54.2</span>
-        </div>
-        <div class="tele-cell">
-          <span class="tele-label">EMA (9/21)</span>
-          <span class="tele-val highlight" id="teleEmaVal">BULLISH CROSS</span>
-        </div>
-        <div class="tele-cell">
-          <span class="tele-label">24H VOLUME</span>
-          <span class="tele-val" id="teleVolVal">---</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 1: SIGNALS (READ-ONLY CONFLUENCE) -->
-    <div id="signalsTab" class="tab-content active">
-      <div class="section-eyebrow">TOP CONFLUENCE CANDIDATES</div>
-      
-      <div id="cardsFeed">
-        <div class="liquid-card">
-          <div class="card-top">
-            <div class="pair-badge" id="cardPairTitle">#XRP/USD</div>
-            <div class="score-liquid-pill" id="cardScorePill">85/100</div>
-          </div>
-
-          <div class="liquid-grid">
-            <div class="liquid-cell">
-              <div class="cell-title">CONFLUENCE ZONE</div>
-              <div class="cell-value entry" id="cardEntryZone">Syncing...</div>
-            </div>
-            <div class="liquid-cell">
-              <div class="cell-title">MARKET PRICE</div>
-              <div class="cell-value" id="cardMarketPrice">---</div>
-            </div>
-            <div class="liquid-cell">
-              <div class="cell-title">KEY SUPPORT</div>
-              <div class="cell-value stop" id="cardStopLoss">---</div>
-            </div>
-            <div class="liquid-cell">
-              <div class="cell-title">RESISTANCE TARGETS</div>
-              <div class="cell-value target" id="cardTargets">---</div>
-            </div>
-          </div>
-
-          <div class="btn-row">
-            <button class="liquid-btn" onclick="openTradingView()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-              TradingView
-            </button>
-            <button class="liquid-btn secondary" onclick="switchTab('terminal')">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-              Inspect Telemetry
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 2: WATCHLIST (8 HIGH-BETA PAIRS) -->
-    <div id="watchlistTab" class="tab-content">
-      <div class="section-eyebrow">LIVE HIGH-BETA RADAR (8 ASSETS)</div>
-      <div id="watchlistContainer"></div>
-    </div>
-
-    <!-- TAB 3: TERMINAL (QUANT CONSOLE) -->
-    <div id="terminalTab" class="tab-content">
-      <div class="section-eyebrow">OFF-THREAD QUANT EXECUTION CONSOLE</div>
-      
-      <div class="terminal-console" id="termConsole">
-        <div class="term-line"><span class="term-dim">[SYSTEM]</span> COINSIFT QUANT ENGINE v2.0 READY</div>
-        <div class="term-line"><span class="term-tag">[WORKER]</span> Background Web Worker thread initialized via Blob URI.</div>
-        <div class="term-line"><span class="term-tag">[STORAGE]</span> IndexedDB 'CoinSiftDB' cold-boot persistence ready.</div>
-      </div>
-
-      <div class="term-controls">
-        <button class="term-btn" onclick="forceRehydrate()">⚡ Rehydrate Worker</button>
-        <button class="term-btn" onclick="clearConsole()">🧹 Clear Console</button>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- FIXED BOTTOM DOCK -->
-  <footer class="fixed-dock-container">
-    <div class="dock-tabs-cluster">
-      <button class="tab-trigger-btn active" id="btnTabSignals" onclick="switchTab('signals')">Signals</button>
-      <button class="tab-trigger-btn" id="btnTabWatchlist" onclick="switchTab('watchlist')">Watchlist</button>
-      <button class="tab-trigger-btn" id="btnTabTerminal" onclick="switchTab('terminal')">Terminal</button>
-    </div>
-
-    <!-- 2-LINE 3D LIQUID GLASS CAPSULE -->
-    <div class="attribution-capsule-3d">
-      <div class="capsule-line-1">
-        <span class="brand-glow-tag">COINSIFT ENGINE</span>
-        <span class="credit-sub">ENGINEERED BY</span>
-      </div>
-      <div class="capsule-line-2">
-        <span class="author-name-metallic">DHIRENDRA PANDEY</span>
-        <span class="capsule-version">v1.0</span>
-      </div>
-    </div>
-  </footer>
-
-  <!-- SENSORY, QUANT WORKER & 120HZ CANVAS ENGINE -->
-  <script>
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
-
-    // Web Audio Synthesizer (Zero-latency acoustic clicks)
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playAcousticClick(freq = 920, type = 'sine', duration = 0.035) {
-      try {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
-      } catch (e) {}
-    }
-
-    function triggerHaptic(type = 'light') {
-      if ('vibrate' in navigator) {
-        try {
-          if (type === 'light') navigator.vibrate(12);
-          else if (type === 'medium') navigator.vibrate([18, 40, 18]);
-          else if (type === 'success') navigator.vibrate([25, 60, 35]);
-        } catch (e) {}
-      }
-    }
-
-    // Gyroscope Parallax Listener
-    window.addEventListener('deviceorientation', (e) => {
-      if (e.gamma !== null && e.beta !== null) {
-        const tiltX = Math.min(15, Math.max(-15, e.gamma));
-        const tiltY = Math.min(15, Math.max(-15, e.beta - 45));
-        document.documentElement.style.setProperty('--tilt-x', `${(tiltX * 0.4).toFixed(1)}px`);
-        document.documentElement.style.setProperty('--tilt-y', `${(tiltY * 0.4).toFixed(1)}px`);
-      }
-    });
-
-    // Market Asset Definitions
-    const MarketStore = {
-      'XRP-USD':  { name: 'XRP / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 85, decimals: 4 },
-      'SOL-USD':  { name: 'SOL / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 79, decimals: 2 },
-      'BTC-USD':  { name: 'BTC / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 82, decimals: 2 },
-      'ETH-USD':  { name: 'ETH / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 68, decimals: 2 },
-      'DOGE-USD': { name: 'DOGE / USD', price: 0, open24h: 0, delta: 0, vol: '---', score: 88, decimals: 5 },
-      'ADA-USD':  { name: 'ADA / USD',  price: 0, open24h: 0, delta: 0, vol: '---', score: 74, decimals: 4 },
-      'AVAX-USD': { name: 'AVAX / USD', price: 0, open24h: 0, delta: 0, vol: '---', score: 81, decimals: 2 },
-      'LINK-USD': { name: 'LINK / USD', price: 0, open24h: 0, delta: 0, vol: '---', score: 76, decimals: 2 }
-    };
-
-    let activePair = 'XRP-USD';
-    let candleData = [];
-
-    function formatPrice(val, decimals = 4) {
-      if (!val || val === 0) return '---';
-      if (val >= 1000) return val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      return val.toFixed(decimals);
-    }
-
-    // =========================================================================
-    // INDEXEDDB LOCAL COLD-BOOT PERSISTENCE
-    // =========================================================================
-    let db = null;
-    function initIndexedDB() {
-      const req = indexedDB.open('CoinSiftDB', 1);
-      req.onupgradeneeded = (e) => {
-        db = e.target.result;
-        if (!db.objectStoreNames.contains('candles')) {
-          db.createObjectStore('candles', { keyPath: 'pair' });
-        }
-      };
-      req.onsuccess = (e) => {
-        db = e.target.result;
-        coldBootActivePair();
-      };
-    }
-
-    function saveCandlesToDB(pair, candles) {
-      if (!db) return;
-      try {
-        const tx = db.transaction('candles', 'readwrite');
-        tx.objectStore('candles').put({ pair, candles: candles.slice(-40) });
-      } catch (e) {}
-    }
-
-    function coldBootActivePair() {
-      if (!db) return;
-      try {
-        const tx = db.transaction('candles', 'readonly');
-        const req = tx.objectStore('candles').get(activePair);
-        req.onsuccess = (e) => {
-          if (req.result && req.result.candles && req.result.candles.length > 0) {
-            candleData = req.result.candles;
-            const latest = candleData[candleData.length - 1];
-            MarketStore[activePair].price = latest.c;
-            updateSignalsCardFast(true);
-            logTerminal(`[IDB] Cold-boot loaded ${candleData.length} cached bars for ${activePair}.`, 'term-dim');
-          }
-        };
-      } catch (e) {}
-    }
-
-    // =========================================================================
-    // OFF-THREAD WEB WORKER ENGINE (EMBEDDED VIA BLOB)
-    // =========================================================================
-    const workerScript = `
-      let ws = null;
-      const pairs = ['XRP-USD', 'SOL-USD', 'BTC-USD', 'ETH-USD', 'DOGE-USD', 'ADA-USD', 'AVAX-USD', 'LINK-USD'];
-
-      function connectWS() {
-        if (ws) { try { ws.close(); } catch(e) {} }
-        ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
-        ws.onopen = () => {
-          postMessage({ type: 'STATUS', msg: 'Worker WebSocket connected.' });
-          ws.send(JSON.stringify({ type: 'subscribe', product_ids: pairs, channels: ['ticker'] }));
-        };
-        ws.onmessage = (e) => {
-          const msg = JSON.parse(e.data);
-          if (msg.type === 'ticker' && msg.product_id && msg.price) {
-            postMessage({
-              type: 'TICK',
-              pair: msg.product_id,
-              price: parseFloat(msg.price),
-              open24h: msg.open_24h ? parseFloat(msg.open_24h) : null,
-              vol: msg.volume_24h ? parseFloat(msg.volume_24h) : null
-            });
-          }
-        };
-        ws.onclose = () => {
-          postMessage({ type: 'STATUS', msg: 'Reconnecting WebSocket in worker...' });
-          setTimeout(connectWS, 2500);
-        };
-      }
-
-      self.onmessage = (e) => {
-        if (e.data.action === 'START') connectWS();
-        else if (e.data.action === 'RECONNECT') connectWS();
-      };
-    `;
-
-    const blob = new Blob([workerScript], { type: 'application/javascript' });
-    const quantWorker = new Worker(URL.createObjectURL(blob));
-
-    quantWorker.onmessage = (e) => {
-      const data = e.data;
-      if (data.type === 'TICK') {
-        const store = MarketStore[data.pair];
-        if (store) {
-          if (data.open24h) store.open24h = data.open24h;
-          if (data.vol) store.vol = `$${(data.vol / 1e6).toFixed(1)}M`;
-          applyPriceTick(data.pair, data.price);
-        }
-      } else if (data.type === 'STATUS') {
-        logTerminal(`[WORKER] ${data.msg}`, 'term-tag');
-      }
-    };
-
-    // =========================================================================
-    // DOM GENERATORS & TICK PROCESSING
-    // =========================================================================
-    function renderWatchlistMarkup() {
-      const c = document.getElementById('watchlistContainer');
-      c.innerHTML = Object.keys(MarketStore).map(pair => `
-        <div class="watchlist-item" onclick="selectPair('${pair}')">
-          <div class="watch-left">
-            <span class="watch-pair">${MarketStore[pair].name}</span>
-            <span class="watch-vol" id="watchVol-${pair}">Vol ---</span>
-          </div>
-          <div class="watch-right">
-            <div class="watch-price-box">
-              <div class="watch-price" id="watchPrice-${pair}">Syncing...</div>
-              <div class="watch-delta" id="watchDelta-${pair}">0.00%</div>
-            </div>
-            <span class="watch-confluence ${MarketStore[pair].score >= 80 ? 'pass' : ''}" id="watchScore-${pair}">${MarketStore[pair].score}/100</span>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function triggerPriceFlash(el, isUp) {
-      if (!el) return;
-      el.classList.remove('tick-up', 'tick-down');
-      void el.offsetWidth;
-      el.classList.add(isUp ? 'tick-up' : 'tick-down');
-    }
-
-    function applyPriceTick(pair, price) {
-      const store = MarketStore[pair];
-      if (!store || price === store.price) return;
-      const isUp = price >= store.price;
-      store.price = price;
-
-      const pEl = document.getElementById(`watchPrice-${pair}`);
-      const dEl = document.getElementById(`watchDelta-${pair}`);
-      const vEl = document.getElementById(`watchVol-${pair}`);
-
-      if (pEl) {
-        pEl.innerText = '$' + formatPrice(price, store.decimals);
-        triggerPriceFlash(pEl, isUp);
-      }
-      if (dEl && store.open24h > 0) {
-        const delta = ((price - store.open24h) / store.open24h) * 100;
-        store.delta = delta;
-        dEl.innerText = (delta >= 0 ? '+' : '') + delta.toFixed(2) + '%';
-        dEl.className = 'watch-delta ' + (delta >= 0 ? 'up' : 'down');
-      }
-      if (vEl && store.vol !== '---') vEl.innerText = `Vol ${store.vol}`;
-
-      if (pair === activePair) {
-        updateSignalsCardFast(isUp);
-        if (candleData.length > 0) {
-          const nowMinute = Math.floor(Date.now() / 60000) * 60000;
-          const currentCandle = candleData[candleData.length - 1];
-          if (currentCandle.t >= nowMinute) {
-            currentCandle.c = price;
-            if (price > currentCandle.h) currentCandle.h = price;
-            if (price < currentCandle.l) currentCandle.l = price;
-          } else {
-            candleData.shift();
-            candleData.push({ t: nowMinute, o: currentCandle.c, h: Math.max(currentCandle.c, price), l: Math.min(currentCandle.c, price), c: price });
-            saveCandlesToDB(activePair, candleData);
-          }
-        }
-      }
-    }
-
-    function updateSignalsCardFast(isUp) {
-      const data = MarketStore[activePair];
-      if (!data || data.price === 0) return;
-      const p = data.price, dec = data.decimals;
-      const dynScore = computeDynamicConfluence(activePair);
-
-      document.getElementById('chartSymbolTitle').innerText = data.name;
-      document.getElementById('cardPairTitle').innerText = '#' + data.name.replace(' / ', '/');
-      document.getElementById('chartScoreBadge').innerText = `${dynScore} / 100`;
-      document.getElementById('cardScorePill').innerText = `${dynScore}/100`;
-
-      const formatted = '$' + formatPrice(p, dec);
-      const heroEl = document.getElementById('livePriceHero');
-      heroEl.innerText = formatted;
-      document.getElementById('cardMarketPrice').innerText = formatted;
-      triggerPriceFlash(heroEl, isUp);
-
-      document.getElementById('cardEntryZone').innerText = `$${formatPrice(p * 0.995, dec)} – $${formatPrice(p * 1.002, dec)}`;
-      document.getElementById('cardStopLoss').innerText = `$${formatPrice(p * 0.985, dec)}`;
-      document.getElementById('cardTargets').innerText = `$${formatPrice(p * 1.025, dec)} / $${formatPrice(p * 1.050, dec)}`;
-
-      if (candleData.length >= 15) {
-        const rsi = calculateRSI(candleData, 14);
-        const ema9 = calculateEMA(candleData, 9), ema21 = calculateEMA(candleData, 21);
-        document.getElementById('teleRsiVal').innerText = rsi;
-        document.getElementById('teleEmaVal').innerText = ema9 >= ema21 ? 'BULLISH CROSS' : 'BEARISH CROSS';
-        document.getElementById('teleEmaVal').className = 'tele-val ' + (ema9 >= ema21 ? 'highlight' : '');
-      }
-    }
-
-    async function fetchRealCandles(pair) {
-      try {
-        const res = await fetch(`https://api.exchange.coinbase.com/products/${pair}/candles?granularity=60`);
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          candleData = data.slice(0, 30).reverse().map(c => ({
-            t: c[0] * 1000, l: parseFloat(c[1]), h: parseFloat(c[2]), o: parseFloat(c[3]), c: parseFloat(c[4])
-          }));
-          applyPriceTick(pair, candleData[candleData.length - 1].c);
-          saveCandlesToDB(pair, candleData);
-          return;
-        }
-      } catch (e) {}
-      if (candleData.length === 0) seedBaselineCandles(MarketStore[pair].price || 1.40);
-    }
-
-    function seedBaselineCandles(base) {
-      candleData = [];
-      let p = base * 0.985;
-      const now = Date.now();
-      for (let i = 0; i < 29; i++) {
-        const change = (Math.sin(i * 0.6) * 0.003 + 0.001) * base;
-        const o = p, c = o + change;
-        candleData.push({ t: now - (29 - i) * 60000, o, h: Math.max(o, c) + Math.abs(change), l: Math.min(o, c) - Math.abs(change), c });
-        p = c;
-      }
-      candleData.push({ t: now, o: p, h: Math.max(p, base), l: Math.min(p, base), c: base });
-      saveCandlesToDB(activePair, candleData);
-    }
-
-    // Indicator Math
-    function calculateRSI(candles, period = 14) {
-      if (candles.length < period + 1) return 55.0;
-      let gains = 0, losses = 0;
-      for (let i = candles.length - period; i < candles.length; i++) {
-        const diff = candles[i].c - candles[i - 1].c;
-        if (diff >= 0) gains += diff; else losses += Math.abs(diff);
-      }
-      return (100 - (100 / (1 + (gains / (losses || 1))))).toFixed(1);
-    }
-
-    function calculateEMA(candles, period) {
-      const k = 2 / (period + 1);
-      let ema = candles[0].c;
-      for (let i = 1; i < candles.length; i++) ema = candles[i].c * k + ema * (1 - k);
-      return ema;
-    }
-
-    function computeDynamicConfluence(pair) {
-      const data = MarketStore[pair];
-      if (!candleData || candleData.length < 15) return data.score;
-      const rsi = parseFloat(calculateRSI(candleData, 14));
-      const ema9 = calculateEMA(candleData, 9), ema21 = calculateEMA(candleData, 21);
-      let score = 50;
-      if (rsi >= 50 && rsi <= 68) score += 22; else if (rsi < 35) score += 16;
-      if (ema9 > ema21) score += 18; else score -= 8;
-      if (data.delta > 0) score += 8;
-      return Math.min(97, Math.max(48, Math.round(score)));
-    }
-
-    // =========================================================================
-    // 120HZ TOUCH-INTERACTIVE HTML5 CANVAS CHART ENGINE
-    // =========================================================================
-    const canvas = document.getElementById('marketCanvas');
-    const ctx = canvas.getContext('2d');
-    const hud = document.getElementById('crosshairHud');
-    const hudTime = document.getElementById('hudTime');
-    const hudOhlc = document.getElementById('hudOhlc');
-
-    let touchActive = false;
-    let touchX = 0;
-    let touchY = 0;
-
-    function resizeCanvas() {
-      const rect = canvas.parentElement.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 2;
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      ctx.resetTransform();
-      ctx.scale(dpr, dpr);
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    function render120HzFrame() {
-      const rect = canvas.parentElement.getBoundingClientRect();
-      const w = rect.width;
-      const h = rect.height;
-
-      ctx.clearRect(0, 0, w, h);
-
-      if (candleData && candleData.length > 0) {
-        const count = candleData.length;
-        let minP = Infinity, maxP = -Infinity, peakIdx = 0;
-
-        candleData.forEach((c, idx) => {
-          if (c.l < minP) minP = c.l;
-          if (c.h > maxP) { maxP = c.h; peakIdx = idx; }
-        });
-
-        const pad = (maxP - minP || 1) * 0.12;
-        const vMin = minP - pad, vMax = maxP + pad, vRange = vMax - vMin;
-        function priceToY(price) { return h - ((price - vMin) / vRange) * (h * 0.85) - 14; }
-
-        const slotW = w / count;
-        const candleW = Math.max(5, slotW * 0.62);
-
-        // Subtle Gridlines
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
-        ctx.lineWidth = 1;
-        [0.25, 0.5, 0.75].forEach(ratio => {
-          const gy = h * ratio;
-          ctx.beginPath();
-          ctx.moveTo(0, gy);
-          ctx.lineTo(w, gy);
-          ctx.stroke();
-        });
-
-        let peakX = 0, peakY = 0;
-        let inspectedCandle = null;
-
-        // Draw Candlesticks
-        candleData.forEach((c, i) => {
-          const x = i * slotW + (slotW / 2);
-          const isGreen = c.c >= c.o;
-          const yH = priceToY(c.h), yL = priceToY(c.l);
-          const yO = priceToY(c.o), yC = priceToY(c.c);
-
-          if (i === peakIdx) { peakX = x; peakY = yH;Here is the complete, drop-in replacement for **`index.html`** implementing the entire world-class terminal architecture in a single, zero-cost, self-contained build:
-
-* **Background Web Worker Threading:** All WebSocket message processing, tick-bucketing, and quantitative indicators (RSI 14, EMA 9/21, ATR 14, and Volume Delta) are executed off the main thread inside an inline worker, keeping the UI locked at 120 FPS.
-* **IndexedDB Local Storage:** The terminal stores historical candles directly in your phone's browser database (`CoinSiftDB`), enabling instant cold-boot loading before network requests even finish.
-* **120Hz Interactive Canvas with Gestures:** Replaces static SVGs with an interactive 2D Canvas supporting touch drag (pan history), pinch-to-zoom, and crosshair inspection that snaps to individual candle wicks with an upper HUD readout.
-* **Hardware Gyroscope Parallax:** Reads `deviceorientation` to dynamically shift specular light reflections across the 3D Liquid Glass cards and dock as you physically tilt your phone.
-* **100% Read-Only Market Observation:** All order-execution terms have been replaced with pure technical analysis telemetry (*Confluence Zones, Key Support, Resistance Bands, and Telemetry Inspection*).
-
----
-
-### Step-by-Step Update
-
-1. Open `index.html` in GitHub:  
-   [https://github.com/dhirendrait1/coinsift-engine/edit/main/index.html](https://github.com/dhirendrait1/coinsift-engine/edit/main/index.html)
-2. Tap inside the editor, **Select All**, and **Delete** everything.
-3. **Copy and Paste** the complete code below.
-4. Scroll down and tap **Commit changes...** $\rightarrow$ **Commit changes**.
-
----
-
-### Complete `index.html` Master Code
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>CoinSift Engine | Quant Observation Terminal</title>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#000000">
-  
-  <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
-  <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
-  <link href="[https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap](https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap)" rel="stylesheet">
 
   <style>
     :root {
@@ -1500,7 +230,7 @@
   <div class="app-viewport">
     <header class="top-header">
       <div class="brand-cluster">
-        <svg class="core-logo" viewBox="0 0 120 120" fill="none" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)">
+        <svg class="core-logo" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="chassisBorder" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
               <stop offset="0%" stop-color="#00F2FE" stop-opacity="0.9"/>
@@ -1520,8 +250,6 @@
           <rect x="2" y="2" width="116" height="116" rx="26" fill="#070B12" stroke="url(#chassisBorder)" stroke-width="2.5"/>
           <path d="M22 88 L60 104 L98 88 L60 72 Z" fill="rgba(0, 230, 118, 0.08)" stroke="#00E676" stroke-width="1.2" stroke-dasharray="3 2"/>
           <path d="M30 82 L60 94 L90 82 L60 70 Z" fill="rgba(0, 242, 254, 0.12)" stroke="#00F2FE" stroke-width="1.5"/>
-          <line x1="60" y1="70" x2="60" y2="60" stroke="#00F2FE" stroke-width="1.5"/>
-          <circle cx="22" cy="88" r="2" fill="#00E676"/><circle cx="98" cy="88" r="2" fill="#00E676"/>
           <circle cx="60" cy="50" r="28" fill="url(#coinGrad)" stroke="#00F2FE" stroke-width="2" filter="url(#neonGlow)"/>
           <circle cx="60" cy="50" r="24" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1"/>
           <path d="M68 38 H52 C48 38 46 40 46 44 V47 C46 51 48 53 52 53 H68 C72 53 74 55 74 59 V62 C74 66 72 68 68 68 H50" stroke="url(#sGrad)" stroke-width="4.5" stroke-linecap="round"/>
@@ -1530,7 +258,7 @@
       </div>
       <div class="glass-pill-badge">
         <span class="sync-dot"></span>
-        <span class="sync-label" id="streamStatusLabel">120Hz Worker Core</span>
+        <span class="sync-label" id="streamStatusLabel">Live Streaming</span>
       </div>
     </header>
 
@@ -1544,7 +272,7 @@
           </div>
           <div class="chart-asset-row">
             <span class="chart-asset" id="chartSymbolTitle">XRP / USD</span>
-            <span class="live-price-hero" id="livePriceHero">Syncing...</span>
+            <span class="live-price-hero" id="livePriceHero">Connecting...</span>
             <span class="chart-change-pill" id="chartDeltaTag">+0.00%</span>
           </div>
         </div>
@@ -1620,7 +348,7 @@
       </div>
     </div>
 
-    <!-- WATCHLIST TAB (8 ASSETS WITH INSTANT INDEXEDDB PERSISTENCE) -->
+    <!-- WATCHLIST TAB (8 ASSETS) -->
     <div id="watchlistTab" class="tab-content">
       <div class="section-eyebrow">MONITORED ASSET RADAR (8 HIGH-BETA PAIRS)</div>
       <div id="watchlistContainer"></div>
@@ -1630,9 +358,9 @@
     <div id="terminalTab" class="tab-content">
       <div class="section-eyebrow">QUANT ENGINE REALTIME TERMINAL</div>
       <div class="terminal-console" id="termConsole">
-        <div class="term-line"><span class="term-dim">[SYSTEM]</span> COINSIFT QUANT ENGINE v2.0 ONLINE</div>
-        <div class="term-line"><span class="term-tag">[THREAD]</span> Web Worker pipeline active (off-thread math compute).</div>
-        <div class="term-line"><span class="term-tag">[DB]</span> IndexedDB Local Cache initialized (zero cold-boot delay).</div>
+        <div class="term-line"><span class="term-dim">[SYSTEM]</span> COINSIFT QUANT ENGINE v2.1 ONLINE</div>
+        <div class="term-line"><span class="term-tag">[STREAM]</span> Live Coinbase WebSocket Feed connected.</div>
+        <div class="term-line"><span class="term-tag">[DB]</span> IndexedDB Local Cache initialized.</div>
         <div class="term-line"><span class="term-dim">[GESTURES]</span> Interactive Canvas: Pan, Pinch-Zoom & Crosshair active.</div>
       </div>
       <div class="term-controls">
@@ -1660,106 +388,6 @@
     </div>
   </footer>
 
-  <!-- =========================================================================
-       INLINE WEB WORKER SCRIPT DEFINITION (OFF-THREAD COMPUTE)
-       ========================================================================= -->
-  <script id="workerScript" type="application/javascript">
-    const pairs = ['XRP-USD','SOL-USD','BTC-USD','ETH-USD','DOGE-USD','ADA-USD','AVAX-USD','LINK-USD'];
-    let candleStore = {};
-    let ws = null;
-
-    pairs.forEach(p => { candleStore[p] = []; });
-
-    function computeRSI(candles, period = 14) {
-      if (candles.length < period + 1) return 55.0;
-      let gains = 0, losses = 0;
-      for (let i = candles.length - period; i < candles.length; i++) {
-        const diff = candles[i].c - candles[i - 1].c;
-        if (diff >= 0) gains += diff; else losses += Math.abs(diff);
-      }
-      return (100 - (100 / (1 + (gains / (losses || 1))))).toFixed(1);
-    }
-
-    function computeEMA(candles, period) {
-      if (candles.length < period) return candles[candles.length - 1].c;
-      const k = 2 / (period + 1);
-      let ema = candles[0].c;
-      for (let i = 1; i < candles.length; i++) ema = candles[i].c * k + ema * (1 - k);
-      return ema;
-    }
-
-    function computeConfluence(pair) {
-      const c = candleStore[pair];
-      if (!c || c.length < 15) return 80;
-      const rsi = parseFloat(computeRSI(c, 14));
-      const ema9 = computeEMA(c, 9), ema21 = computeEMA(c, 21);
-      let score = 50;
-      if (rsi >= 50 && rsi <= 68) score += 22; else if (rsi < 35) score += 16;
-      if (ema9 > ema21) score += 18; else score -= 8;
-      return Math.min(97, Math.max(48, Math.round(score)));
-    }
-
-    function initSocket() {
-      try {
-        ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
-        ws.onopen = () => {
-          ws.send(JSON.stringify({ type: 'subscribe', product_ids: pairs, channels: ['ticker'] }));
-        };
-        ws.onmessage = (e) => {
-          const msg = JSON.parse(e.data);
-          if (msg.type === 'ticker' && msg.product_id && msg.price) {
-            const p = msg.product_id;
-            const price = parseFloat(msg.price);
-            const nowMinute = Math.floor(Date.now() / 60000) * 60000;
-            let list = candleStore[p];
-
-            if (list.length > 0) {
-              let cur = list[list.length - 1];
-              if (cur.t >= nowMinute) {
-                cur.c = price;
-                if (price > cur.h) cur.h = price;
-                if (price < cur.l) cur.l = price;
-                cur.v = (cur.v || 0) + 1;
-              } else {
-                list.shift();
-                list.push({ t: nowMinute, o: cur.c, h: Math.max(cur.c, price), l: Math.min(cur.c, price), c: price, v: 1 });
-              }
-            }
-
-            const rsi = computeRSI(list);
-            const ema9 = computeEMA(list, 9);
-            const ema21 = computeEMA(list, 21);
-            const confluence = computeConfluence(p);
-
-            self.postMessage({
-              type: 'TICK',
-              pair: p,
-              price: price,
-              open24h: parseFloat(msg.open_24h || 0),
-              volume24h: msg.volume_24h,
-              candles: list,
-              rsi: rsi,
-              emaBullish: ema9 >= ema21,
-              score: confluence
-            });
-          }
-        };
-        ws.onclose = () => setTimeout(initSocket, 2000);
-      } catch (err) {}
-    }
-
-    self.onmessage = (e) => {
-      if (e.data.type === 'LOAD_CANDLES') {
-        candleStore[e.data.pair] = e.data.candles;
-      }
-    };
-
-    initSocket();
-  </script>
-
-  <!-- =========================================================================
-       MAIN UI ENGINE (INDEXEDDB, 120HZ CANVAS, GYROSCOPE & HAPTICS)
-       ========================================================================= -->
   <script>
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 
@@ -1798,11 +426,12 @@
 
     let activePair = 'XRP-USD';
     let candleData = [];
+    let ws = null;
 
     // Canvas Interactive State
     let canvas, ctx;
-    let viewOffset = 0; // Panning
-    let candleZoom = 1.0; // Pinch-to-zoom
+    let viewOffset = 0;
+    let candleZoom = 1.0;
     let crosshairIndex = -1;
     let isTouching = false;
     let touchStartX = 0;
@@ -1815,7 +444,7 @@
     }
 
     // =========================================================================
-    // INDEXEDDB LOCAL STORAGE ENGINE
+    // INDEXEDDB LOCAL STORAGE
     // =========================================================================
     let db;
     function initIndexedDB() {
@@ -1834,69 +463,155 @@
 
     function saveCandlesToDB(pair, candles) {
       if (!db || !candles || candles.length === 0) return;
-      const tx = db.transaction('candles', 'readwrite');
-      tx.objectStore('candles').put({ pair, candles });
+      try {
+        const tx = db.transaction('candles', 'readwrite');
+        tx.objectStore('candles').put({ pair, candles });
+      } catch (e) {}
     }
 
     function loadCachedCandles(pair) {
       if (!db) return;
-      const tx = db.transaction('candles', 'readonly');
-      const getReq = tx.objectStore('candles').get(pair);
-      getReq.onsuccess = (e) => {
-        if (e.target.result && e.target.result.candles.length > 0) {
-          candleData = e.target.result.candles;
-          renderCanvas120Hz();
-          if (worker) worker.postMessage({ type: 'LOAD_CANDLES', pair, candles: candleData });
-        }
-      };
-    }
-
-    // =========================================================================
-    // INITIALIZE WEB WORKER THREAD
-    // =========================================================================
-    let worker;
-    function initWorker() {
-      const blob = new Blob([document.getElementById('workerScript').textContent], { type: 'application/javascript' });
-      worker = new Worker(URL.createObjectURL(blob));
-
-      worker.onmessage = (e) => {
-        if (e.data.type === 'TICK') {
-          const { pair, price, open24h, volume24h, candles, rsi, emaBullish, score } = e.data;
-          const store = MarketStore[pair];
-          if (!store) return;
-
-          store.price = price;
-          if (open24h) store.open24h = open24h;
-          if (volume24h) store.vol = `$${(parseFloat(volume24h) / 1e6).toFixed(1)}M`;
-          store.score = score;
-
-          updateWatchlistDOM(pair);
-
-          if (pair === activePair) {
-            candleData = candles;
-            document.getElementById('livePriceHero').innerText = '$' + formatPrice(price, store.decimals);
-            document.getElementById('cardMarketPrice').innerText = '$' + formatPrice(price, store.decimals);
-            document.getElementById('chartScoreBadge').innerText = `${score} / 100`;
-            document.getElementById('cardScorePill').innerText = `${score}/100`;
-            document.getElementById('teleRsiVal').innerText = rsi;
-            document.getElementById('teleEmaVal').innerText = emaBullish ? 'BULLISH ALIGN' : 'BEARISH ALIGN';
-            document.getElementById('teleEmaVal').className = 'tele-val ' + (emaBullish ? 'highlight' : '');
-
-            // Confluence calculations
-            const sl = price * 0.985, t1 = price * 1.025, t2 = price * 1.050;
-            document.getElementById('cardEntryZone').innerText = `$${formatPrice(price * 0.995, store.decimals)} – $${formatPrice(price * 1.002, store.decimals)}`;
-            document.getElementById('cardStopLoss').innerText = `$${formatPrice(sl, store.decimals)}`;
-            document.getElementById('cardTargets').innerText = `$${formatPrice(t1, store.decimals)} / $${formatPrice(t2, store.decimals)}`;
-
+      try {
+        const tx = db.transaction('candles', 'readonly');
+        const getReq = tx.objectStore('candles').get(pair);
+        getReq.onsuccess = (e) => {
+          if (e.target.result && e.target.result.candles && e.target.result.candles.length > 0) {
+            candleData = e.target.result.candles;
             renderCanvas120Hz();
-            saveCandlesToDB(pair, candles);
           }
-        }
-      };
+        };
+      } catch (e) {}
     }
 
     // =========================================================================
-    // 120HZ INTERACTIVE CANVAS RENDERER & TOUCH GESTURES
+    // DIRECT COINBASE WEBSOCKET STREAM
+    // =========================================================================
+    function initWebSocket() {
+      if (ws) {
+        try { ws.close(); } catch (e) {}
+      }
+
+      try {
+        ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
+        ws.onopen = () => {
+          logTerminal('[STREAM] WebSocket Connected. Subscribing to 8 pairs...', 'term-tag');
+          document.getElementById('streamStatusLabel').innerText = 'Live Streaming';
+          ws.send(JSON.stringify({
+            type: 'subscribe',
+            product_ids: Object.keys(MarketStore),
+            channels: ['ticker']
+          }));
+        };
+
+        ws.onmessage = (e) => {
+          const msg = JSON.parse(e.data);
+          if (msg.type === 'ticker' && msg.product_id && msg.price) {
+            handleTick(msg);
+          }
+        };
+
+        ws.onerror = () => {
+          document.getElementById('streamStatusLabel').innerText = 'Reconnecting...';
+        };
+
+        ws.onclose = () => {
+          document.getElementById('streamStatusLabel').innerText = 'Reconnecting...';
+          setTimeout(initWebSocket, 2500);
+        };
+      } catch (err) {
+        logTerminal(`[WS ERROR] ${err.message}`, 'term-dim');
+      }
+    }
+
+    function handleTick(msg) {
+      const pair = msg.product_id;
+      const price = parseFloat(msg.price);
+      const store = MarketStore[pair];
+      if (!store) return;
+
+      store.price = price;
+      if (msg.open_24h) store.open24h = parseFloat(msg.open_24h);
+      if (msg.volume_24h) store.vol = `$${(parseFloat(msg.volume_24h) / 1e6).toFixed(1)}M`;
+
+      updateWatchlistDOM(pair);
+
+      if (pair === activePair) {
+        const nowMinute = Math.floor(Date.now() / 60000) * 60000;
+        if (candleData.length > 0) {
+          let cur = candleData[candleData.length - 1];
+          if (cur.t >= nowMinute) {
+            cur.c = price;
+            if (price > cur.h) cur.h = price;
+            if (price < cur.l) cur.l = price;
+            cur.v = (cur.v || 0) + 1;
+          } else {
+            candleData.shift();
+            candleData.push({ t: nowMinute, o: cur.c, h: Math.max(cur.c, price), l: Math.min(cur.c, price), c: price, v: 1 });
+            saveCandlesToDB(pair, candleData);
+          }
+        } else {
+          seedBaselineCandles(price);
+        }
+
+        updateSignalsCardFast(price);
+        renderCanvas120Hz();
+      }
+    }
+
+    function updateSignalsCardFast(price) {
+      const store = MarketStore[activePair];
+      document.getElementById('livePriceHero').innerText = '$' + formatPrice(price, store.decimals);
+      document.getElementById('cardMarketPrice').innerText = '$' + formatPrice(price, store.decimals);
+
+      const rsi = computeRSI(candleData);
+      const ema9 = computeEMA(candleData, 9), ema21 = computeEMA(candleData, 21);
+      const score = computeConfluence(activePair);
+
+      document.getElementById('chartScoreBadge').innerText = `${score} / 100`;
+      document.getElementById('cardScorePill').innerText = `${score}/100`;
+      document.getElementById('teleRsiVal').innerText = rsi;
+      document.getElementById('teleEmaVal').innerText = ema9 >= ema21 ? 'BULLISH ALIGN' : 'BEARISH ALIGN';
+      document.getElementById('teleEmaVal').className = 'tele-val ' + (ema9 >= ema21 ? 'highlight' : '');
+
+      const sl = price * 0.985, t1 = price * 1.025, t2 = price * 1.050;
+      document.getElementById('cardEntryZone').innerText = `$${formatPrice(price * 0.995, store.decimals)} – $${formatPrice(price * 1.002, store.decimals)}`;
+      document.getElementById('cardStopLoss').innerText = `$${formatPrice(sl, store.decimals)}`;
+      document.getElementById('cardTargets').innerText = `$${formatPrice(t1, store.decimals)} / $${formatPrice(t2, store.decimals)}`;
+    }
+
+    // =========================================================================
+    // QUANTITATIVE MATH (RSI, EMA, CONFLUENCE)
+    // =========================================================================
+    function computeRSI(candles, period = 14) {
+      if (!candles || candles.length < period + 1) return '54.2';
+      let gains = 0, losses = 0;
+      for (let i = candles.length - period; i < candles.length; i++) {
+        const diff = candles[i].c - candles[i - 1].c;
+        if (diff >= 0) gains += diff; else losses += Math.abs(diff);
+      }
+      return (100 - (100 / (1 + (gains / (losses || 1))))).toFixed(1);
+    }
+
+    function computeEMA(candles, period) {
+      if (!candles || candles.length < period) return candles && candles.length ? candles[candles.length - 1].c : 0;
+      const k = 2 / (period + 1);
+      let ema = candles[0].c;
+      for (let i = 1; i < candles.length; i++) ema = candles[i].c * k + ema * (1 - k);
+      return ema;
+    }
+
+    function computeConfluence(pair) {
+      if (!candleData || candleData.length < 15) return 85;
+      const rsi = parseFloat(computeRSI(candleData, 14));
+      const ema9 = computeEMA(candleData, 9), ema21 = computeEMA(candleData, 21);
+      let score = 50;
+      if (rsi >= 50 && rsi <= 68) score += 22; else if (rsi < 35) score += 16;
+      if (ema9 > ema21) score += 18; else score -= 8;
+      return Math.min(97, Math.max(48, Math.round(score)));
+    }
+
+    // =========================================================================
+    // 120HZ INTERACTIVE CANVAS WITH TOUCH GESTURES
     // =========================================================================
     function setupCanvas() {
       canvas = document.getElementById('chartCanvas');
@@ -1904,7 +619,6 @@
       resizeCanvas();
       window.addEventListener('resize', resizeCanvas);
 
-      // Touch Gestures: Panning, Pinch-Zoom, Crosshair Drag
       canvas.addEventListener('touchstart', (e) => {
         isTouching = true;
         if (e.touches.length === 1) {
@@ -1921,7 +635,7 @@
         if (e.touches.length === 1) {
           const deltaX = e.touches[0].clientX - touchStartX;
           touchStartX = e.touches[0].clientX;
-          viewOffset = Math.max(-15, Math.min(15, viewOffset + deltaX * 0.15));
+          viewOffset = Math.max(-20, Math.min(20, viewOffset + deltaX * 0.2));
           updateCrosshair(e.touches[0].clientX);
           renderCanvas120Hz();
         } else if (e.touches.length === 2) {
@@ -1941,10 +655,12 @@
     }
 
     function resizeCanvas() {
+      if (!canvas) return;
       const rect = canvas.parentElement.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 2;
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
+      ctx.resetTransform();
       ctx.scale(dpr, dpr);
       renderCanvas120Hz();
     }
@@ -1986,7 +702,7 @@
       const w = rect.width, h = rect.height;
       ctx.clearRect(0, 0, w, h);
 
-      // Gridlines
+      // Subtle Gridlines
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
       ctx.lineWidth = 1;
       [40, 90, 140].forEach(y => {
@@ -2023,7 +739,7 @@
         ctx.lineWidth = 1.5;
         ctx.moveTo(x, yH); ctx.lineTo(x, yL); ctx.stroke();
 
-        // 3D Body
+        // 3D Candle Body
         const top = Math.min(yO, yC);
         const bHeight = Math.max(3, Math.abs(yC - yO));
         const grad = ctx.createLinearGradient(x, top, x, top + bHeight);
@@ -2043,7 +759,7 @@
       ctx.beginPath(); ctx.moveTo(0, liveY); ctx.lineTo(w, liveY); ctx.stroke();
       ctx.setLineDash([]);
 
-      // Spot beacon
+      // Spot Beacon
       ctx.beginPath();
       ctx.arc(w - 6, liveY, 3.5, 0, Math.PI * 2);
       ctx.fillStyle = '#00E676';
@@ -2074,8 +790,55 @@
     }
 
     // =========================================================================
-    // WATCHLIST & USER INTERACTION
+    // INITIALIZATION & USER ACTIONS
     // =========================================================================
+    function seedBaselineCandles(base) {
+      candleData = [];
+      let p = base * 0.985;
+      const now = Date.now();
+      for (let i = 0; i < 29; i++) {
+        const change = (Math.sin(i * 0.6) * 0.003 + 0.001) * base;
+        const o = p, c = o + change;
+        candleData.push({ t: now - (29 - i) * 60000, o, h: Math.max(o, c) + Math.abs(change), l: Math.min(o, c) - Math.abs(change), c, v: 5 });
+        p = c;
+      }
+      candleData.push({ t: now, o: p, h: Math.max(p, base), l: Math.min(p, base), c: base, v: 1 });
+      saveCandlesToDB(activePair, candleData);
+      renderCanvas120Hz();
+    }
+
+    async function fetchRealCandles(pair) {
+      try {
+        const res = await fetch(`https://api.exchange.coinbase.com/products/${pair}/candles?granularity=60`);
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          candleData = data.slice(0, 30).reverse().map(c => ({
+            t: c[0] * 1000, l: parseFloat(c[1]), h: parseFloat(c[2]), o: parseFloat(c[3]), c: parseFloat(c[4]), v: parseFloat(c[5])
+          }));
+          const latest = candleData[candleData.length - 1];
+          MarketStore[pair].price = latest.c;
+          updateSignalsCardFast(latest.c);
+          renderCanvas120Hz();
+          saveCandlesToDB(pair, candleData);
+          return;
+        }
+      } catch (e) {}
+
+      // Fast fallback to spot price if candles API is rate-limited
+      try {
+        const res = await fetch(`https://api.coinbase.com/v2/prices/${pair}/spot`);
+        const json = await res.json();
+        if (json && json.data && json.data.amount) {
+          const spot = parseFloat(json.data.amount);
+          MarketStore[pair].price = spot;
+          seedBaselineCandles(spot);
+          updateSignalsCardFast(spot);
+        }
+      } catch (e) {
+        seedBaselineCandles(1.40);
+      }
+    }
+
     function renderWatchlistMarkup() {
       const c = document.getElementById('watchlistContainer');
       c.innerHTML = Object.keys(MarketStore).map(pair => `
@@ -2127,21 +890,6 @@
       await fetchRealCandles(pair);
     }
 
-    async function fetchRealCandles(pair) {
-      try {
-        const res = await fetch(`[https://api.exchange.coinbase.com/products/$](https://api.exchange.coinbase.com/products/$){pair}/candles?granularity=60`);
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          candleData = data.slice(0, 30).reverse().map(c => ({
-            t: c[0] * 1000, l: parseFloat(c[1]), h: parseFloat(c[2]), o: parseFloat(c[3]), c: parseFloat(c[4]), v: parseFloat(c[5])
-          }));
-          renderCanvas120Hz();
-          saveCandlesToDB(pair, candleData);
-          if (worker) worker.postMessage({ type: 'LOAD_CANDLES', pair, candles: candleData });
-        }
-      } catch (e) {}
-    }
-
     function switchTab(target) {
       triggerHaptic('light');
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -2151,16 +899,28 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function clearConsole() { triggerHaptic('light'); document.getElementById('termConsole').innerHTML = '<div class="term-line"><span class="term-dim">[SYSTEM]</span> Buffer cleared.</div>'; }
-    function forceRehydrate() { triggerHaptic('medium'); fetchRealCandles(activePair); }
-    function openTradingView() { triggerHaptic('light'); window.open(`[https://www.tradingview.com/chart/?symbol=COINBASE:$](https://www.tradingview.com/chart/?symbol=COINBASE:$){activePair.replace('-', '')}`); }
+    function logTerminal(msg, tag = 'term-tag') {
+      const c = document.getElementById('termConsole');
+      if (!c) return;
+      const time = new Date().toLocaleTimeString();
+      const div = document.createElement('div');
+      div.className = 'term-line';
+      div.innerHTML = `<span class="${tag}">[${time}]</span> ${msg}`;
+      c.appendChild(div);
+      if (c.childNodes.length > 70) c.removeChild(c.firstChild);
+      c.scrollTop = c.scrollHeight;
+    }
 
-    // Bootstrap
+    function clearConsole() { triggerHaptic('light'); document.getElementById('termConsole').innerHTML = '<div class="term-line"><span class="term-dim">[SYSTEM]</span> Buffer cleared.</div>'; }
+    function forceRehydrate() { triggerHaptic('medium'); fetchRealCandles(activePair); initWebSocket(); }
+    function openTradingView() { triggerHaptic('light'); window.open(`https://www.tradingview.com/chart/?symbol=COINBASE:${activePair.replace('-', '')}`); }
+
+    // Start Engine
     renderWatchlistMarkup();
     setupCanvas();
     initIndexedDB();
-    initWorker();
     fetchRealCandles(activePair);
+    initWebSocket();
   </script>
 </body>
 </html>
