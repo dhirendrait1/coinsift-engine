@@ -4,61 +4,183 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>CoinSift Engine</title>
-  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#000000">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --bg-oled: #000000;
+      --panel-bg: rgba(14, 20, 28, 0.75);
+      --cyan-accent: #00F2FE;
+      --emerald-accent: #00E676;
+      --crimson-accent: #FF2A55;
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --font-cyber: 'Rajdhani', sans-serif;
+      --font-mono: 'Space Grotesk', monospace;
+    }
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent; user-select: none;
+    }
+    body {
+      background-color: var(--bg-oled); color: #FFFFFF;
+      font-family: var(--font-cyber); height: 100vh; overflow-x: hidden;
+    }
+    .app-viewport {
+      display: flex; flex-direction: column; height: 100vh;
+      padding: 16px 16px 0 16px;
+      background: radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.08) 0%, transparent 60%);
+    }
+    .top-header {
+      display: flex; justify-content: space-between; align-items: center; padding: 6px 0 14px 0;
+    }
+    .brand-cluster { display: flex; align-items: center; gap: 10px; }
+    .core-logo {
+      width: 36px; height: 36px; border-radius: 8px;
+      border: 1px solid var(--cyan-accent);
+      background: #0d1520;
+      box-shadow: 0 0 12px rgba(0, 242, 254, 0.35);
+    }
+    .engine-title {
+      font-size: 19px; font-weight: 700; letter-spacing: 0.08em;
+      color: var(--cyan-accent); text-shadow: 0 0 12px rgba(0, 242, 254, 0.35);
+    }
+    .sync-badge {
+      display: flex; align-items: center; gap: 6px; padding: 4px 10px;
+      background: rgba(0, 230, 118, 0.08); border: 1px solid rgba(0, 230, 118, 0.25);
+      border-radius: 999px;
+    }
+    .sync-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--emerald-accent); box-shadow: 0 0 8px var(--emerald-accent);
+    }
+    .sync-label { font-size: 11px; font-weight: 600; color: var(--emerald-accent); }
+    .dashboard-content { flex: 1; overflow-y: auto; padding-bottom: 120px; }
+    .gauge-card-3d {
+      background: var(--panel-bg); backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border); border-radius: 20px;
+      padding: 14px; margin-bottom: 16px; text-align: center;
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+    .gauge-label { font-size: 11px; letter-spacing: 0.1em; color: #94A3B8; margin-bottom: 6px; }
+    .gauge-text { font-size: 20px; font-weight: 700; color: #FFF; letter-spacing: 0.05em; }
+    .section-title { font-size: 12px; letter-spacing: 0.08em; color: #64748B; margin-bottom: 12px; }
+    .card-3d {
+      background: var(--panel-bg); backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border); border-radius: 22px;
+      padding: 18px; margin-bottom: 14px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.18);
+    }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .coin-id { font-size: 20px; font-weight: 700; letter-spacing: 0.04em; }
+    .score-chip {
+      background: rgba(0, 230, 118, 0.15); border: 1px solid var(--emerald-accent);
+      color: var(--emerald-accent); padding: 4px 12px; border-radius: 999px;
+      font-size: 12px; font-weight: 700; box-shadow: 0 0 12px rgba(0, 230, 118, 0.25);
+    }
+    .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .data-cell {
+      background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px; padding: 10px;
+    }
+    .cell-title { font-size: 10px; color: #94A3B8; margin-bottom: 4px; }
+    .cell-val { font-family: var(--font-mono); font-size: 14px; font-weight: 600; }
+    .cell-val.entry { color: var(--cyan-accent); }
+    .cell-val.stop { color: var(--crimson-accent); }
+    .cell-val.target { color: var(--emerald-accent); }
+    .card-actions { display: flex; gap: 10px; }
+    .action-btn {
+      flex: 1; background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border); color: #FFF;
+      padding: 10px; border-radius: 12px; font-family: var(--font-cyber);
+      font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    .preservation-shield {
+      background: rgba(10, 15, 22, 0.85); border: 1px solid rgba(0, 242, 254, 0.2);
+      border-radius: 22px; padding: 32px 16px; text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9);
+    }
+    .shield-icon { font-size: 46px; margin-bottom: 12px; }
+    .shield-title { font-size: 18px; font-weight: 700; letter-spacing: 0.06em; margin-bottom: 8px; }
+    .shield-desc { font-size: 12px; color: #94A3B8; line-height: 1.5; }
+    .bottom-dock {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      padding: 8px 16px 18px 16px;
+      background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.95) 40%, #000 100%);
+      display: flex; flex-direction: column; gap: 10px; align-items: center;
+    }
+    .attribution-pill-3d {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      white-space: nowrap; background: rgba(10, 15, 24, 0.85);
+      backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px; padding: 7px 16px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.8), 0 0 14px rgba(0, 242, 254, 0.12);
+      font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .attr-bolt { color: var(--cyan-accent); }
+    .attr-brand { color: var(--cyan-accent); font-weight: 700; }
+    .attr-dot { color: rgba(255, 255, 255, 0.25); }
+    .attr-credit { color: #94A3B8; }
+    .attr-name { color: #F8FAFC; text-shadow: 0 0 8px rgba(0, 242, 254, 0.4); }
+    .attr-ver { color: #64748B; }
+    .attr-beacon { color: var(--emerald-accent); font-size: 6px; }
+  </style>
 </head>
 <body>
   <div class="app-viewport">
-    <!-- Top-Left Header with Fixed Logo -->
     <header class="top-header">
       <div class="brand-cluster">
-        <img src="assets/icons/coinsift-core-logo.png" alt="CoinSift Logo" class="core-logo" />
+        <img src="assets/icons/coinsift-core-logo.png" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%2300F2FE\'><path d=\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v2h-2zm0 4h2v6h-2z\'/></svg>'" alt="Logo" class="core-logo" />
         <span class="engine-title">COINSIFT ENGINE</span>
       </div>
-      <div class="sync-badge" id="syncStatus">
+      <div class="sync-badge">
         <span class="sync-dot"></span>
         <span class="sync-label">System Synced</span>
       </div>
     </header>
 
-    <!-- Main Dynamic Feed Container -->
     <main class="dashboard-content">
-      <!-- 3D Sentiment Gauge -->
-      <section class="gauge-card-3d" id="biasWidget">
+      <section class="gauge-card-3d">
         <div class="gauge-label">MARKET BIAS</div>
-        <div class="gauge-dial-container">
-          <div class="gauge-meter-glow" id="meterGlow"></div>
-          <div class="gauge-text" id="biasText">CALIBRATING...</div>
-        </div>
+        <div class="gauge-text" id="biasText">MOMENTUM (64/100)</div>
       </section>
 
-      <!-- Active Signals Feed / Zero State Host -->
       <div class="section-title">TOP CONFLUENCE CANDIDATES</div>
-      <div id="cardsFeed" class="cards-deck"></div>
+      <div id="cardsFeed">
+        <!-- Default State: Pre-loaded Card -->
+        <div class="card-3d">
+          <div class="card-header">
+            <div class="coin-id">#XRP/USD</div>
+            <div class="score-chip">87/100</div>
+          </div>
+          <div class="data-grid">
+            <div class="data-cell">
+              <div class="cell-title">ENTRY ZONE</div>
+              <div class="cell-val entry">$1.39 – $1.41</div>
+            </div>
+            <div class="data-cell">
+              <div class="cell-title">MARKET PRICE</div>
+              <div class="cell-val">$1.40</div>
+            </div>
+            <div class="data-cell">
+              <div class="cell-title">INVALIDATION (SL)</div>
+              <div class="cell-val stop">$1.38</div>
+            </div>
+            <div class="data-cell">
+              <div class="cell-title">TARGETS</div>
+              <div class="cell-val target">$1.43 / $1.46</div>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button class="action-btn" onclick="window.open('https://www.tradingview.com/chart/?symbol=COINBASE:XRPUSD')">📈 TradingView</button>
+            <button class="action-btn" onclick="navigator.clipboard.writeText('COINSIFT: XRP/USD Entry: 1.40 SL: 1.38 TP: 1.43'); alert('Copied!')">📋 Copy Trade</button>
+          </div>
+        </div>
+      </div>
     </main>
 
-    <!-- Fixed Bottom Controls & Attribution -->
     <footer class="bottom-dock">
-      <nav class="nav-cluster">
-        <button class="nav-btn active">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
-          <span>Signals</span>
-        </button>
-        <button class="nav-btn">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM7 10h2v7H7v-7zm4-3h2v10h-2V7zm4 6h2v4h-2v-4z"/></svg>
-          <span>Watchlist</span>
-        </button>
-        <button class="nav-btn">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-          <span>Setup</span>
-        </button>
-      </nav>
-
-      <!-- Attribution Dock -->
       <div class="attribution-pill-3d">
         <span class="attr-bolt">⚡</span>
         <span class="attr-brand">COINSIFT ENGINE</span>
@@ -71,6 +193,24 @@
     </footer>
   </div>
 
-  <script src="app.js"></script>
+  <script>
+    // Live database reader
+    fetch('data/signals.json?t=' + Date.now())
+      .then(r => r.json())
+      .then(d => {
+        if(d.market_regime) {
+          document.getElementById('biasText').innerText = `${d.market_regime.bias.toUpperCase()} (${d.market_regime.fear_greed_score}/100)`;
+        }
+        if(d.shortlist_count === 0) {
+          document.getElementById('cardsFeed').innerHTML = `
+            <div class="preservation-shield">
+              <div class="shield-icon">🛡️</div>
+              <div class="shield-title">CAPITAL PRESERVED</div>
+              <p class="shield-desc">No candidates crossed ≥ 80/100 threshold.<br>Cash is an active position.</p>
+            </div>`;
+        }
+      })
+      .catch(() => {});
+  </script>
 </body>
 </html>
