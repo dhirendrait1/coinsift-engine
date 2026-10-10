@@ -1,0 +1,17 @@
+{
+  "name": "CoinSift Engine",
+  "short_name": "CoinSift",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='26' fill='%23070B12' stroke='%2300F2FE' stroke-width='4'/%3E%3Ccircle cx='60' cy='60' r='30' fill='%230F172A' stroke='%2300F2FE' stroke-width='3'/%3E%3Cpath d='M68 48 H52 C48 48 46 50 46 54 V56 C46 60 48 62 52 62 H68 C72 62 74 64 74 68 V70 C74 74 72 76 68 76 H50' stroke='%2300F2FE' stroke-width='5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
